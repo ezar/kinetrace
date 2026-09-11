@@ -13,13 +13,13 @@ editor from these files and publishes it.
 
 ## What the canvas settles
 
-| | |
-| --- | --- |
-| Fundamentos | colour, type scale, radii, minimum hit sizes |
-| Componentes | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons |
-| Pantallas | the nine mobile screens at 390 px |
-| Sesión | camera setup, far mode in portrait, landscape and on a laptop, rest, summary |
-| Estados | empty, loading, error, tracking lost, safety stop |
+|             |                                                                              |
+| ----------- | ---------------------------------------------------------------------------- |
+| Fundamentos | colour, type scale, radii, minimum hit sizes                                 |
+| Componentes | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons       |
+| Pantallas   | the nine mobile screens at 390 px                                            |
+| Sesión      | camera setup, far mode in portrait, landscape and on a laptop, rest, summary |
+| Estados     | empty, loading, error, tracking lost, safety stop                            |
 
 ## Decisions the canvas makes
 
