@@ -115,3 +115,29 @@ test('the setup assistant blocks the session when it cannot see a body', async (
     expect(response.status, `${response.url} was not served`).toBe(200);
   }
 });
+
+/**
+ * Voice commands need WebGPU and a microphone. On a machine without them the
+ * setting must say so and stay off rather than offering something that cannot
+ * work — this test runs on exactly such a machine in CI.
+ */
+test('offers voice commands, or says why it cannot', async ({ page }) => {
+  await page.goto('settings');
+  await expect(
+    page.getByRole('heading', { name: /comandos de voz|voice commands/i }),
+  ).toBeVisible();
+
+  const toggle = page.getByLabel(/controlar la sesión hablando|run the session by talking/i);
+  await expect(toggle).not.toBeChecked();
+  if (await toggle.isDisabled()) {
+    await expect(
+      page.getByText(/no puede escuchar comandos|cannot listen for commands/i),
+    ).toBeVisible();
+    return;
+  }
+  // The setting is written to the database before the store updates, so the
+  // checkbox catches up a tick after the click rather than during it.
+  await toggle.click();
+  await expect(toggle).toBeChecked();
+  await expect(page.getByText(/«pausa»|«pause»/)).toBeVisible();
+});

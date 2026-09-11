@@ -104,6 +104,11 @@ export interface AppSettings {
   speakCues: boolean;
   earcons: boolean;
   showCameraPreview: boolean;
+  /** Listen for spoken commands during a session. Off until asked for: it
+   *  downloads a model and needs the microphone. */
+  voiceCommands: boolean;
+  /** Whisper size used for voice commands. */
+  voiceModel: 'tiny' | 'base';
   poseModel: 'lite' | 'full' | 'heavy';
   keepTracks: boolean;
   /** Days a skeleton track is kept before it is pruned. */
@@ -117,6 +122,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   speakCues: true,
   earcons: true,
   showCameraPreview: true,
+  voiceCommands: false,
+  voiceModel: 'tiny',
   poseModel: 'full',
   keepTracks: true,
   trackRetentionDays: 90,

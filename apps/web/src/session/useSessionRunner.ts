@@ -56,6 +56,10 @@ export interface SessionControls {
   /** Leave the setup assistant and start counting. */
   begin: () => void;
   togglePause: () => void;
+  /** Pause or resume explicitly. Voice commands are not a toggle. */
+  setPaused: (paused: boolean) => void;
+  /** Say the last cue again, or where the set is up to if there was none. */
+  repeatCue: () => void;
   skipSet: () => void;
   finish: () => Promise<number | undefined>;
   cameraStatus: ReturnType<typeof useCamera>['status'];
@@ -95,6 +99,8 @@ export function useSessionRunner(
   const indexRef = useRef(0);
   const setStartedAtRef = useRef(Date.now());
   const cueTimerRef = useRef<number | undefined>(undefined);
+  /** Kept past the banner's lifetime so "repeat" has something to say. */
+  const lastCueRef = useRef<string | null>(null);
   const savingRef = useRef(false);
 
   stageRef.current = stage;
@@ -147,6 +153,7 @@ export function useSessionRunner(
 
   const showCue = useCallback((text: string, speak: boolean) => {
     setCueText(text);
+    lastCueRef.current = text;
     if (speak) speakerRef.current?.say(text);
     window.clearTimeout(cueTimerRef.current);
     cueTimerRef.current = window.setTimeout(() => setCueText(null), CUE_VISIBLE_MS);
@@ -268,6 +275,37 @@ export function useSessionRunner(
     });
   }, []);
 
+  const setPaused = useCallback((paused: boolean) => {
+    setStage((current) => {
+      if (paused && (current === 'active' || current === 'rest')) {
+        earconRef.current?.play('pause');
+        return 'paused';
+      }
+      if (!paused && current === 'paused') {
+        earconRef.current?.play('pause');
+        return 'active';
+      }
+      return current;
+    });
+  }, []);
+
+  /**
+   * Somebody on the mat two metres from the phone cannot read the banner they
+   * missed, so "repeat" says the last cue again, and where the set is up to
+   * when there has not been one.
+   */
+  const repeatCue = useCallback(() => {
+    const current = plan[indexRef.current];
+    const exercise = current?.exercise;
+    const name = exercise?.names[language] ?? current?.customNote ?? '';
+    const progressText =
+      exercise?.mode === 'hold'
+        ? t('session.holdFor', { seconds: current?.holdSeconds ?? 0 })
+        : t('session.repsOf', { current: state?.reps ?? 0, total: current?.reps ?? 0 });
+    const text = lastCueRef.current ?? [name, progressText].filter(Boolean).join('. ');
+    if (text) showCue(text, true);
+  }, [language, plan, showCue, state?.reps, t]);
+
   const skipSet = useCallback(() => {
     if (stageRef.current === 'rest') {
       setRestRemaining(0);
@@ -347,6 +385,8 @@ export function useSessionRunner(
     start,
     begin,
     togglePause,
+    setPaused,
+    repeatCue,
     skipSet,
     finish,
     cameraStatus: camera.status,

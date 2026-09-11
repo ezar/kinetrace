@@ -177,6 +177,31 @@ export function CameraOffIcon(props: IconProps): JSX.Element {
   );
 }
 
+export function MicIcon(props: IconProps): JSX.Element {
+  return (
+    <Svg {...props}>
+      <>
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" />
+        <path d="M12 18v3" />
+      </>
+    </Svg>
+  );
+}
+
+export function MicOffIcon(props: IconProps): JSX.Element {
+  return (
+    <Svg {...props}>
+      <>
+        <path d="M15 5.2A3 3 0 0 0 9 6v5" />
+        <path d="M5.5 11.5a6.5 6.5 0 0 0 10 5.5" />
+        <path d="M12 18v3" />
+        <path d="m4 4 16 16" />
+      </>
+    </Svg>
+  );
+}
+
 export function EyeOffIcon(props: IconProps): JSX.Element {
   return (
     <Svg {...props}>

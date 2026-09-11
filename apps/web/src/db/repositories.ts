@@ -22,7 +22,10 @@ function omit<T extends object, K extends keyof T>(value: T, keys: readonly K[])
 }
 
 export async function getSettings(): Promise<AppSettings> {
-  return (await db.settings.get('app')) ?? DEFAULT_SETTINGS;
+  // Merged over the defaults so a row written by an older version still has
+  // every field a newer one expects.
+  const stored = await db.settings.get('app');
+  return stored ? { ...DEFAULT_SETTINGS, ...stored } : DEFAULT_SETTINGS;
 }
 
 export async function saveSettings(patch: Partial<AppSettings>): Promise<AppSettings> {

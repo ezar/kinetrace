@@ -21,6 +21,7 @@ export {
   EXERCISE_TEXT,
   resolveText,
 } from './dictionary.js';
+export { VOICE_PHRASES, VOICE_EXAMPLES, voiceGrammar } from './voice.js';
 export { EXERCISES } from './library/index.js';
 export * from './library/index.js';
 

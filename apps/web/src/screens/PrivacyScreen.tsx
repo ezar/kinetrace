@@ -12,6 +12,7 @@ export function PrivacyScreen(): JSX.Element {
       <ScreenHeader title={t('privacy.title')} back />
       <div className="card p-4">
         <p className="leading-relaxed">{t('privacy.body')}</p>
+        <p className="mt-3 leading-relaxed text-muted">{t('privacy.voice')}</p>
       </div>
       <ul className="mt-4 flex flex-wrap gap-2">
         {points.map((key) => (

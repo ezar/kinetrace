@@ -29,6 +29,28 @@ None of these is needed for the core loop. The routine builder and the session w
 without them, and the import falls back to lexical matching on the library's own
 names and synonyms.
 
+## Voice commands (optional, downloaded on demand)
+
+| Model                     | Size         | Licence     | Used for                   |
+| ------------------------- | ------------ | ----------- | -------------------------- |
+| Whisper `tiny` (ONNX, q4) | about 75 MB  | MIT, OpenAI | Default, multilingual      |
+| Whisper `base` (ONNX, q4) | about 150 MB | MIT, OpenAI | Harder rooms, multilingual |
+
+Off until the user turns them on in settings, because they cost a download and a
+microphone permission. Fetched from Hugging Face through
+[`@huggingface/transformers`](https://github.com/huggingface/transformers.js) and
+kept in the browser's cache afterwards; the ONNX runtime's WebAssembly is served
+from Kinetrace's own origin, not a CDN. WebGPU is required — on a device without
+it the setting is disabled rather than falling back to something too slow to be
+useful mid-exercise.
+
+The audio is processed in a worker on the device and is never stored or sent
+anywhere. Recognition only runs when the energy gate hears somebody speak, and
+never while Kinetrace is speaking a cue.
+
+Deliberately _not_ the Web Speech Recognition API: in most browsers it ships the
+audio to the vendor's servers, which Kinetrace's privacy promise does not allow.
+
 ## Speech
 
 Cues are spoken through the browser's own Web Speech Synthesis voices. Nothing is

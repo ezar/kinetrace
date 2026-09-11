@@ -3,7 +3,10 @@
 import type { JSX } from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { VOICE_COMMANDS } from '@kinetrace/engine';
+import { VOICE_EXAMPLES } from '@kinetrace/exercises';
 import { POSE_MODELS, type PoseModelVariant } from '../pose/models.js';
+import { voiceCommandsSupported, whisperModel } from '../speech/listener.js';
 import {
   deleteEverything,
   exportProfile,
@@ -20,6 +23,10 @@ export function SettingsScreen(): JSX.Element {
   const { t, language } = useTranslation();
   const settings = useSettingsStore();
   const fileRef = useRef<HTMLInputElement>(null);
+  const voiceSupported = voiceCommandsSupported();
+  const examples = VOICE_COMMANDS.map((command) => `«${VOICE_EXAMPLES[command][language]}»`).join(
+    ', ',
+  );
 
   const download = async (): Promise<void> => {
     if (settings.activeProfileId === undefined) return;
@@ -76,6 +83,42 @@ export function SettingsScreen(): JSX.Element {
         >
           {t('settings.voiceTest')}
         </button>
+      </section>
+
+      <section className="card space-y-3 p-4">
+        <h2 className="font-medium">{t('settings.voiceCommands')}</h2>
+        <Toggle
+          label={t('settings.voiceCommandsOn')}
+          checked={settings.voiceCommands && voiceSupported}
+          disabled={!voiceSupported}
+          onChange={(value) => void settings.update({ voiceCommands: value })}
+        />
+        <p className="text-sm text-muted">
+          {voiceSupported
+            ? t('settings.voiceCommandsHelp', { size: whisperModel(settings.voiceModel).sizeMb })
+            : t('voice.unsupported')}
+        </p>
+        {settings.voiceCommands && voiceSupported ? (
+          <>
+            <p className="text-sm text-muted">{t('settings.voiceWords', { words: examples })}</p>
+            <div className="space-y-2">
+              {(['tiny', 'base'] as const).map((variant) => (
+                <label key={variant} className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="voiceModel"
+                    checked={settings.voiceModel === variant}
+                    onChange={() => void settings.update({ voiceModel: variant })}
+                  />
+                  <span>{t(`settings.voiceModel.${variant}`)}</span>
+                  <span className="ml-auto text-sm text-muted">
+                    {whisperModel(variant).sizeMb} MB
+                  </span>
+                </label>
+              ))}
+            </div>
+          </>
+        ) : null}
       </section>
 
       <section className="card space-y-3 p-4">
@@ -160,17 +203,19 @@ export function SettingsScreen(): JSX.Element {
 interface ToggleProps {
   label: string;
   checked: boolean;
+  disabled?: boolean;
   onChange: (value: boolean) => void;
 }
 
-function Toggle({ label, checked, onChange }: ToggleProps): JSX.Element {
+function Toggle({ label, checked, disabled, onChange }: ToggleProps): JSX.Element {
   return (
-    <label className="flex items-center justify-between gap-3">
+    <label className={`flex items-center justify-between gap-3 ${disabled ? 'opacity-50' : ''}`}>
       <span>{label}</span>
       <input
         type="checkbox"
         className="h-6 w-6"
         checked={checked}
+        disabled={disabled ?? false}
         onChange={(event) => onChange(event.target.checked)}
       />
     </label>
