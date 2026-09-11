@@ -9,7 +9,13 @@
 import type { JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SetupAssistant, metricLandmarkIndices, type SetupState } from '@kinetrace/engine';
+import {
+  SetupAssistant,
+  metricLandmarkIndices,
+  type RunnerState,
+  type SetupState,
+  type TargetBand,
+} from '@kinetrace/engine';
 import { metricLabel } from '@kinetrace/exercises';
 import { db } from '../db/schema.js';
 import { finishSession } from '../db/repositories.js';
@@ -18,9 +24,9 @@ import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { StickFigure } from '../components/StickFigure.js';
 import { AngleGauge } from '../components/AngleGauge.js';
-import { RepCounter } from '../components/RepCounter.js';
 import { CueBanner, type CueTone } from '../components/CueBanner.js';
 import { SilhouetteGuide } from '../components/SilhouetteGuide.js';
+import { CameraIcon, CameraOffIcon, CheckIcon } from '../components/icons.js';
 import type { Routine } from '../db/schema.js';
 import type { SetupCheck } from '@kinetrace/engine';
 
@@ -116,19 +122,33 @@ export function SessionScreen(): JSX.Element {
       />
 
       <div className="relative flex min-h-full flex-col p-5">
-        <header className="flex items-start justify-between gap-3 text-canvas/relaxed opacity-80">
-          <div>
-            <p className="text-lg">{exercise?.names[language] ?? session.item?.customNote}</p>
-            <p className="text-sm">
+        <header className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-0.5">
+            <p className="text-[19px] font-semibold">
+              {exercise?.names[language] ?? session.item?.customNote}
+            </p>
+            <p className="text-[15px] text-far-muted">
               {t('session.set', {
                 current: session.item?.setNumber ?? 1,
                 total: session.item?.totalSets ?? 1,
               })}
             </p>
           </div>
-          <button className="btn-ghost text-canvas" onClick={() => void endSession()}>
-            {t('session.end')}
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1 pt-2" aria-hidden="true">
+              {Array.from({ length: session.item?.totalSets ?? 1 }, (_, index) => (
+                <span
+                  key={index}
+                  className={`h-[5px] w-[26px] rounded-full ${
+                    index < (session.item?.setNumber ?? 1) ? 'bg-far-accent' : 'bg-far-track'
+                  }`}
+                />
+              ))}
+            </div>
+            <button className="btn-ghost px-2 text-far-muted" onClick={() => void endSession()}>
+              {t('session.end')}
+            </button>
+          </div>
         </header>
 
         {inSetup ? (
@@ -139,6 +159,8 @@ export function SessionScreen(): JSX.Element {
             modelLoading={session.modelLoading}
             checks={setupState?.checks ?? NO_BODY_CHECKS}
             reference={exercise?.reference}
+            view={exercise?.view.orientation ?? 'side'}
+            tip={exercise ? t(exercise.cameraTipKey) : ''}
             onStart={() => void session.start()}
           />
         ) : session.stage === 'rest' ? (
@@ -163,25 +185,31 @@ export function SessionScreen(): JSX.Element {
           />
         )}
 
-        <footer className="mt-4 flex items-center justify-between gap-3">
-          <button
-            className="btn-ghost text-canvas"
-            onClick={() => setShowPreview((current) => !current)}
-          >
-            {showPreview ? t('session.previewOff') : t('session.togglePreview')}
-          </button>
-          <p className="text-sm opacity-60">{t('session.gestureHelp')}</p>
-          <button className="btn-ghost text-canvas" onClick={session.togglePause}>
-            {session.stage === 'paused' ? t('session.resume') : t('session.paused')}
-          </button>
-        </footer>
-
-        <div className="mt-3 h-1.5 w-full rounded-full bg-white/15">
-          <div
-            className="h-full rounded-full bg-accent transition-[width]"
-            style={{ width: `${Math.round(session.progress * 100)}%` }}
-          />
-        </div>
+        {!inSetup && session.stage !== 'finished' ? (
+          <footer className="mt-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3 text-[13px] text-far-dim">
+              <button
+                className="btn-ghost min-h-0 px-0 py-1 text-[13px] text-far-dim"
+                onClick={() => setShowPreview((current) => !current)}
+              >
+                {showPreview ? t('session.previewOff') : t('session.togglePreview')}
+              </button>
+              <span className="text-center">{t('session.gestureHelp')}</span>
+              <button
+                className="btn-ghost min-h-0 px-0 py-1 text-[13px] text-far-dim"
+                onClick={session.togglePause}
+              >
+                {session.stage === 'paused' ? t('session.resume') : t('session.paused')}
+              </button>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-far-track">
+              <div
+                className="h-full rounded-full bg-far-accent transition-[width]"
+                style={{ width: `${Math.round(session.progress * 100)}%` }}
+              />
+            </div>
+          </footer>
+        ) : null}
       </div>
 
       {session.stage === 'paused' ? (
@@ -216,65 +244,115 @@ function ActivePanel({ session, highlight, metricName }: ActivePanelProps): JSX.
   const lost = state?.tracking === 'lost';
   const band = session.item?.band ?? exercise?.targets.band ?? { min: 0, max: 180 };
   const safety = exercise?.targets.safety;
+  const isHold = exercise?.mode === 'hold';
+  const total = isHold ? session.item?.holdSeconds : session.item?.reps;
+  const done = isHold ? Math.floor((state?.heldMs ?? 0) / 1000) : (state?.reps ?? 0);
+  const inBand =
+    Number.isFinite(state?.primaryValue) &&
+    (state?.primaryValue ?? 0) >= band.min &&
+    (state?.primaryValue ?? 0) <= band.max;
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-6">
-      {lost ? <p className="text-far-cue text-safety">{t('session.lost')}</p> : null}
-
-      <div className="flex w-full items-center justify-center gap-8">
+    <div className="flex flex-1 flex-col justify-center gap-4">
+      <div className="flex items-center justify-center rounded-[22px] bg-far-surface p-2">
         {session.frame ? (
           <StickFigure
             landmarks={session.frame.world.length ? session.frame.world : session.frame.image}
             space={session.frame.world.length ? 'world' : 'image'}
+            plane={exercise?.view.orientation === 'front' ? 'frontal' : 'sagittal'}
             highlight={highlight}
+            far
             stroke="#f7f5f2"
-            highlightStroke="#d9702f"
-            strokeWidth={3}
-            className="h-56 w-40 shrink-0"
+            highlightStroke="#ff9552"
+            className={`h-[150px] w-full ${lost ? 'opacity-30' : ''}`}
           />
         ) : (
-          <div className="h-56 w-40" />
-        )}
-
-        {exercise?.mode === 'hold' ? (
-          <RepCounter
-            value={Math.floor((state?.heldMs ?? 0) / 1000)}
-            total={session.item?.holdSeconds}
-            caption={t('session.holdFor', { seconds: session.item?.holdSeconds ?? 0 })}
-          />
-        ) : (
-          <RepCounter
-            value={state?.reps ?? 0}
-            total={session.item?.reps}
-            caption={
-              state && state.partials > 0
-                ? `${state.partials} ${t('summary.partials').toLowerCase()}`
-                : undefined
-            }
-          />
+          <div className="h-[150px]" />
         )}
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className={`flex items-center justify-center gap-5 ${lost ? 'opacity-35' : ''}`}>
+        <span className="text-[clamp(5rem,30vmin,11rem)] font-extrabold leading-[0.85] tracking-[-0.05em]">
+          {done}
+        </span>
+        <div className="flex flex-col gap-2.5 pb-2">
+          <span className="text-[34px] font-semibold text-far-muted">
+            / {total ?? '—'}
+            {isHold ? ' s' : ''}
+          </span>
+          {!isHold && total ? (
+            <RepDots
+              total={total}
+              state={state}
+              band={band}
+              direction={exercise?.targets.direction ?? 'increase'}
+            />
+          ) : null}
+        </div>
+      </div>
+
+      <div className={`flex items-center gap-5 px-1 ${lost ? 'opacity-35' : ''}`}>
         <AngleGauge
           value={state?.primaryValue ?? Number.NaN}
           band={band}
           min={safety?.min ?? band.min - 30}
           max={safety?.max ?? band.max + 30}
-          safety={safety}
+          {...(safety ? { safety } : {})}
           far
           label={metricName}
-          className="h-32 w-32"
+          className="h-[124px] w-[124px] shrink-0"
         />
-        <div>
-          <p className="text-far-sm font-semibold">
+        <div className="flex min-w-0 flex-col">
+          <span
+            className={`text-[clamp(2.4rem,11vmin,4rem)] font-extrabold leading-none tracking-tight ${
+              state?.unsafe ? 'text-far-safety' : inBand ? 'text-far-band' : 'text-far-ink'
+            }`}
+          >
             {Number.isFinite(state?.primaryValue) ? Math.round(state?.primaryValue ?? 0) : '—'}°
-          </p>
-          <p className="text-lg opacity-70">
+          </span>
+          <span className="mt-1 truncate text-[16px] text-far-muted">
             {metricName} · {band.min}–{band.max}°
-          </p>
+          </span>
         </div>
       </div>
+
+      {lost ? (
+        <p className="text-center text-[20px] font-semibold text-far-correct">
+          {t('session.lost')}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** One dot per repetition: the band colour when it reached the target, the accent when it fell short. */
+function RepDots({
+  total,
+  state,
+  band,
+  direction,
+}: {
+  total: number;
+  state: RunnerState | null;
+  band: TargetBand;
+  direction: 'increase' | 'decrease';
+}): JSX.Element {
+  const peaks = state?.peaks ?? [];
+  const reached = (peak: number): boolean =>
+    direction === 'increase' ? peak >= band.min : peak <= band.max;
+
+  return (
+    <div className="flex max-w-[132px] flex-wrap gap-[5px]" aria-hidden="true">
+      {Array.from({ length: total }, (_, index) => {
+        const peak = peaks[index];
+        const colour =
+          peak === undefined || !Number.isFinite(peak)
+            ? 'bg-far-track'
+            : reached(peak)
+              ? 'bg-far-band'
+              : 'bg-far-accent';
+        return <span key={index} className={`h-[13px] w-[13px] rounded-full ${colour}`} />;
+      })}
     </div>
   );
 }
@@ -282,10 +360,13 @@ function ActivePanel({ session, highlight, metricName }: ActivePanelProps): JSX.
 interface SetupPanelProps {
   state: SetupState | null;
   checks: readonly SetupCheck[];
+  /** Where to put the phone for this exercise. */
+  tip: string;
   cameraStatus: string;
   cameraError?: string;
   modelLoading: boolean;
   reference?: Parameters<typeof SilhouetteGuide>[0]['reference'];
+  view: 'side' | 'front';
   onStart: () => void;
 }
 
@@ -296,58 +377,114 @@ function SetupPanel({
   cameraError,
   modelLoading,
   reference,
+  view,
+  tip,
   onStart,
 }: SetupPanelProps): JSX.Element {
   const { t } = useTranslation();
 
   if (cameraStatus === 'idle') {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-        <p className="text-far-sm">{t('setup.title')}</p>
-        <button className="btn-primary bg-canvas text-ink" onClick={onStart}>
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
+        <CameraIcon size={44} className="text-far-accent" />
+        <p className="text-[28px] font-bold tracking-tight">{t('setup.title')}</p>
+        <p className="max-w-[30ch] text-[16px] leading-relaxed text-far-muted">
+          {t('setup.cameraHelp')}
+        </p>
+        <button
+          className="btn-primary h-[60px] bg-canvas px-10 text-[19px] text-ink"
+          onClick={onStart}
+        >
           {t('common.start')}
         </button>
-        <p className="max-w-md opacity-70">{t('setup.cameraHelp')}</p>
       </div>
     );
   }
 
   if (cameraStatus === 'error') {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <p className="text-far-cue text-safety">{t('setup.cameraError')}</p>
-        <p className="opacity-70">{cameraError}</p>
-        <button className="btn-secondary" onClick={onStart}>
+      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+        <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-far-safety-bg text-far-safety">
+          <CameraOffIcon size={34} />
+        </div>
+        <p className="text-[22px] font-semibold text-far-safety">{t('setup.cameraError')}</p>
+        <p className="max-w-[32ch] text-[15px] leading-relaxed text-far-muted">{cameraError}</p>
+        <button
+          className="btn-secondary border-far-line bg-far-surface text-far-ink"
+          onClick={onStart}
+        >
           {t('common.retry')}
         </button>
       </div>
     );
   }
 
-  return (
-    <div className="relative flex flex-1 flex-col items-center justify-center gap-5">
-      {reference ? (
-        <SilhouetteGuide reference={reference} className="absolute inset-0 h-full w-full" />
-      ) : null}
-      <p className="text-far-cue">{modelLoading ? t('setup.modelLoading') : t('setup.title')}</p>
+  const passed = checks.filter((check) => check.status === 'ok').length;
 
-      <ul className="z-10 space-y-2 text-xl">
+  return (
+    <div className="flex flex-1 flex-col gap-5 pt-4">
+      <div className="flex flex-col gap-1">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-far-accent">
+          {t('setup.beforeStarting')}
+        </span>
+        <p className="text-[26px] font-bold tracking-tight">
+          {modelLoading ? t('setup.modelLoading') : t('setup.title')}
+        </p>
+      </div>
+
+      {/* The silhouette is the posture to line up with, inside its own frame so
+          it never sits on top of the checks. */}
+      <div className="relative flex h-[240px] items-center justify-center overflow-hidden rounded-[24px] bg-far-surface">
+        {reference ? (
+          <SilhouetteGuide reference={reference} view={view} className="h-full w-[88%]" />
+        ) : null}
+        <span className="absolute bottom-3 text-[13px] text-far-dim">{t('setup.silhouette')}</span>
+      </div>
+
+      <ul className="flex flex-col gap-3">
         {checks.map((check) => (
-          <li key={check.id} className="flex items-center gap-3">
-            <span aria-hidden="true">{check.status === 'ok' ? '✓' : '·'}</span>
-            <span className={check.status === 'ok' ? 'opacity-60' : ''}>
+          <li key={check.id} className="flex items-start gap-3">
+            <span
+              className={`mt-0.5 flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-full ${
+                check.status === 'ok'
+                  ? 'bg-far-band text-far-bg'
+                  : check.tipKey
+                    ? 'border-2 border-far-accent'
+                    : 'border-2 border-far-track'
+              }`}
+            >
+              {check.status === 'ok' ? <CheckIcon size={14} strokeWidth={3.4} /> : null}
+            </span>
+            <span
+              className={`text-[17px] ${check.status === 'ok' ? 'text-far-muted' : 'text-far-ink'}`}
+            >
               {t(`setup.check.${check.id}`)}
             </span>
-            {check.tipKey ? <span className="text-accent">{t(check.tipKey)}</span> : null}
+            {check.tipKey ? (
+              <span className="ml-auto max-w-[46%] text-right text-[14px] font-semibold leading-snug text-far-accent">
+                {t(check.tipKey)}
+              </span>
+            ) : null}
           </li>
         ))}
       </ul>
 
-      {state?.ready ? (
-        <p className="z-10 text-far-cue text-accent">{t('setup.ready')}</p>
-      ) : (
-        <p className="z-10 opacity-70">{t('setup.holdStill')}</p>
-      )}
+      <div className="flex items-start gap-3 rounded-[20px] border border-far-line bg-far-surface p-4">
+        <CameraIcon size={22} className="mt-0.5 shrink-0 text-far-muted" />
+        <span className="text-[15px] leading-relaxed text-far-muted">{tip}</span>
+      </div>
+
+      <div className="mt-auto flex flex-col items-center gap-3">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-far-track">
+          <div
+            className="h-full rounded-full bg-far-accent transition-[width]"
+            style={{ width: `${(passed / Math.max(1, checks.length)) * 100}%` }}
+          />
+        </div>
+        <span className="text-[17px] text-far-muted">
+          {state?.ready ? t('setup.ready') : t('setup.holdStill')}
+        </span>
+      </div>
     </div>
   );
 }

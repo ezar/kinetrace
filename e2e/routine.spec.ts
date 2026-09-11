@@ -33,7 +33,7 @@ test.describe('first run', () => {
     await page.goto('library');
     await expect(page.getByRole('heading', { name: /ejercicios|exercises/i })).toBeVisible();
     await expect(page.getByText(/rangos por defecto|default ranges/i)).toBeVisible();
-    await expect(page.locator('svg[aria-label="Skeleton"]').first()).toBeVisible();
+    await expect(page.getByRole('img', { name: /esqueleto|skeleton/i }).first()).toBeVisible();
 
     await page
       .getByText(/puente de glúteos|glute bridge/i)

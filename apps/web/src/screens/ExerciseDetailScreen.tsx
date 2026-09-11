@@ -2,8 +2,8 @@
 
 import type { JSX } from 'react';
 import { useParams } from 'react-router-dom';
-import { getExercise, metricLabel } from '@kinetrace/exercises';
-import { getMetricDefinition, metricLandmarkIndices } from '@kinetrace/engine';
+import { getExercise, metricDescription, metricLabel } from '@kinetrace/exercises';
+import { metricLandmarkIndices } from '@kinetrace/engine';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { AngleGauge } from '../components/AngleGauge.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
@@ -17,7 +17,6 @@ export function ExerciseDetailScreen(): JSX.Element {
   if (!exercise) return <p className="text-muted">{t('library.empty')}</p>;
 
   const metric = exercise.metrics[exercise.primaryMetric];
-  const definition = metric ? getMetricDefinition(metric.id) : undefined;
   const { band, safety } = exercise.targets;
   const gaugeMin = safety?.min ?? band.min - 30;
   const gaugeMax = safety?.max ?? band.max + 30;
@@ -33,8 +32,9 @@ export function ExerciseDetailScreen(): JSX.Element {
       <div className="card p-4">
         <ExerciseDemo
           reference={exercise.reference}
+          view={exercise.view.orientation}
           highlight={metricLandmarkIndices(metric?.id ?? 'hipFlexion', metric?.side ?? 'auto')}
-          className="mx-auto h-48 w-full text-ink"
+          className="mx-auto h-40 w-full rounded-2xl bg-canvas text-ink"
         />
       </div>
 
@@ -49,15 +49,17 @@ export function ExerciseDetailScreen(): JSX.Element {
       <section className="card p-4">
         <h2 className="font-medium">{t('library.tracked')}</h2>
         <p className="mt-1 text-muted">{metricLabel(metric?.id ?? 'hipFlexion', language)}</p>
-        {definition ? <p className="mt-1 text-sm text-muted">{definition.description}</p> : null}
+        <p className="mt-1 text-sm leading-relaxed text-muted">
+          {metricDescription(metric?.id ?? 'hipFlexion', language)}
+        </p>
         <div className="mt-3 flex items-center gap-4">
           <AngleGauge
             value={(band.min + band.max) / 2}
             band={band}
             min={gaugeMin}
             max={gaugeMax}
-            safety={safety}
-            className="h-28 w-28"
+            {...(safety ? { safety } : {})}
+            className="h-24 w-24 shrink-0"
           />
           <div>
             <p className="text-sm text-muted">{t('library.targetRange')}</p>

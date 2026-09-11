@@ -102,6 +102,67 @@ export const METRIC_LABELS: Record<MetricId, Localized> = {
   spineFlexion: { es: 'Flexión de la columna', en: 'Spine flexion' },
 };
 
+/**
+ * What each metric measures, in words a person reads. The engine's own metric
+ * documentation is English and describes the maths; this is the user-facing
+ * explanation and it lives in the dictionary like every other piece of copy.
+ */
+export const METRIC_DESCRIPTIONS: Record<MetricId, Localized> = {
+  kneeFlexion: {
+    es: 'El ángulo entre cadera, rodilla y tobillo. 180° es la rodilla estirada del todo.',
+    en: 'The angle between hip, knee and ankle. 180° is a fully straight knee.',
+  },
+  hipFlexion: {
+    es: 'El ángulo entre hombro, cadera y rodilla. 180° es la cadera estirada del todo.',
+    en: 'The angle between shoulder, hip and knee. 180° is a fully extended hip.',
+  },
+  shoulderFlexion: {
+    es: 'Cuánto sube el brazo por delante. 0° es el brazo pegado al cuerpo.',
+    en: 'How far the arm lifts in front. 0° is the arm by your side.',
+  },
+  shoulderAbduction: {
+    es: 'Cuánto sube el brazo por el lado. 0° es el brazo pegado al cuerpo.',
+    en: 'How far the arm lifts out to the side. 0° is the arm by your side.',
+  },
+  elbowFlexion: {
+    es: 'El ángulo entre hombro, codo y muñeca. 180° es el brazo estirado.',
+    en: 'The angle between shoulder, elbow and wrist. 180° is a straight arm.',
+  },
+  trunkInclination: {
+    es: 'La inclinación del tronco respecto a la vertical. 0° es erguido, 90° tumbado.',
+    en: 'How far the trunk leans from vertical. 0° is upright, 90° is horizontal.',
+  },
+  pelvisTilt: {
+    es: 'Cómo bascula la pelvis entre el tronco y los muslos. Es una medida aproximada.',
+    en: 'How the pelvis tilts between trunk and thighs. This one is an approximation.',
+  },
+  thoracicRotation: {
+    es: 'Cuánto gira la línea de los hombros respecto a la de las caderas.',
+    en: 'How far the shoulder line turns against the hip line.',
+  },
+  hipLevelDifference: {
+    es: 'Cuánto se inclina la línea de las caderas. 0° es con las dos a la misma altura.',
+    en: 'How far the hip line tilts. 0° is both hips level.',
+  },
+  kneeValgus: {
+    es: 'Cuánto se mete la rodilla hacia dentro respecto a la línea cadera-tobillo.',
+    en: 'How far the knee falls inwards from the hip-to-ankle line.',
+  },
+  trunkLineDeviation: {
+    es: 'Cuánto se sale la cadera de la línea entre hombros y pies. 0° es el cuerpo recto.',
+    en: 'How far the hips leave the line from shoulders to feet. 0° is a straight body.',
+  },
+  spineFlexion: {
+    es: 'Cuánto se curva la espalda, medido entre hombros, caderas y rodillas.',
+    en: 'How far the back curves, measured across shoulders, hips and knees.',
+  },
+};
+
+/** What a metric measures, in the reader's language. */
+export function metricDescription(id: MetricId, language: 'es' | 'en'): string {
+  return METRIC_DESCRIPTIONS[id]?.[language] ?? '';
+}
+
 /** Localised name of a metric. */
 export function metricLabel(id: MetricId, language: 'es' | 'en'): string {
   return METRIC_LABELS[id]?.[language] ?? id;

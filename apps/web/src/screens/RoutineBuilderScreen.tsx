@@ -98,6 +98,7 @@ export function RoutineBuilderScreen(): JSX.Element {
                 {exercise ? (
                   <ExerciseDemo
                     reference={exercise.reference}
+                    view={exercise.view.orientation}
                     className="h-16 w-16 shrink-0 text-ink"
                     still
                   />

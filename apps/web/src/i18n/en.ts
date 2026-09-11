@@ -7,6 +7,9 @@ export const en: Record<TranslationKey, string> = {
   'app.disclaimer':
     'Kinetrace is not a medical device and does not replace your physiotherapist. Always follow what they told you.',
 
+  'a11y.skeleton': 'Skeleton',
+  'a11y.angle': 'Angle',
+
   'nav.home': 'Home',
   'nav.library': 'Exercises',
   'nav.progress': 'Progress',
@@ -37,7 +40,9 @@ export const en: Record<TranslationKey, string> = {
   'common.optional': 'optional',
   'common.degrees': 'degrees',
 
+  'home.greeting': 'Today',
   'home.today': "Today's routine",
+  'home.starterRoutine': 'My back routine',
   'home.noRoutine': 'You have no routine yet',
   'home.createRoutine': 'Create a routine',
   'home.streak': 'Streak',
@@ -107,6 +112,8 @@ export const en: Record<TranslationKey, string> = {
   'routine.estimated': 'About {minutes} min',
   'routine.deleteConfirm': 'Delete this routine?',
 
+  'setup.beforeStarting': 'Before you start',
+  'setup.silhouette': 'the silhouette is the posture to match',
   'setup.title': 'Place the camera',
   'setup.ready': 'Ready',
   'setup.check.bodyVisible': 'Your whole body is visible',
