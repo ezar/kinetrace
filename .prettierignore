@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+dist
+coverage
+fixtures/landmarks
+apps/web/dev-dist
