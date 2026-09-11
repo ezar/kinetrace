@@ -1,0 +1,80 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Sistema" },
+    { "id": "page-2", "name": "Pantallas" },
+    { "id": "page-3", "name": "Sesión" }
+  ],
+  "artboards": [
+    { "file": "Tokens.dc.html", "page": "page-1", "x": 0, "y": 0, "w": 880, "h": 1100, "title": "Fundamentos" },
+    { "file": "Componentes.dc.html", "page": "page-1", "x": 960, "y": 0, "w": 1000, "h": 1180, "title": "Componentes" },
+    { "file": "Estados.dc.html", "page": "page-1", "x": 0, "y": 1300, "w": 1720, "h": 660, "title": "Estados" },
+
+    { "file": "Main.dc.html", "page": "page-2", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Inicio" },
+    { "file": "Perfiles.dc.html", "page": "page-2", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Perfiles" },
+    { "file": "Biblioteca.dc.html", "page": "page-2", "x": 940, "y": 0, "w": 390, "h": 844, "title": "Ejercicios" },
+    { "file": "Ejercicio.dc.html", "page": "page-2", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "Detalle del ejercicio" },
+    { "file": "Rutina.dc.html", "page": "page-2", "x": 1880, "y": 0, "w": 390, "h": 844, "title": "Editor de rutina" },
+    { "file": "Progreso.dc.html", "page": "page-2", "x": 0, "y": 964, "w": 390, "h": 844, "title": "Progreso" },
+    { "file": "Replay.dc.html", "page": "page-2", "x": 470, "y": 964, "w": 390, "h": 844, "title": "Repetición del esqueleto" },
+    { "file": "Importar.dc.html", "page": "page-2", "x": 940, "y": 964, "w": 390, "h": 844, "title": "Importar la hoja" },
+    { "file": "Ajustes.dc.html", "page": "page-2", "x": 1410, "y": 964, "w": 390, "h": 844, "title": "Ajustes" },
+
+    { "file": "Camara.dc.html", "page": "page-3", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Colocar la cámara" },
+    { "file": "SesionVertical.dc.html", "page": "page-3", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Sesión · vertical" },
+    { "file": "Descanso.dc.html", "page": "page-3", "x": 940, "y": 0, "w": 390, "h": 844, "title": "Descanso" },
+    { "file": "Resumen.dc.html", "page": "page-3", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "Resumen" },
+    { "file": "SesionHorizontal.dc.html", "page": "page-3", "x": 0, "y": 964, "w": 844, "h": 390, "title": "Sesión · horizontal" },
+    { "file": "SesionPortatil.dc.html", "page": "page-3", "x": 924, "y": 964, "w": 1280, "h": 800, "title": "Sesión · portátil 13\"" }
+  ],
+  "annotations": [
+    {
+      "id": "nota-esterilla",
+      "page": "page-1",
+      "x": 960,
+      "y": -150,
+      "w": 460,
+      "text": "El muñeco actual se lee como un andamio: en boca arriba y cuatro patas no se distingue la postura.\n\nLo que lo arregla es la esterilla. Una línea bajo el cuerpo da suelo y gravedad, y de golpe se entiende si alguien está tumbado o de pie. La articulación que se mide va en ámbar, con anillo."
+    },
+    {
+      "id": "nota-medidor",
+      "page": "page-1",
+      "x": 0,
+      "y": -150,
+      "w": 420,
+      "text": "El medidor es el dato que hay que leer a tres metros: banda verde gruesa, aguja pesada y relleno de la esfera cuando estás dentro. El número cambia de color con el estado, no sólo la aguja."
+    },
+    {
+      "id": "nota-inicio",
+      "page": "page-2",
+      "x": 0,
+      "y": -170,
+      "w": 430,
+      "text": "Inicio ahora tiene una sola cosa que hacer: la tarjeta de hoy, con los ejercicios en miniatura y un Empezar de 60 px.\n\nLa racha y la última sesión bajan a una fila discreta; antes pesaban lo mismo que la acción principal."
+    },
+    {
+      "id": "nota-filtros",
+      "page": "page-2",
+      "x": 940,
+      "y": -170,
+      "w": 400,
+      "text": "Los dos filtros llevaban ambos un chip «Todos» sin etiqueta visible, así que no se sabía cuál era cuál. Ahora cada fila lleva su rótulo."
+    },
+    {
+      "id": "nota-lejano",
+      "page": "page-3",
+      "x": 470,
+      "y": -190,
+      "w": 460,
+      "text": "En modo lejano los colores de marca no llegan a AAA sobre negro: el verde #2c7a58 se queda en 3,5:1.\n\nPor eso el modo lejano usa variantes aclaradas — verde #58cf9a, ámbar #ff9552, rojo #ff6b5c — sobre #121110. Mismos papeles, contraste suficiente para leerlos desde la esterilla."
+    },
+    {
+      "id": "nota-gestos",
+      "page": "page-3",
+      "x": 0,
+      "y": -190,
+      "w": 400,
+      "text": "Nadie está cerca del móvil: el asistente arranca la sesión solo cuando los puntos llevan dos segundos estables, y la barra inferior recuerda los dos gestos."
+    }
+  ],
+  "launch": { "view": "canvas", "page": "page-2" }
+}

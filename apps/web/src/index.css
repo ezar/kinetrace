@@ -1,6 +1,37 @@
 @import 'tailwindcss';
 
 /*
+ * Figtree, self-hosted.
+ *
+ * The app promises no network traffic beyond itself and the models, and it has
+ * to work offline, so the font ships with the app rather than loading from a
+ * font host. Two subsets, variable weight, about 30 kB in total.
+ * Figtree is licensed under the SIL Open Font License 1.1.
+ */
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('/fonts/figtree-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('/fonts/figtree-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/*
  * Design tokens.
  *
  * A calm, light base with one warm accent for progress and praise, a clear but
@@ -23,7 +54,27 @@
   --color-safety: #b3352a;
   --color-safety-soft: #fbe6e3;
 
-  --font-sans: 'Inter var', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /*
+   * Far mode has its own palette rather than reusing the one above: on
+   * near-black the brand green only reaches 3.5:1, short of the AAA contrast
+   * the session screen is held to. Same roles, lightened until they carry
+   * across a room.
+   */
+  --color-far-bg: #121110;
+  --color-far-surface: #1b1a18;
+  --color-far-line: #2a2825;
+  --color-far-track: #3a3733;
+  --color-far-ink: #f7f5f2;
+  --color-far-muted: #a5a09a;
+  --color-far-dim: #6f6a64;
+  --color-far-accent: #ff9552;
+  --color-far-band: #58cf9a;
+  --color-far-band-soft: #17402f;
+  --color-far-correct: #7fb4e8;
+  --color-far-safety: #ff6b5c;
+  --color-far-safety-bg: #2a0f0c;
+
+  --font-sans: Figtree, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Far mode: readable from three metres away. */
   --text-far: clamp(5rem, 26vmin, 16rem);
@@ -106,6 +157,6 @@
 
   /* Far mode: high contrast, nothing small, nothing decorative. */
   .far-mode {
-    @apply bg-ink text-canvas;
+    @apply bg-far-bg text-far-ink;
   }
 }

@@ -16,3 +16,6 @@ playwright-report/
 test-results/
 apps/web/public/mediapipe/
 apps/web/dist-types/
+
+# The seeded design canvas is generated from design/canvas/*.dc.html
+design/canvas/*-diseno.html

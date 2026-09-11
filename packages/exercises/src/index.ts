@@ -11,7 +11,9 @@ export * from './matcher.js';
 export * from './runner.js';
 export {
   METRIC_LABELS,
+  METRIC_DESCRIPTIONS,
   metricLabel,
+  metricDescription,
   ENGINE_CUES,
   RULE_CUES,
   SETUP_TIPS,

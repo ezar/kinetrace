@@ -3,3 +3,7 @@ dist
 coverage
 fixtures/landmarks
 apps/web/dev-dist
+
+# Design artboards are round-tripped through the canvas editor, which owns
+# their formatting; reformatting them here would churn on every edit.
+design/canvas

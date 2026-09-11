@@ -21,9 +21,18 @@ export interface ExerciseDemoProps {
   reference: ReferenceMotion;
   /** Landmark indices of the tracked joint. */
   highlight?: readonly number[];
+  /** The view the exercise is performed in, which decides the plane drawn. */
+  view?: 'side' | 'front';
   className?: string;
   /** Freeze on the most expressive frame instead of animating. */
   still?: boolean;
+  /** Far mode uses heavier strokes. */
+  far?: boolean;
+  /** Draw the ground line under the figure. */
+  ground?: boolean;
+  stroke?: string;
+  highlightStroke?: string;
+  dashed?: boolean;
 }
 
 const VISIBILITY = 1;
@@ -40,8 +49,14 @@ function landmarksAt(reference: ReferenceMotion, phase: number): Landmark[] {
 export function ExerciseDemo({
   reference,
   highlight,
+  view = 'side',
   className,
   still = false,
+  far = false,
+  ground = true,
+  stroke,
+  highlightStroke,
+  dashed = false,
 }: ExerciseDemoProps): JSX.Element {
   const prefersReducedMotion =
     typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -71,9 +86,15 @@ export function ExerciseDemo({
     <StickFigure
       landmarks={landmarks}
       space="world"
+      plane={view === 'side' ? 'sagittal' : 'frontal'}
+      cameraSide={reference.cameraSide ?? 'left'}
       highlight={highlight}
       className={className}
-      strokeWidth={2.4}
+      far={far}
+      ground={ground}
+      dashed={dashed}
+      {...(stroke ? { stroke } : {})}
+      {...(highlightStroke ? { highlightStroke } : {})}
     />
   );
 }

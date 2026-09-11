@@ -31,7 +31,7 @@ export function LibraryScreen(): JSX.Element {
     <div>
       <ScreenHeader title={t('library.title')} subtitle={t('library.defaultRangesNotice')} />
 
-      <div className="mb-4 space-y-2">
+      <div className="mb-5 space-y-2.5">
         <Filter
           label={t('library.filterArea')}
           options={AREAS.map((value) => ({ value, label: t(`area.${value}`) }))}
@@ -57,14 +57,17 @@ export function LibraryScreen(): JSX.Element {
               <Link to={`/library/${exercise.id}`} className="block p-3">
                 <ExerciseDemo
                   reference={exercise.reference}
+                  view={exercise.view.orientation}
                   highlight={metricLandmarkIndices(
                     exercise.metrics[exercise.primaryMetric]?.id ?? 'hipFlexion',
                     exercise.metrics[exercise.primaryMetric]?.side ?? 'auto',
                   )}
-                  className="mx-auto h-28 w-full text-ink"
+                  className="mx-auto h-24 w-full rounded-xl bg-canvas text-ink"
                 />
-                <p className="mt-2 font-medium leading-tight">{exercise.names[language]}</p>
-                <p className="text-sm text-muted">
+                <p className="mt-2.5 text-[15px] font-semibold leading-tight">
+                  {exercise.names[language]}
+                </p>
+                <p className="mt-0.5 text-xs text-muted">
                   {t(`area.${exercise.area}`)} · {t(`view.${exercise.view.orientation}`)}
                 </p>
               </Link>
@@ -86,15 +89,17 @@ interface FilterProps {
 
 function Filter({ label, options, value, onChange, allLabel }: FilterProps): JSX.Element {
   return (
-    <div>
-      <span className="sr-only">{label}</span>
+    <div className="flex items-start gap-2">
+      <span className="w-14 shrink-0 pt-1.5 text-xs text-muted">{label}</span>
       <div className="flex flex-wrap gap-2">
         {[{ value: 'all', label: allLabel }, ...options].map((option) => (
           <button
             key={option.value}
             onClick={() => onChange(option.value)}
             aria-pressed={value === option.value}
-            className={`chip ${value === option.value ? 'border-ink bg-ink text-canvas' : ''}`}
+            className={`chip min-h-9 ${
+              value === option.value ? 'border-ink bg-ink font-semibold text-canvas' : ''
+            }`}
           >
             {option.label}
           </button>

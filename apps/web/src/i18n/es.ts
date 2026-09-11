@@ -5,6 +5,9 @@ export const es = {
   'app.disclaimer':
     'Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta. Sigue siempre lo que te haya indicado.',
 
+  'a11y.skeleton': 'Esqueleto',
+  'a11y.angle': 'Ángulo',
+
   'nav.home': 'Inicio',
   'nav.library': 'Ejercicios',
   'nav.progress': 'Progreso',
@@ -35,7 +38,9 @@ export const es = {
   'common.optional': 'opcional',
   'common.degrees': 'grados',
 
+  'home.greeting': 'Hoy',
   'home.today': 'Rutina de hoy',
+  'home.starterRoutine': 'Mi rutina de espalda',
   'home.noRoutine': 'Todavía no tienes ninguna rutina',
   'home.createRoutine': 'Crear una rutina',
   'home.streak': 'Racha',
@@ -105,6 +110,8 @@ export const es = {
   'routine.estimated': 'Unos {minutes} min',
   'routine.deleteConfirm': '¿Borrar esta rutina?',
 
+  'setup.beforeStarting': 'Antes de empezar',
+  'setup.silhouette': 'la silueta marca la postura esperada',
   'setup.title': 'Coloca la cámara',
   'setup.ready': 'Listo',
   'setup.check.bodyVisible': 'Se te ve entero',
