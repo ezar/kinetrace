@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # The version comes from "packageManager" in package.json; setting it here
+      # too makes the action fail rather than pick one.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v6
         with:
