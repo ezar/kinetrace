@@ -1,0 +1,48 @@
+{
+  "name": "kinetrace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Do your physio exercises at home, with a coach that can see you.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "pnpm --filter @kinetrace/web dev",
+    "build": "pnpm --filter @kinetrace/web build",
+    "preview": "pnpm --filter @kinetrace/web preview",
+    "typecheck": "tsc -b tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "fixtures:build": "tsx scripts/fixtures/build.ts",
+    "replay": "tsx scripts/replay/index.ts",
+    "models:fetch": "node scripts/models/fetch.mjs",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "test:e2e": "playwright test",
+    "docs:demo": "tsx scripts/docs/demo.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@kinetrace/engine": "workspace:*",
+    "@kinetrace/exercises": "workspace:*",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.2",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "side-plank-full",
+  "variant": "good",
+  "description": "Full side plank performed as the reference motion describes it.",
+  "view": "front",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1007,
+  "holdSeconds": 29,
+  "holdAtPhase": 0,
+  "expect": {
+    "heldMs": {
+      "atLeast": 25000
+    },
+    "silent": [
+      "hipsSagging",
+      "hipsPiked"
+    ]
+  }
+}

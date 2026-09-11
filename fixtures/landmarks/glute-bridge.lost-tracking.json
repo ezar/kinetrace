@@ -1,0 +1,19 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "glute-bridge",
+  "variant": "lost-tracking",
+  "description": "Good bridges with the body out of the frame between seconds 8 and 12.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 23,
+  "dropout": {
+    "fromSeconds": 8,
+    "toSeconds": 12,
+    "visibilityScale": 0.25
+  },
+  "expect": {
+    "trackingLost": true
+  }
+}

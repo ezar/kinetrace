@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kinetrace">
+  <rect width="64" height="64" rx="14" fill="#1b1a18" />
+  <g stroke="#f7f5f2" stroke-width="3.4" stroke-linecap="round" fill="none">
+    <circle cx="32" cy="16" r="5" />
+    <path d="M32 21v15" />
+    <path d="M32 24l-9 6M32 24l9 6" />
+    <path d="M32 36l-8 12M32 36l8 12" />
+  </g>
+  <circle cx="40" cy="30" r="4" fill="#d9702f" />
+</svg>

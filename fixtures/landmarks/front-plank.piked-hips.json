@@ -1,0 +1,28 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "front-plank",
+  "variant": "piked-hips",
+  "description": "Plank held with the hips lifted above the line.",
+  "view": "side",
+  "fps": 30,
+  "holdSeconds": 20,
+  "holdAtPhase": 0,
+  "noiseMetres": 0.004,
+  "seed": 25,
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "hipAngle": 155
+      }
+    }
+  ],
+  "expect": {
+    "cues": [
+      "hipsPiked"
+    ],
+    "silent": [
+      "hipsSagging"
+    ]
+  }
+}

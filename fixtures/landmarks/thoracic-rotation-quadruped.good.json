@@ -1,0 +1,18 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "thoracic-rotation-quadruped",
+  "variant": "good",
+  "description": "Quadruped thoracic rotation performed as the reference motion describes it.",
+  "view": "front",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1014,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "pace"
+    ]
+  }
+}

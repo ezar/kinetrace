@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/engine" },
+    { "path": "./packages/exercises" },
+    { "path": "./packages/import" },
+    { "path": "./apps/web" }
+  ]
+}
