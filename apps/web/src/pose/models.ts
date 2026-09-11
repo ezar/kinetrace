@@ -10,7 +10,7 @@ export type PoseModelVariant = 'lite' | 'full' | 'heavy';
 
 export interface PoseModelInfo {
   variant: PoseModelVariant;
-  /** Path relative to the site root. */
+  /** Path relative to the base the app is served from. */
   path: string;
   /** Approximate download size in megabytes. */
   sizeMb: number;
@@ -21,19 +21,19 @@ export interface PoseModelInfo {
 export const POSE_MODELS: Record<PoseModelVariant, PoseModelInfo> = {
   lite: {
     variant: 'lite',
-    path: '/models/pose_landmarker_lite.task',
+    path: 'models/pose_landmarker_lite.task',
     sizeMb: 5.5,
     delegate: 'GPU',
   },
   full: {
     variant: 'full',
-    path: '/models/pose_landmarker_full.task',
+    path: 'models/pose_landmarker_full.task',
     sizeMb: 9.0,
     delegate: 'GPU',
   },
   heavy: {
     variant: 'heavy',
-    path: '/models/pose_landmarker_heavy.task',
+    path: 'models/pose_landmarker_heavy.task',
     sizeMb: 29.2,
     delegate: 'GPU',
   },

@@ -104,6 +104,28 @@ pnpm replay glute-bridge --metrics
 
 The full guide is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Deploying
+
+The app is static, so any host works. Two layouts are supported and both are
+tested in CI:
+
+- **Served from the root** (Vercel, a custom domain). `vercel.json` is set up
+  for it: `pnpm build`, output in `apps/web/dist`.
+- **Served from a subdirectory** (GitHub Pages project site, at
+  `https://<user>.github.io/kinetrace/`). `.github/workflows/pages.yml` builds
+  and deploys it on every push to `main`; the base path comes from the Pages
+  configuration, so forks and custom domains work without editing anything.
+  Enable it once under **Settings → Pages → Source: GitHub Actions**.
+
+Runtime paths — the pose models and the MediaPipe runtime — go through
+`assetUrl()` rather than being absolute, and the build writes a `404.html`
+copy of the app so deep links work on hosts without rewrites.
+
+The built site is about 97 MB, most of it the pose models and the MediaPipe
+runtime. That is inside the GitHub Pages size limit, but its bandwidth
+allowance is a soft 100 GB per month, so a widely shared install is happier on
+a host with more headroom.
+
 ## Privacy
 
 - Camera frames are processed in memory and dropped. Nothing is recorded.

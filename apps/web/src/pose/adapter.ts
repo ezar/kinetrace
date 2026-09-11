@@ -11,6 +11,7 @@ import { FilesetResolver, PoseLandmarker } from '@mediapipe/tasks-vision';
 import type { Landmark, PoseFrame, Vec3 } from '@kinetrace/engine';
 import { LANDMARK_COUNT } from '@kinetrace/engine';
 import { POSE_MODELS, type PoseModelVariant } from './models.js';
+import { assetUrl } from '../assets.js';
 
 export interface PoseAdapterOptions {
   variant: PoseModelVariant;
@@ -18,7 +19,7 @@ export interface PoseAdapterOptions {
   wasmRoot?: string;
 }
 
-const DEFAULT_WASM_ROOT = '/mediapipe/wasm';
+const DEFAULT_WASM_ROOT = 'mediapipe/wasm';
 
 /**
  * MediaPipe reports image landmarks with Y growing downwards and world
@@ -58,11 +59,13 @@ export class PoseAdapter {
 
   static async create(options: PoseAdapterOptions): Promise<PoseAdapter> {
     const model = POSE_MODELS[options.variant];
-    const fileset = await FilesetResolver.forVisionTasks(options.wasmRoot ?? DEFAULT_WASM_ROOT);
+    const fileset = await FilesetResolver.forVisionTasks(
+      assetUrl(options.wasmRoot ?? DEFAULT_WASM_ROOT),
+    );
     for (const delegate of ['GPU', 'CPU'] as const) {
       try {
         const landmarker = await PoseLandmarker.createFromOptions(fileset, {
-          baseOptions: { modelAssetPath: model.path, delegate },
+          baseOptions: { modelAssetPath: assetUrl(model.path), delegate },
           runningMode: 'VIDEO',
           numPoses: 1,
           minPoseDetectionConfidence: 0.5,
