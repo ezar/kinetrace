@@ -41,3 +41,14 @@ jobs:
 
       - name: End to end tests
         run: pnpm test:e2e
+
+      # GitHub Pages serves the app from a subdirectory, which is where absolute
+      # asset paths break. Building and testing that layout here catches it on
+      # the pull request instead of on the deployment.
+      - name: Build and test the GitHub Pages layout
+        env:
+          BASE_PATH: /kinetrace/
+        run: |
+          pnpm --filter @kinetrace/web exec vite build
+          cmp apps/web/dist/index.html apps/web/dist/404.html
+          pnpm test:e2e

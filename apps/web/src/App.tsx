@@ -25,6 +25,7 @@ import { SettingsScreen } from './screens/SettingsScreen.js';
 import { PrivacyScreen } from './screens/PrivacyScreen.js';
 import { AboutScreen } from './screens/AboutScreen.js';
 import { useSettingsStore } from './store/useSettingsStore.js';
+import { BASE_PATH } from './assets.js';
 
 export function App(): JSX.Element {
   const load = useSettingsStore((state) => state.load);
@@ -37,7 +38,7 @@ export function App(): JSX.Element {
   if (!loaded) return <div className="p-8 text-muted">…</div>;
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASE_PATH}>
       {/* The camera, the charts and the import models are only loaded when the
           user actually opens those screens, which keeps the first load small. */}
       <Suspense fallback={<div className="p-8 text-muted">…</div>}>

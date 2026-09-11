@@ -10,7 +10,7 @@ test.describe('first run', () => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
-    await page.goto('/');
+    await page.goto('./');
     await expect(
       page.getByRole('heading', { name: /crea un perfil|create a profile/i }),
     ).toBeVisible();
@@ -30,7 +30,7 @@ test.describe('first run', () => {
   });
 
   test('shows the exercise library with animated demos', async ({ page }) => {
-    await page.goto('/library');
+    await page.goto('library');
     await expect(page.getByRole('heading', { name: /ejercicios|exercises/i })).toBeVisible();
     await expect(page.getByText(/rangos por defecto|default ranges/i)).toBeVisible();
     await expect(page.locator('svg[aria-label="Skeleton"]').first()).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('first run', () => {
   });
 
   test('states the privacy promise', async ({ page }) => {
-    await page.goto('/settings/privacy');
+    await page.goto('settings/privacy');
     await expect(page.getByText(/sin vídeo|no video/i)).toBeVisible();
     await expect(page.getByText(/no es un producto sanitario|not a medical device/i)).toBeVisible();
   });
@@ -59,6 +59,15 @@ test.describe('first run', () => {
  * test independent of whether the machine running it owns a camera.
  */
 test('the setup assistant blocks the session when it cannot see a body', async ({ page }) => {
+  // The pose model is fetched from a path built against the app's base, which
+  // is what breaks first when the app moves into a subdirectory.
+  const modelResponses: Array<{ url: string; status: number }> = [];
+  page.on('response', (response) => {
+    if (response.url().endsWith('.task')) {
+      modelResponses.push({ url: response.url(), status: response.status() });
+    }
+  });
+
   await page.addInitScript(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 640;
@@ -78,7 +87,7 @@ test('the setup assistant blocks the session when it cannot see a body', async (
     });
   });
 
-  await page.goto('/profiles');
+  await page.goto('profiles');
   await page.getByLabel(/nombre|name/i).fill('Ana');
   await page.getByRole('button', { name: /guardar|save/i }).click();
   await page.getByRole('link', { name: /inicio|home/i }).click();
@@ -99,4 +108,10 @@ test('the setup assistant blocks the session when it cannot see a body', async (
   await page.waitForTimeout(4000);
   await expect(page.getByText(/quieto dos segundos|hold still/i)).toBeVisible();
   await expect(page.getByText(/de 12|of 12/)).toHaveCount(0);
+
+  // The model was actually served: a 404 here would mean the base path is wrong.
+  expect(modelResponses.length).toBeGreaterThan(0);
+  for (const response of modelResponses) {
+    expect(response.status, `${response.url} was not served`).toBe(200);
+  }
 });
