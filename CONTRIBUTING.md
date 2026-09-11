@@ -1,0 +1,184 @@
+# Contributing to Kinetrace
+
+Thank you for considering it. The most useful contribution is usually a new
+exercise, and that should never require touching the engine.
+
+## Ground rules
+
+- Code, comments, identifiers, commits and docs in **English**. User-facing copy and
+  cues live only in dictionaries (Spanish first, English second).
+- TypeScript strict everywhere, workers included. No `any`.
+- Units in JSDoc on every numeric parameter and DSL field: degrees, seconds, metres,
+  frames per second.
+- Every algorithm gets a unit test on landmark fixtures before it gets a UI.
+- Conventional commits.
+- Nothing that encourages pushing through pain, and no claim Kinetrace can diagnose
+  anything. The pain check-in is the user's own note and is never an input to logic.
+
+## Getting set up
+
+```bash
+pnpm install
+pnpm models:fetch     # pose models into apps/web/public/models
+pnpm verify           # format, lint, typecheck, tests
+pnpm dev
+```
+
+## Adding an exercise
+
+An exercise is one file of typed data in
+`packages/exercises/src/library/<id>.exercise.ts`, validated at build time and
+covered by a fixture. Copy the closest existing file and work through the fields.
+
+### 1. Identity and filters
+
+```ts
+id: 'glute-bridge',                     // kebab-case, stable, used as a database key
+names: { es: 'Puente de glúteos', en: 'Glute bridge' },
+synonyms: { es: ['puente', 'puente de cadera'], en: ['bridge', 'hip raise'] },
+area: 'lowerBack',                      // library filter
+position: 'supine',                     // library filter and camera guidance
+equipment: 'none' | 'mat',
+```
+
+Synonyms matter: they are what the sheet import matches a physiotherapist's wording
+against, in both languages.
+
+### 2. The view
+
+```ts
+view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
+cameraTipKey: 'tip.floorSide',
+```
+
+The setup assistant blocks the session until the camera actually shows what the
+metrics need, so declare the view the exercise is really measured from.
+
+### 3. Metrics
+
+Metric slots are names your phases and rules refer to:
+
+```ts
+metrics: {
+  hip: { id: 'hipFlexion', side: 'auto' },
+  line: { id: 'trunkLineDeviation', side: 'auto', options: { distal: 'knee' } },
+},
+primaryMetric: 'hip',
+```
+
+`side` is `left`, `right`, `auto` (the side the camera sees better, with hysteresis)
+or `mean`. Add `absolute: true` for signed metrics whose sign only says which way.
+
+Every metric is an **interior joint angle in degrees**: 180 degrees means the
+segments are in line — a straight knee, an extended hip — and the angle decreases
+with flexion. Run `pnpm replay <fixture> --metrics` to see the range a movement
+actually produces before you pick thresholds.
+
+### 4. Phases and targets
+
+Phases form a cycle. The machine only advances to the next phase, and only once its
+condition has held for `minDwellMs`, which is what keeps jitter from counting.
+
+```ts
+phases: [
+  { id: 'rest', when: { below: 140 }, minDwellMs: 200 },
+  { id: 'top', when: { above: 148 }, minDwellMs: 500 },
+],
+targets: {
+  direction: 'increase',              // which way a good repetition moves the metric
+  band: { min: 165, max: 185 },       // the physio's target
+  safety: { min: 80, max: 200 },      // outside this, the engine says stop
+},
+```
+
+Put the phase threshold clearly **below** the target band (or above it, for
+`decrease`). A repetition that completes the cycle without reaching the band is
+reported as a partial with the value it reached; one that never crosses the phase
+threshold is not seen at all.
+
+### 5. Rules
+
+A rule is a condition over metrics that must hold for `sustainMs` before it proposes
+a cue, and that cannot fire again for `cooldownMs`:
+
+```ts
+rules: [
+  {
+    id: 'hipsSagging',
+    priority: 'form',                 // 'safety' | 'form' | 'encouragement'
+    when: { metric: 'line', above: 12 },
+    sustainMs: 1000,
+    cooldownMs: 4000,
+    cueKey: 'cue.liftHips',
+  },
+],
+```
+
+Conditions can read `value`, `absValue`, `velocity`, `absVelocity`, `stability` and
+`confidence`, and combine with `all`, `any` and `not`.
+
+Cue keys must exist in `packages/exercises/src/dictionary.ts`, in both languages.
+Cue writing rules: under six words, imperative, and always what to do rather than
+what is wrong. "Lift your hips", never "your hips are low".
+
+### 6. The reference motion
+
+A handful of keyframes of joint angles. The library animates it, the fixture builder
+turns it into landmarks, and the tests run the engine over it:
+
+```ts
+reference: {
+  posture: 'supine',
+  cameraSide: 'left',
+  cycleSeconds: 4,
+  base: { kneeAngle: 90 },
+  keyframes: [
+    { t: 0, pose: { hipAngle: 128, trunkAngle: 0 } },
+    { t: 0.45, pose: { hipAngle: 172, trunkAngle: -20 } },
+    { t: 1, pose: { hipAngle: 128, trunkAngle: 0 } },
+  ],
+},
+```
+
+Angles follow the same convention as the metrics. `trunkAngle` leans the trunk in
+the sagittal plane, `trunkLateral` bends it sideways, `trunkRotation` and
+`pelvisRotation` turn the shoulder and hip lines, `hipAbduction` and `kneeSplay`
+move limbs out of the sagittal plane.
+
+### 7. A fixture, and the numbers behind it
+
+Add a good variant and at least one variant that should trip each rule, in
+`scripts/fixtures/variants.ts`. A good variant is generated for every exercise
+automatically and must count every repetition with **no** corrective cue.
+
+```bash
+pnpm fixtures:build
+pnpm replay glute-bridge --metrics      # ranges, velocities, cues, repetitions
+pnpm test                               # the expectations in the fixture are asserted
+```
+
+Fixtures are stored as the recipe that rebuilds them, not as megabytes of landmarks,
+so they stay reviewable. Recorded fixtures from a real camera are also supported and
+are more valuable; see `docs/decisions/0001-synthetic-fixtures.md`.
+
+## Adding a metric
+
+If an exercise cannot be expressed in the DSL, the DSL is missing a primitive. Add it
+to `packages/engine/src/metrics/definitions.ts` with:
+
+- the landmarks it needs, so the setup assistant can check them,
+- its preferred view,
+- a doc comment saying what the sign and the units mean,
+- a unit test in `packages/engine/src/__tests__/metrics.test.ts` that measures a pose
+  built from the body model and asserts the value.
+
+Then add the exercise.
+
+## Pull requests
+
+- `pnpm verify` green, and `pnpm test:e2e` if you touched the app.
+- One milestone or one exercise per pull request.
+- If you deviate from `docs/` or from the specification, add a short decision record
+  in `docs/decisions/`.
+- Default ranges must be marked as defaults everywhere they appear. If you are not a
+  physiotherapist, say in the pull request where your numbers came from.
