@@ -1,0 +1,17 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "glute-bridge",
+  "variant": "too-fast",
+  "description": "Bridges thrown up and down at roughly three times the intended tempo.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 8,
+  "cycleSeconds": 1.2,
+  "noiseMetres": 0.004,
+  "seed": 22,
+  "expect": {
+    "cues": [
+      "pace"
+    ]
+  }
+}

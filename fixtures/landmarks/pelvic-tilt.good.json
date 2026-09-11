@@ -1,0 +1,18 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "pelvic-tilt",
+  "variant": "good",
+  "description": "Pelvic tilt performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1000,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "pace"
+    ]
+  }
+}

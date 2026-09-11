@@ -1,0 +1,18 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "knee-to-chest",
+  "variant": "good",
+  "description": "Knee to chest performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1009,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "pace"
+    ]
+  }
+}

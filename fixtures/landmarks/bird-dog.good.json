@@ -1,0 +1,19 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "bird-dog",
+  "variant": "good",
+  "description": "Bird dog performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1003,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "pelvisRolling",
+      "pace"
+    ]
+  }
+}

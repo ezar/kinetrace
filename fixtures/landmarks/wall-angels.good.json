@@ -1,0 +1,19 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "wall-angels",
+  "variant": "good",
+  "description": "Wall angels performed as the reference motion describes it.",
+  "view": "front",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1013,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "elbowsForward",
+      "pace"
+    ]
+  }
+}

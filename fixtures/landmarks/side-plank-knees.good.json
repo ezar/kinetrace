@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "side-plank-knees",
+  "variant": "good",
+  "description": "Side plank on knees performed as the reference motion describes it.",
+  "view": "front",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1006,
+  "holdSeconds": 24,
+  "holdAtPhase": 0,
+  "expect": {
+    "heldMs": {
+      "atLeast": 20000
+    },
+    "silent": [
+      "hipsSagging",
+      "elbowPosition"
+    ]
+  }
+}

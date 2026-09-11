@@ -1,0 +1,28 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "front-plank",
+  "variant": "sagging-hips",
+  "description": "Plank held with the hips well below the shoulder to ankle line.",
+  "view": "side",
+  "fps": 30,
+  "holdSeconds": 20,
+  "holdAtPhase": 0,
+  "noiseMetres": 0.004,
+  "seed": 24,
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "hipAngle": 205
+      }
+    }
+  ],
+  "expect": {
+    "cues": [
+      "hipsSagging"
+    ],
+    "silent": [
+      "hipsPiked"
+    ]
+  }
+}

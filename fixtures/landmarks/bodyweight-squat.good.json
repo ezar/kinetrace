@@ -1,0 +1,19 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "bodyweight-squat",
+  "variant": "good",
+  "description": "Bodyweight squat performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1015,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "kneeValgus",
+      "trunkForward"
+    ]
+  }
+}

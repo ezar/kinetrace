@@ -1,0 +1,19 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "hip-hinge",
+  "variant": "good",
+  "description": "Hip hinge performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1012,
+  "cycles": 10,
+  "expect": {
+    "reps": 10,
+    "partials": 0,
+    "silent": [
+      "kneesBending",
+      "pace"
+    ]
+  }
+}
