@@ -23,6 +23,18 @@ mid-range Android, 30 fps with `full` on recent phones and laptops, cue latency 
 3. Record the model variant the app chose (Settings shows it) and whether the GPU
    delegate was used; the adapter falls back to CPU silently when it has to.
 
+## The open question about voice
+
+Voice commands are off by default and need WebGPU, so most of the open questions are
+about whether they are usable at all on a phone across a room. Measure, per device:
+how long Whisper takes to answer a two second window, whether the answer arrives
+before the user has given up, and whether a command is heard over the user's own
+breathing while they are lying on the floor. Record the model variant from Settings.
+
+If `tiny` misses commands in a normally quiet room, `base` is the fallback; if `base`
+is too slow to answer, voice is not usable on that device and the device row should
+say so. See `docs/decisions/0004-voice-commands.md`.
+
 ## The blocking question from the specification
 
 Floor-level cameras and lying exercises reduce landmark confidence because of

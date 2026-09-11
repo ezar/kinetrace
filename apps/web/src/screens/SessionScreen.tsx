@@ -16,16 +16,19 @@ import {
   type SetupState,
   type TargetBand,
 } from '@kinetrace/engine';
-import { metricLabel } from '@kinetrace/exercises';
+import type { VoiceCommand } from '@kinetrace/engine';
+import { metricLabel, VOICE_EXAMPLES } from '@kinetrace/exercises';
 import { db } from '../db/schema.js';
 import { finishSession } from '../db/repositories.js';
 import { useSessionRunner } from '../session/useSessionRunner.js';
+import { useVoiceCommands } from '../speech/useVoiceCommands.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { StickFigure } from '../components/StickFigure.js';
 import { AngleGauge } from '../components/AngleGauge.js';
 import { CueBanner, type CueTone } from '../components/CueBanner.js';
 import { SilhouetteGuide } from '../components/SilhouetteGuide.js';
+import { VoiceIndicator } from '../components/VoiceIndicator.js';
 import { CameraIcon, CameraOffIcon, CheckIcon } from '../components/icons.js';
 import type { Routine } from '../db/schema.js';
 import type { SetupCheck } from '@kinetrace/engine';
@@ -34,6 +37,12 @@ import type { SetupCheck } from '@kinetrace/engine';
  * Shown while the pose model has not seen anybody yet. Without this the setup
  * screen would be blank exactly when the user most needs to know what to fix.
  */
+/**
+ * The commands worth listing in the help line. "Finish" is left out: it is a
+ * button on the screen already, and printing it invites saying it by accident.
+ */
+const VOICE_COMMAND_ORDER: VoiceCommand[] = ['pause', 'resume', 'next', 'repeat'];
+
 const NO_BODY_CHECKS: SetupCheck[] = [
   { id: 'bodyVisible', status: 'failed', tipKey: 'setup.tip.wholeBody' },
   { id: 'framing', status: 'pending', tipKey: null },
@@ -107,6 +116,60 @@ export function SessionScreen(): JSX.Element {
     }
   };
 
+  /**
+   * Spoken commands are not a toggle: "pausa" always pauses, "sigue" always
+   * resumes. Somebody who is not sure what state the session is in should be
+   * able to say the thing they want and get it.
+   */
+  const runVoiceCommand = (command: VoiceCommand): void => {
+    switch (command) {
+      case 'pause':
+        session.setPaused(true);
+        break;
+      case 'resume':
+        session.setPaused(false);
+        break;
+      case 'next':
+        if (session.stage !== 'paused') session.skipSet();
+        break;
+      case 'repeat':
+        session.repeatCue();
+        break;
+      case 'stop':
+        void endSession();
+        break;
+    }
+  };
+
+  // The microphone is only opened after the user has started the session, so
+  // the two permission prompts do not arrive at once and unasked.
+  const voice = useVoiceCommands({
+    enabled:
+      settings.voiceCommands &&
+      session.cameraStatus === 'ready' &&
+      session.stage !== 'finished' &&
+      session.stage !== 'error',
+    language,
+    variant: settings.voiceModel,
+    onCommand: runVoiceCommand,
+  });
+
+  /**
+   * One line at the bottom says how to drive the session. Voice takes it over
+   * when it is working, because the words are what somebody on the mat needs;
+   * when it cannot listen it says why, and otherwise the gestures do.
+   */
+  const helpText =
+    voice.status === 'listening'
+      ? t('voice.help', {
+          words: VOICE_COMMAND_ORDER.map(
+            (command) => `«${VOICE_EXAMPLES[command][language]}»`,
+          ).join(', '),
+        })
+      : voice.status === 'denied' || voice.status === 'unsupported' || voice.status === 'error'
+        ? t(`voice.${voice.status}`)
+        : t('session.gestureHelp');
+
   if (!routine) return <div className="p-8 text-muted">{t('common.loading')}</div>;
 
   return (
@@ -133,6 +196,13 @@ export function SessionScreen(): JSX.Element {
                 total: session.item?.totalSets ?? 1,
               })}
             </p>
+            <VoiceIndicator
+              status={voice.status}
+              progress={voice.progress}
+              level={voice.level}
+              lastCommand={voice.lastCommand}
+              lastCommandAt={voice.lastCommandAt}
+            />
           </div>
           <div className="flex items-center gap-3">
             <div className="flex gap-1 pt-2" aria-hidden="true">
@@ -194,7 +264,7 @@ export function SessionScreen(): JSX.Element {
               >
                 {showPreview ? t('session.previewOff') : t('session.togglePreview')}
               </button>
-              <span className="text-center">{t('session.gestureHelp')}</span>
+              <span className="text-center">{helpText}</span>
               <button
                 className="btn-ghost min-h-0 px-0 py-1 text-[13px] text-far-dim"
                 onClick={session.togglePause}

@@ -198,6 +198,14 @@ export const en: Record<TranslationKey, string> = {
   'settings.sound': 'Sounds',
   'settings.preview': 'Show the camera during the session',
   'settings.previewHelp': 'Turning it off saves battery. Tracking works exactly the same.',
+  'settings.voiceCommands': 'Voice commands',
+  'settings.voiceCommandsOn': 'Run the session by talking',
+  'settings.voiceCommandsHelp':
+    'Kinetrace listens from the mat and recognises a handful of words. It downloads a voice model of about {size} MB the first time and needs microphone permission. The audio is processed on the device and is never stored or sent anywhere.',
+  'settings.voiceModel': 'Voice model',
+  'settings.voiceModel.tiny': 'Light (fast)',
+  'settings.voiceModel.base': 'Normal (more accurate)',
+  'settings.voiceWords': 'You can say: {words}',
   'settings.poseModel': 'Pose model',
   'settings.poseModel.lite': 'Lite (fast)',
   'settings.poseModel.full': 'Full (recommended)',
@@ -214,6 +222,20 @@ export const en: Record<TranslationKey, string> = {
   'settings.privacy': 'Privacy',
   'settings.about': 'About',
 
+  'voice.title': 'Voice commands',
+  'voice.loading': 'Getting ready to listen… {percent}%',
+  'voice.listening': "I'm listening",
+  'voice.denied': 'No microphone. Allow it in your browser to talk to Kinetrace.',
+  'voice.unsupported': 'This browser cannot listen for commands.',
+  'voice.error': 'I could not listen. The session still works with gestures.',
+  'voice.help': 'Say {words}.',
+  'voice.heard': 'Heard "{word}"',
+  'voice.command.pause': 'pause',
+  'voice.command.resume': 'continue',
+  'voice.command.next': 'next',
+  'voice.command.repeat': 'repeat',
+  'voice.command.stop': 'finish',
+
   'privacy.title': 'Privacy',
   'privacy.body':
     'The camera is processed on your device, frame by frame, and dropped. Kinetrace stores no video and sends none anywhere. What it stores are angles, repetitions and skeletons, on this device. There are no accounts, no analytics, and the only network traffic is downloading the app itself and the models.',
@@ -221,6 +243,8 @@ export const en: Record<TranslationKey, string> = {
   'privacy.noVideo': 'No video',
   'privacy.noAnalytics': 'No analytics',
   'privacy.offline': 'Works offline',
+  'privacy.voice':
+    'Voice commands, if you turn them on, work the same way: the microphone is processed here, no audio is stored and nothing leaves the device. The only download is the model, once.',
 
   'about.title': 'About Kinetrace',
   'about.body':

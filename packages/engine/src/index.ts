@@ -45,6 +45,20 @@ export { HoldTimer } from './state/holdTimer.js';
 export type { HoldConfig, HoldEvent, HoldState } from './state/holdTimer.js';
 export { GestureDetector } from './gestures/detector.js';
 export type { GestureEvent, GestureOptions } from './gestures/detector.js';
+export {
+  matchVoiceCommand,
+  normalizeTranscript,
+  editDistance,
+  VoiceCommandMatcher,
+  VOICE_COMMANDS,
+} from './voice/grammar.js';
+export type {
+  VoiceCommand,
+  VoiceGrammar,
+  VoiceMatch,
+  VoiceMatchOptions,
+  VoiceMatcherOptions,
+} from './voice/grammar.js';
 export { ConfidenceGate } from './session/confidenceGate.js';
 export type { ConfidenceGateOptions, TrackingEvent } from './session/confidenceGate.js';
 export { ExerciseRunner, BUILT_IN_CUES } from './session/runner.js';

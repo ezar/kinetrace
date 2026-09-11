@@ -197,6 +197,14 @@ export const es = {
   'settings.sound': 'Sonidos',
   'settings.preview': 'Ver la cámara durante la sesión',
   'settings.previewHelp': 'Apagarla ahorra batería. El seguimiento sigue funcionando igual.',
+  'settings.voiceCommands': 'Comandos de voz',
+  'settings.voiceCommandsOn': 'Controlar la sesión hablando',
+  'settings.voiceCommandsHelp':
+    'Kinetrace escucha desde la esterilla y reconoce unas pocas palabras. Descarga un modelo de voz de unos {size} MB la primera vez y necesita permiso del micrófono. El audio se procesa en el dispositivo y no se guarda ni se envía a ningún sitio.',
+  'settings.voiceModel': 'Modelo de voz',
+  'settings.voiceModel.tiny': 'Ligero (rápido)',
+  'settings.voiceModel.base': 'Normal (más preciso)',
+  'settings.voiceWords': 'Puedes decir: {words}',
   'settings.poseModel': 'Modelo de postura',
   'settings.poseModel.lite': 'Ligero (rápido)',
   'settings.poseModel.full': 'Normal (recomendado)',
@@ -213,6 +221,20 @@ export const es = {
   'settings.privacy': 'Privacidad',
   'settings.about': 'Acerca de',
 
+  'voice.title': 'Comandos de voz',
+  'voice.loading': 'Preparando la escucha… {percent}%',
+  'voice.listening': 'Te escucho',
+  'voice.denied': 'Sin micrófono. Actívalo en el navegador para hablarle a Kinetrace.',
+  'voice.unsupported': 'Este navegador no puede escuchar comandos.',
+  'voice.error': 'No he podido escuchar. La sesión sigue con los gestos.',
+  'voice.help': 'Di {words}.',
+  'voice.heard': 'He oído «{word}»',
+  'voice.command.pause': 'pausa',
+  'voice.command.resume': 'seguir',
+  'voice.command.next': 'siguiente',
+  'voice.command.repeat': 'repetir',
+  'voice.command.stop': 'terminar',
+
   'privacy.title': 'Privacidad',
   'privacy.body':
     'La cámara se procesa en tu dispositivo, fotograma a fotograma, y se descarta. Kinetrace no guarda vídeo ni lo envía a ningún sitio. Lo que se guarda son ángulos, repeticiones y esqueletos, en este dispositivo. No hay cuentas, no hay analítica y la única conexión a internet es para descargar la propia aplicación y los modelos.',
@@ -220,6 +242,8 @@ export const es = {
   'privacy.noVideo': 'Sin vídeo',
   'privacy.noAnalytics': 'Sin analítica',
   'privacy.offline': 'Funciona sin conexión',
+  'privacy.voice':
+    'Los comandos de voz, si los enciendes, funcionan igual: el micrófono se procesa aquí, no se guarda audio y no sale nada del dispositivo. Lo único que se descarga es el modelo, una vez.',
 
   'about.title': 'Acerca de Kinetrace',
   'about.body':

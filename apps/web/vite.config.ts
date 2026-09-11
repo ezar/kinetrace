@@ -61,9 +61,12 @@ export default defineConfig({
         // The pose model is large and versioned by file name: cache it on first use.
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-        // The optional sheet import engines are several megabytes and are only
-        // loaded if the user imports a sheet, so they are never precached.
-        globIgnores: ['**/sheet-import-*.js', '**/*.map'],
+        // The optional sheet import and speech recognition engines are
+        // megabytes each and are only loaded if the user asks for the feature,
+        // so they are never precached. The ONNX runtime's WebAssembly is left
+        // out by the pattern above, which only matches code the app always
+        // needs.
+        globIgnores: ['**/sheet-import-*.js', '**/transformers*.js', '**/*.map'],
         runtimeCaching: [
           {
             urlPattern: /\/models\/.*\.task$/,

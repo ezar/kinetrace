@@ -30,8 +30,11 @@ account.** What is stored is skeletons, angles and counts — never pixels.
   reported as a partial rather than silently accepted.
 - **Corrects, gently.** One cue at a time, under six words, always saying what to do
   ("lift your hips", not "your hips are low"), with cooldowns and safety first.
-- **Works from three metres away.** Big numbers, spoken cues, and gestures: both
-  wrists above your head pauses, waving one hand skips.
+- **Works from three metres away.** Big numbers, spoken cues, gestures — both
+  wrists above your head pauses, waving one hand skips — and, if you turn them on,
+  voice commands: say "pausa", "sigue", "siguiente" or "repite" from the mat.
+  Whisper runs on the device through WebGPU; the audio never leaves it, and it is
+  not the Web Speech Recognition API, which in most browsers does not run locally.
 - **Remembers without watching.** Sessions store a 15 fps skeleton track you can
   replay and compare — around 2 kB per second, and no video anywhere.
 - **Reads your physio's sheet.** Photograph it and Kinetrace proposes a routine,
@@ -66,13 +69,13 @@ The engine never sees pixels: it consumes landmark frames and produces numbers,
 events and cue keys. That is why the same code runs in the browser, in a worker, and
 in Node for the replay tool and the tests.
 
-| Package                                    | What lives there                                                                                                                                 |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`packages/engine`](packages/engine)       | Filtering, metrics, repetition machine, hold timer, rules, cue scheduler, gestures, setup assistant, skeleton tracks. Framework-free TypeScript. |
-| [`packages/exercises`](packages/exercises) | The exercise DSL, its validator, the Spanish and English cue dictionary, and the starter library.                                                |
-| [`packages/import`](packages/import)       | The sheet import pipeline, with OCR and language models behind swappable interfaces.                                                             |
-| [`apps/web`](apps/web)                     | The PWA: profiles, library, routine builder, session, progress, settings.                                                                        |
-| [`scripts/replay`](scripts/replay)         | Run the engine over a fixture and print the trace, with no camera.                                                                               |
+| Package                                    | What lives there                                                                                                                                                            |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`packages/engine`](packages/engine)       | Filtering, metrics, repetition machine, hold timer, rules, cue scheduler, gestures, the voice grammar matcher, setup assistant, skeleton tracks. Framework-free TypeScript. |
+| [`packages/exercises`](packages/exercises) | The exercise DSL, its validator, the Spanish and English cue dictionary and voice vocabulary, and the starter library.                                                      |
+| [`packages/import`](packages/import)       | The sheet import pipeline, with OCR and language models behind swappable interfaces.                                                                                        |
+| [`apps/web`](apps/web)                     | The PWA: profiles, library, routine builder, session, progress, settings.                                                                                                   |
+| [`scripts/replay`](scripts/replay)         | Run the engine over a fixture and print the trace, with no camera.                                                                                                          |
 
 ## Add an exercise
 
