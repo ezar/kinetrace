@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+    body { margin: 0; font-family: Figtree, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+    a { color: #ff9552; } a:hover { color: #ffb182; }
+  </style>
+</helmet>
+<div style="width: 1280px; height: 800px; background: #121110; color: #f7f5f2; display: flex; flex-direction: column; box-sizing: border-box; padding: 34px 44px 30px; gap: 26px; overflow: hidden">
+
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <div style="display: flex; align-items: baseline; gap: 18px">
+      <span style="font-size: 26px; font-weight: 600">Perro de muestra</span>
+      <span style="font-size: 18px; color: #a5a09a">Serie 2 de 3 · pierna izquierda</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 18px">
+      <span style="font-size: 15px; color: #6f6a64">La cámara del portátil se supone nivelada</span>
+      <div style="display: flex; gap: 5px"><span style="width: 42px; height: 6px; border-radius: 999px; background: #ff9552"></span><span style="width: 42px; height: 6px; border-radius: 999px; background: #ff9552"></span><span style="width: 42px; height: 6px; border-radius: 999px; background: #3a3733"></span></div>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 380px 1fr 380px; gap: 32px; align-items: center">
+
+    <div style="border-radius: 26px; background: #1b1a18; padding: 18px; height: 100%; display: flex; align-items: center; justify-content: center">
+      <svg viewBox="0 0 220 150" style="width: 100%">
+        <line x1="14" y1="140" x2="206" y2="140" stroke="#3a3733" stroke-width="8" stroke-linecap="round"/>
+        <g fill="none" stroke="#f7f5f2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M66 72 L66 134"/><path d="M66 72 L126 72"/><path d="M126 72 L126 104 L104 134"/><path d="M66 72 L36 52"/>
+        </g>
+        <g fill="none" stroke="#ff9552" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M126 72 L166 62 L200 54"/></g>
+        <circle cx="46" cy="64" r="13" fill="none" stroke="#f7f5f2" stroke-width="8"/>
+        <circle cx="126" cy="72" r="16" fill="none" stroke="#ff9552" stroke-width="3" opacity=".45"/>
+        <g fill="#f7f5f2"><circle cx="66" cy="72" r="5.5"/><circle cx="126" cy="104" r="5.5"/><circle cx="166" cy="62" r="5.5"/></g>
+        <circle cx="126" cy="72" r="7" fill="#ff9552"/>
+      </svg>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center">
+      <div style="display: flex; align-items: baseline; gap: 16px">
+        <span style="font-size: 260px; font-weight: 800; letter-spacing: -0.05em; line-height: .82">5</span>
+        <span style="font-size: 54px; font-weight: 600; color: #a5a09a">/ 8</span>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 16px">
+        <span style="width:18px;height:18px;border-radius:999px;background:#58cf9a"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#58cf9a"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#ff9552"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#58cf9a"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#58cf9a"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#3a3733"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#3a3733"></span>
+        <span style="width:18px;height:18px;border-radius:999px;background:#3a3733"></span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+      <svg viewBox="0 0 120 120" style="width: 260px">
+        <circle cx="60" cy="60" r="37" fill="#17402f"/>
+        <path d="M21.9 82 A 44 44 0 1 1 98.1 82" fill="none" stroke="#3a3733" stroke-width="16" stroke-linecap="round"/>
+        <path d="M93.7 31.7 A 44 44 0 0 1 104 60" fill="none" stroke="#58cf9a" stroke-width="16"/>
+        <circle cx="98.8" cy="41.5" r="10" fill="#58cf9a"/>
+        <text x="60" y="72" text-anchor="middle" font-size="30" font-weight="800" fill="#58cf9a">172°</text>
+      </svg>
+      <span style="font-size: 20px; color: #a5a09a">extensión de cadera · objetivo 160–185</span>
+    </div>
+  </div>
+
+  <div style="border-radius: 22px; background: #ff9552; color: #121110; padding: 26px 34px; display: flex; align-items: center; justify-content: space-between">
+    <span style="font-size: 40px; font-weight: 700">bien, 5</span>
+    <span style="font-size: 17px; opacity: .75">Dos manos arriba para pausar · saluda con una mano para saltar</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
