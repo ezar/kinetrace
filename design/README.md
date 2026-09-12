@@ -13,13 +13,15 @@ editor from these files and publishes it.
 
 ## What the canvas settles
 
-|             |                                                                              |
-| ----------- | ---------------------------------------------------------------------------- |
-| Fundamentos | colour, type scale, radii, minimum hit sizes                                 |
-| Componentes | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons       |
-| Pantallas   | the nine mobile screens at 390 px                                            |
-| Sesión      | camera setup, far mode in portrait, landscape and on a laptop, rest, summary |
-| Estados     | empty, loading, error, tracking lost, safety stop                            |
+|                 |                                                                              |
+| --------------- | ---------------------------------------------------------------------------- |
+| Fundamentos     | colour, type scale, radii, minimum hit sizes                                 |
+| Componentes     | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons       |
+| Pantallas       | the ten mobile screens at 390 px, help among them                            |
+| Sesión          | camera setup, far mode in portrait, landscape and on a laptop, rest, summary |
+| Primer arranque | the five first-run steps, in order                                           |
+| Profesional     | the prescription review, and the printed sheet at A4                         |
+| Estados         | empty, loading, error, tracking lost, safety stop                            |
 
 ## Decisions the canvas makes
 
@@ -31,3 +33,10 @@ editor from these files and publishes it.
   on `#121110`.
 - **Home has one job.** Today's routine card with a 60 px Start; streak and last
   session drop to a quiet row.
+- **Privacy comes before the camera prompt.** The browser asks for the camera in
+  the session, not in the first run — so the promise has to be made first, on its
+  own screen, while there is still nothing to permit.
+- **The physio's sheet is paper.** Four columns, because they fit a phone, with
+  each measurement in the same cell as the target it is judged against. The
+  artboard is A4 at 96 dpi, not a phone, because that is what comes out of the
+  printer.
