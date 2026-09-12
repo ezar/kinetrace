@@ -28,6 +28,7 @@ import {
   metricDescription,
   metricLabel,
   metricRange,
+  phaseLabel,
   reviewPrescription,
   type ExerciseDefinition,
   type Prescription,
@@ -70,8 +71,12 @@ function prescriptionOf(entry: RoutineExercise, exercise: ExerciseDefinition): P
     ...(entry.reps !== undefined ? { reps: entry.reps } : {}),
     ...(entry.holdSeconds !== undefined ? { holdSeconds: entry.holdSeconds } : {}),
     restSeconds: entry.restSeconds,
+    ...(entry.tempo ? { tempo: entry.tempo } : {}),
   };
 }
+
+/** Seconds to start from when a pace is switched on and nobody has set one. */
+const DEFAULT_PHASE_SECONDS = 2;
 
 export function ReviewScreen(): JSX.Element {
   const { routineId } = useParams();
@@ -400,6 +405,55 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
           onChange={(value) => onChange({ restSeconds: value })}
         />
       </div>
+
+      {/* Pacing. Only for counted exercises: a hold has one resting phase and
+          nothing to pace. Off unless somebody sets it, and the sixteen library
+          exercises that declare no tempo stay exactly as they are. */}
+      {exercise.mode === 'reps' ? (
+        <div className="space-y-2 border-t border-line p-4">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="h-5 w-5"
+              checked={entry.tempo !== undefined}
+              onChange={(event) =>
+                onChange({
+                  tempo: event.target.checked
+                    ? (exercise.tempo?.map((target) => ({ ...target })) ??
+                      exercise.phases.map((phase) => ({
+                        phase: phase.id,
+                        seconds: DEFAULT_PHASE_SECONDS,
+                      })))
+                    : undefined,
+                })
+              }
+            />
+            {t('review.tempo')}
+          </label>
+          {entry.tempo ? (
+            <>
+              <div className="grid grid-cols-2 gap-2">
+                {entry.tempo.map((target, position) => (
+                  <NumberField
+                    key={target.phase}
+                    label={phaseLabel(target.phase, language)}
+                    value={target.seconds}
+                    unit="s"
+                    onChange={(value) =>
+                      onChange({
+                        tempo: (entry.tempo ?? []).map((item, index) =>
+                          index === position ? { ...item, seconds: value } : item,
+                        ),
+                      })
+                    }
+                  />
+                ))}
+              </div>
+              <p className="text-sm leading-relaxed text-muted">{t('review.tempoHelp')}</p>
+            </>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="border-t border-line p-4">
         <button

@@ -262,6 +262,9 @@ export const en: Record<TranslationKey, string> = {
   'review.safety': 'Safety stop',
   'review.safetyMin': 'Lowest',
   'review.safetyMax': 'Highest',
+  'review.tempo': 'Set the pace',
+  'review.tempoHelp':
+    'Seconds each phase should take. Kinetrace only says something when somebody goes clearly faster than this; never for going slowly.',
   'review.cues': 'What it will say ({count})',
   'review.noCues': 'This exercise has no automatic corrections.',
   'review.untracked': 'Text from an imported sheet. Kinetrace does not measure it.',
@@ -292,6 +295,7 @@ export const en: Record<TranslationKey, string> = {
   'review.issue.repsInvalid': 'Repetitions must be a whole number, at least 1.',
   'review.issue.holdInvalid': 'The hold must be at least 1 second.',
   'review.issue.restInvalid': 'Rest cannot be negative.',
+  'review.issue.tempoInvalid': 'Each phase of the pace must be more than zero seconds.',
 
   'install.title': 'Install Kinetrace',
   'install.body':

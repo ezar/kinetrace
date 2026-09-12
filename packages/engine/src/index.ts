@@ -43,6 +43,8 @@ export type {
   TargetBand,
 } from './state/repMachine.js';
 export { HoldTimer } from './state/holdTimer.js';
+export { TempoMonitor } from './state/tempoMonitor.js';
+export type { TempoTarget, TempoOptions, TempoEvent } from './state/tempoMonitor.js';
 export type { HoldConfig, HoldEvent, HoldState } from './state/holdTimer.js';
 export { GestureDetector } from './gestures/detector.js';
 export { GESTURE_MOTIONS } from './gestures/demo.js';

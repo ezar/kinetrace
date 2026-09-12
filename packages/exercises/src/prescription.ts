@@ -30,6 +30,8 @@ export interface Prescription {
   reps?: number;
   holdSeconds?: number;
   restSeconds: number;
+  /** Seconds each phase should take, when a pace is prescribed. */
+  tempo?: readonly { phase: string; seconds: number }[];
 }
 
 export type PrescriptionIssueCode =
@@ -53,7 +55,9 @@ export type PrescriptionIssueCode =
   | 'setsInvalid'
   | 'repsInvalid'
   | 'holdInvalid'
-  | 'restInvalid';
+  | 'restInvalid'
+  /** A phase asked to take zero seconds, or less. */
+  | 'tempoInvalid';
 
 export interface PrescriptionIssue {
   code: PrescriptionIssueCode;
@@ -216,6 +220,9 @@ export function reviewPrescription(
     if (seconds === undefined || !(seconds >= 1)) add('holdInvalid', 'error', {});
   }
   if (!(prescription.restSeconds >= 0)) add('restInvalid', 'error', {});
+  if ((prescription.tempo ?? []).some((entry) => !(entry.seconds > 0))) {
+    add('tempoInvalid', 'error', {});
+  }
 
   return issues.sort((a, b) => (a.severity === b.severity ? 0 : a.severity === 'error' ? -1 : 1));
 }

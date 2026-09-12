@@ -6,7 +6,7 @@
  */
 
 import Dexie, { type EntityTable } from 'dexie';
-import type { TargetBand } from '@kinetrace/engine';
+import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 import type { Language } from '../i18n/index.js';
 
@@ -46,6 +46,8 @@ export interface RoutineExercise {
   band?: TargetBand;
   /** Safety stop for this profile, in degrees. Absent means the library default. */
   safety?: TargetBand;
+  /** Seconds each phase should take. Absent means pacing is not judged. */
+  tempo?: TempoTarget[];
   /** A line from the professional who reviewed this exercise, for the patient. */
   physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */

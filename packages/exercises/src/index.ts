@@ -13,6 +13,8 @@ export { describeCondition } from './explain.js';
 export * from './runner.js';
 export {
   METRIC_LABELS,
+  PHASE_LABELS,
+  phaseLabel,
   METRIC_DESCRIPTIONS,
   metricLabel,
   metricDescription,

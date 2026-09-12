@@ -273,6 +273,7 @@ export function useSessionRunner(
     const config = toRunnerConfig(item.exercise, {
       band: item.band,
       safety: item.safety,
+      tempo: item.tempo,
       reps: item.reps,
       holdSeconds: item.holdSeconds,
     });

@@ -261,6 +261,9 @@ export const es = {
   'review.safety': 'Parada de seguridad',
   'review.safetyMin': 'Mínimo',
   'review.safetyMax': 'Máximo',
+  'review.tempo': 'Marcar el ritmo',
+  'review.tempoHelp':
+    'Segundos que debería durar cada fase. Kinetrace solo dice algo si se va claramente más rápido de lo que marques; nunca por ir despacio.',
   'review.cues': 'Lo que le va a decir ({count})',
   'review.noCues': 'Este ejercicio no tiene correcciones automáticas.',
   'review.untracked': 'Texto de una hoja importada. Kinetrace no lo mide.',
@@ -291,6 +294,7 @@ export const es = {
   'review.issue.repsInvalid': 'Las repeticiones tienen que ser un número entero de al menos 1.',
   'review.issue.holdInvalid': 'El tiempo de sostén tiene que ser de al menos 1 segundo.',
   'review.issue.restInvalid': 'El descanso no puede ser negativo.',
+  'review.issue.tempoInvalid': 'El ritmo de cada fase tiene que ser mayor que cero.',
 
   'install.title': 'Instalar Kinetrace',
   'install.body':
