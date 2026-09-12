@@ -141,6 +141,8 @@ export const en: Record<TranslationKey, string> = {
   'session.exerciseOf': 'Exercise {current} of {total}',
   'session.getReady': 'Get ready',
   'session.safetyStop': 'Stop and rest',
+  'session.screenMaySleep':
+    'This browser cannot keep the screen on. Give the phone a longer screen timeout before you start.',
   'session.physioSays': 'Your physio: {note}',
 
   'summary.title': 'Summary',
@@ -167,6 +169,10 @@ export const en: Record<TranslationKey, string> = {
   'progress.reps': 'Reps',
   'progress.goodRepPct': 'Good rep percentage',
   'progress.target': 'Target',
+  'progress.targetReviewed': 'Target {min}–{max}°, reviewed by {name}.',
+  'progress.targetRoutine': 'Target {min}–{max}°, from your routine.',
+  'progress.targetDefault':
+    'Target {min}–{max}°, the library default. Your physiotherapist can change it.',
   'progress.noData': 'No data for this exercise yet',
   'progress.replay': 'Skeleton replay',
   'progress.compare': 'Compare with',

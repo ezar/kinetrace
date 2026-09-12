@@ -231,6 +231,7 @@ export function SessionScreen(): JSX.Element {
             reference={exercise?.reference}
             view={exercise?.view.orientation ?? 'side'}
             tip={exercise ? t(exercise.cameraTipKey) : ''}
+            canKeepScreenAwake={session.canKeepScreenAwake}
             onStart={() => void session.start()}
           />
         ) : session.stage === 'rest' ? (
@@ -438,6 +439,8 @@ interface SetupPanelProps {
   modelLoading: boolean;
   reference?: Parameters<typeof SilhouetteGuide>[0]['reference'];
   view: 'side' | 'front';
+  /** False where the browser cannot hold the screen awake; the user should know. */
+  canKeepScreenAwake: boolean;
   onStart: () => void;
 }
 
@@ -450,6 +453,7 @@ function SetupPanel({
   reference,
   view,
   tip,
+  canKeepScreenAwake,
   onStart,
 }: SetupPanelProps): JSX.Element {
   const { t } = useTranslation();
@@ -544,6 +548,12 @@ function SetupPanel({
         <CameraIcon size={22} className="mt-0.5 shrink-0 text-far-muted" />
         <span className="text-[15px] leading-relaxed text-far-muted">{tip}</span>
       </div>
+
+      {/* Kinetrace keeps the screen on by itself where it can. Where it cannot,
+          saying so beats a black screen halfway through the second set. */}
+      {!canKeepScreenAwake ? (
+        <p className="text-[14px] leading-relaxed text-far-dim">{t('session.screenMaySleep')}</p>
+      ) : null}
 
       <div className="mt-auto flex flex-col items-center gap-3">
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-far-track">

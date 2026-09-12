@@ -9,6 +9,7 @@
 
 import type { MetricFrame } from '../types.js';
 import { evaluateCondition, type Condition } from '../rules/conditions.js';
+import { isFrameGap } from '../time.js';
 
 export interface PhaseDef {
   /** Phase name, unique inside the exercise. */
@@ -69,6 +70,7 @@ export interface RepMachineState {
 export class RepMachine {
   private index: number | null = null;
   private candidateSince: number | null = null;
+  private previousTimestampMs: number | null = null;
   private reps = 0;
   private partials = 0;
   private peaks: number[] = [];
@@ -108,6 +110,7 @@ export class RepMachine {
   reset(): void {
     this.index = null;
     this.candidateSince = null;
+    this.previousTimestampMs = null;
     this.reps = 0;
     this.partials = 0;
     this.peaks = [];
@@ -117,6 +120,11 @@ export class RepMachine {
 
   update(frame: MetricFrame): RepEvent[] {
     const events: RepEvent[] = [];
+    // A phase is entered when its condition has held *continuously*. Frames that
+    // stopped and resumed prove nothing about the time in between, so the dwell
+    // starts again rather than being satisfied by the absence.
+    if (isFrameGap(frame.timestampMs, this.previousTimestampMs)) this.candidateSince = null;
+    this.previousTimestampMs = frame.timestampMs;
     const sample = frame.samples[this.config.primaryMetric];
     if (sample && Number.isFinite(sample.value)) {
       this.peak =

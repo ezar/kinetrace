@@ -16,6 +16,7 @@ import {
 import { getExercise, metricLabel } from '@kinetrace/exercises';
 import { db, type SetRecord } from '../db/schema.js';
 import { streakFromDates } from '../db/repositories.js';
+import { prescribedTarget } from '../session/target.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
@@ -29,6 +30,11 @@ export function ProgressScreen(): JSX.Element {
   const [replaySetId, setReplaySetId] = useState<number | null>(null);
   const [compareSetId, setCompareSetId] = useState<number | null>(null);
 
+  const routines = useLiveQuery(
+    () => (profileId ? db.routines.where('profileId').equals(profileId).toArray() : []),
+    [profileId],
+    [],
+  );
   const sessions = useLiveQuery(
     () => (profileId ? db.sessions.where('profileId').equals(profileId).toArray() : []),
     [profileId],
@@ -48,6 +54,11 @@ export function ProgressScreen(): JSX.Element {
   const exerciseIds = useMemo(() => [...new Set(sets.map((set) => set.exerciseId))], [sets]);
   const selected = exerciseId ?? exerciseIds[0] ?? null;
   const exercise = selected ? getExercise(selected) : undefined;
+
+  const target = useMemo(
+    () => (selected && exercise ? prescribedTarget(routines, selected, exercise) : null),
+    [routines, selected, exercise],
+  );
 
   const series = useMemo(() => {
     if (!selected) return [];
@@ -130,25 +141,34 @@ export function ProgressScreen(): JSX.Element {
                   <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="#6a6761" />
                   <YAxis tick={{ fontSize: 11 }} stroke="#6a6761" />
                   <Tooltip />
-                  {exercise ? (
+                  {target ? (
                     <>
                       <ReferenceLine
-                        y={exercise.targets.band.min}
+                        y={target.band.min}
                         stroke="#2c7a58"
                         strokeDasharray="4 4"
                         label={{ value: t('progress.target'), fontSize: 11, fill: '#2c7a58' }}
                       />
-                      <ReferenceLine
-                        y={exercise.targets.band.max}
-                        stroke="#2c7a58"
-                        strokeDasharray="4 4"
-                      />
+                      <ReferenceLine y={target.band.max} stroke="#2c7a58" strokeDasharray="4 4" />
                     </>
                   ) : null}
                   <Line type="monotone" dataKey="rom" stroke="#d9702f" strokeWidth={2.5} dot />
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            {target ? (
+              <p className="mt-2 text-sm text-muted">
+                {target.by
+                  ? t('progress.targetReviewed', {
+                      min: target.band.min,
+                      max: target.band.max,
+                      name: target.by,
+                    })
+                  : target.prescribed
+                    ? t('progress.targetRoutine', { min: target.band.min, max: target.band.max })
+                    : t('progress.targetDefault', { min: target.band.min, max: target.band.max })}
+              </p>
+            ) : null}
           </section>
 
           <section className="card p-4">

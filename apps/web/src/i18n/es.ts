@@ -140,6 +140,8 @@ export const es = {
   'session.exerciseOf': 'Ejercicio {current} de {total}',
   'session.getReady': 'Prepárate',
   'session.safetyStop': 'Para y descansa',
+  'session.screenMaySleep':
+    'Este navegador no puede mantener la pantalla encendida. Súbele el tiempo de bloqueo al móvil antes de empezar.',
   'session.physioSays': 'Tu fisio: {note}',
 
   'summary.title': 'Resumen',
@@ -166,6 +168,10 @@ export const es = {
   'progress.reps': 'Repeticiones',
   'progress.goodRepPct': '% de repeticiones buenas',
   'progress.target': 'Objetivo',
+  'progress.targetReviewed': 'Objetivo {min}–{max}°, revisado por {name}.',
+  'progress.targetRoutine': 'Objetivo {min}–{max}°, de tu rutina.',
+  'progress.targetDefault':
+    'Objetivo {min}–{max}°, el de la biblioteca. Tu fisioterapeuta puede cambiarlo.',
   'progress.noData': 'Todavía no hay datos de este ejercicio',
   'progress.replay': 'Repetición del esqueleto',
   'progress.compare': 'Comparar con',

@@ -22,6 +22,7 @@ import { buildPlan, type PlanItem } from './plan.js';
 import { useCamera, useVideoFrameLoop } from './useCamera.js';
 import { PoseAdapter } from '../pose/adapter.js';
 import { LEVEL_CAMERA, watchGravity, type GravityReading } from '../pose/gravity.js';
+import { browserWakeLock, ScreenWakeLock } from './wakeLock.js';
 import { Speaker } from '../speech/speech.js';
 import { EarconPlayer } from '../speech/earcons.js';
 import { saveSet, startSession } from '../db/repositories.js';
@@ -47,6 +48,8 @@ export interface SessionView {
   /** True while the pose model is still loading. */
   modelLoading: boolean;
   gravity: GravityReading;
+  /** False where the browser cannot keep the screen awake, so the app can say so. */
+  canKeepScreenAwake: boolean;
 }
 
 export interface SessionControls {
@@ -95,6 +98,8 @@ export function useSessionRunner(
   const speakerRef = useRef<Speaker | null>(null);
   const earconRef = useRef<EarconPlayer | null>(null);
   const gravityRef = useRef<Vec3 | undefined>(undefined);
+  const wakeLockRef = useRef<ScreenWakeLock | null>(null);
+  wakeLockRef.current ??= new ScreenWakeLock(browserWakeLock());
   const stageRef = useRef<SessionStage>('loading');
   const indexRef = useRef(0);
   const setStartedAtRef = useRef(Date.now());
@@ -143,6 +148,27 @@ export function useSessionRunner(
       adapterRef.current = null;
     };
   }, [settings.poseModel]);
+
+  /**
+   * The phone is on the floor and nobody is touching it, so the screen would
+   * otherwise lock in the middle of a set. The browser takes the lock back every
+   * time the page is hidden and does not return it, hence the visibility listener.
+   */
+  const running =
+    camera.status === 'ready' && stage !== 'finished' && stage !== 'error' && stage !== 'loading';
+  useEffect(() => {
+    const lock = wakeLockRef.current;
+    if (!lock || !running) return;
+    void lock.acquire();
+    const onVisible = (): void => {
+      if (document.visibilityState === 'visible') void lock.refresh();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      void lock.release();
+    };
+  }, [running]);
 
   useEffect(() => {
     return watchGravity(camera.facing, (reading) => {
@@ -382,6 +408,7 @@ export function useSessionRunner(
     sessionId,
     modelLoading,
     gravity,
+    canKeepScreenAwake: wakeLockRef.current?.supported ?? false,
     videoRef: camera.videoRef,
     start,
     begin,

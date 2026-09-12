@@ -9,6 +9,8 @@
  * values normally used for fingertips.
  */
 
+import { isFrameGap } from '../time.js';
+
 export interface OneEuroParams {
   /** Minimum cutoff frequency in hertz. Lower = smoother when still. */
   minCutoffHz: number;
@@ -55,6 +57,11 @@ export class OneEuroFilter {
    */
   filter(value: number, timestampMs: number): number {
     if (!Number.isFinite(value)) return this.previousValue ?? 0;
+
+    // Across a gap there is no velocity to estimate: the movement in between was
+    // not seen. Keeping the old sample would invent a derivative out of the gap,
+    // and a fabricated speed is enough to trip the "slow down" rule.
+    if (isFrameGap(timestampMs, this.previousTimestampMs)) this.reset();
 
     if (
       this.previousValue === null ||

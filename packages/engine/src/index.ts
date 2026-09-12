@@ -7,6 +7,7 @@
  */
 
 export * from './types.js';
+export { MAX_FRAME_GAP_MS, isFrameGap } from './time.js';
 export * from './pose/landmarks.js';
 export { OneEuroFilter, LandmarkFilter, REHAB_FILTER_PARAMS } from './filter/oneEuro.js';
 export type { OneEuroParams } from './filter/oneEuro.js';
