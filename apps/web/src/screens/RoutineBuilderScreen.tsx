@@ -1,7 +1,7 @@
 /** Build a routine: ordered exercises with sets, reps or holds, rest and bands. */
 
 import type { JSX } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EXERCISES, getExercise } from '@kinetrace/exercises';
 import { db, type RoutineReview, type RoutineExercise } from '../db/schema.js';
@@ -12,6 +12,8 @@ import { useTranslation } from '../i18n/useTranslation.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { ReviewStamp } from '../components/ReviewStamp.js';
+import { DragIcon } from '../components/icons.js';
+import { moveItem } from '../routines/reorder.js';
 
 export function RoutineBuilderScreen(): JSX.Element {
   const { routineId } = useParams();
@@ -62,15 +64,37 @@ export function RoutineBuilderScreen(): JSX.Element {
   };
 
   const move = (index: number, delta: number): void => {
-    setExercises((current) => {
-      const next = [...current];
-      const target = index + delta;
-      if (target < 0 || target >= next.length) return current;
-      const [item] = next.splice(index, 1);
-      if (item) next.splice(target, 0, item);
-      return next;
-    });
+    setExercises((current) => moveItem(current, index, index + delta));
   };
+
+  /**
+   * Dragging, with pointer events rather than the HTML5 drag API, which does
+   * not exist on touch — and this is a phone app first. The up and down buttons
+   * stay: they are the keyboard and screen reader path, and dragging is never
+   * the only way to do something.
+   */
+  const listRef = useRef<HTMLUListElement>(null);
+  const [dragging, setDragging] = useState<number | null>(null);
+
+  const startDrag = (index: number) => (event: React.PointerEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragging(index);
+  };
+
+  const dragOver = (event: React.PointerEvent<HTMLElement>): void => {
+    if (dragging === null) return;
+    const items = [...(listRef.current?.children ?? [])] as HTMLElement[];
+    const over = items.findIndex((item) => {
+      const box = item.getBoundingClientRect();
+      return event.clientY >= box.top && event.clientY <= box.bottom;
+    });
+    if (over < 0 || over === dragging) return;
+    setExercises((current) => moveItem(current, dragging, over));
+    setDragging(over);
+  };
+
+  const endDrag = (): void => setDragging(null);
 
   const update = (index: number, patch: Partial<RoutineExercise>): void => {
     setExercises((current) =>
@@ -105,12 +129,15 @@ export function RoutineBuilderScreen(): JSX.Element {
         </div>
       ) : null}
 
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-4 space-y-3" ref={listRef}>
         {exercises.map((entry, index) => {
           const exercise = getExercise(entry.exerciseId);
           const band = entry.band ?? exercise?.targets.band;
           return (
-            <li key={`${entry.exerciseId}-${index}`} className="card p-4">
+            <li
+              key={`${entry.exerciseId}-${index}`}
+              className={`card p-4 ${dragging === index ? 'ring-2 ring-accent' : ''}`}
+            >
               <div className="flex items-start gap-3">
                 {exercise ? (
                   <ExerciseDemo
@@ -133,7 +160,7 @@ export function RoutineBuilderScreen(): JSX.Element {
                     <p className="mt-1 text-sm text-muted">{t('import.unmatched')}</p>
                   ) : null}
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col items-center gap-1">
                   <button
                     className="btn-ghost px-2 py-1 text-sm"
                     aria-label={t('routine.moveUp')}
@@ -141,6 +168,18 @@ export function RoutineBuilderScreen(): JSX.Element {
                   >
                     ↑
                   </button>
+                  <span
+                    role="button"
+                    tabIndex={-1}
+                    aria-label={t('routine.drag')}
+                    className="cursor-grab touch-none p-1 text-muted"
+                    onPointerDown={startDrag(index)}
+                    onPointerMove={dragOver}
+                    onPointerUp={endDrag}
+                    onPointerCancel={endDrag}
+                  >
+                    <DragIcon size={20} />
+                  </span>
                   <button
                     className="btn-ghost px-2 py-1 text-sm"
                     aria-label={t('routine.moveDown')}

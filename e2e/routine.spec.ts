@@ -250,3 +250,88 @@ test('has a help screen that can reopen the introduction', async ({ page }) => {
   await page.getByRole('link', { name: /verla otra vez|watch it again/i }).click();
   await expect(page).toHaveURL(/welcome/);
 });
+
+/**
+ * The page that gets handed across a desk. It reports and does not conclude, so
+ * the test checks the numbers are the ones stored and that nothing is phrased in
+ * a way a clinician would misread.
+ */
+test('prints a sheet for the physiotherapist', async ({ page }) => {
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  // Two finished sessions: one counted exercise and one isometric.
+  await page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve) => {
+      const request = indexedDB.open('kinetrace');
+      request.onsuccess = () => resolve(request.result);
+    });
+    const add = (store: string, value: unknown): Promise<IDBValidKey> =>
+      new Promise((resolve) => {
+        const request = database.transaction(store, 'readwrite').objectStore(store).add(value);
+        request.onsuccess = () => resolve(request.result);
+      });
+    for (let index = 0; index < 2; index += 1) {
+      const startedAt = Date.now() - (index + 1) * 86_400_000;
+      const sessionId = await add('sessions', {
+        profileId: 1,
+        routineId: 1,
+        startedAt,
+        endedAt: startedAt + 600_000,
+        painScore: 3,
+        notes: 'Sin molestias',
+      });
+      await add('sets', {
+        sessionId,
+        exerciseId: 'glute-bridge',
+        index: 0,
+        reps: 12,
+        partials: 0,
+        holdMs: 0,
+        romMax: 170,
+        romMean: 165,
+        goodRepPct: 100,
+        issues: {},
+        peaks: [],
+        startedAt,
+      });
+      await add('sets', {
+        sessionId,
+        exerciseId: 'front-plank',
+        index: 1,
+        reps: 0,
+        partials: 0,
+        holdMs: 30_000,
+        romMax: 0,
+        romMean: 0,
+        goodRepPct: 100,
+        issues: {},
+        peaks: [],
+        startedAt,
+      });
+    }
+  });
+
+  await page.goto('report');
+  await expect(page.getByRole('heading', { name: /kinetrace · ana/i })).toBeVisible();
+
+  // Sets and repetitions are two facts: "2 × 24" would read as 24 reps per set.
+  await expect(page.getByText(/2 series · 24 rep|2 sets · 24 reps/i)).toBeVisible();
+
+  // A hold has no range to report, and is not given a fake 0°.
+  await expect(page.getByText(/sin rango|no range/i)).toBeVisible();
+
+  // What the person wrote about themselves, shown and not summarised.
+  await expect(page.getByText('Sin molestias').first()).toBeVisible();
+
+  // The table fits a phone rather than scrolling the target out of sight.
+  const table = await page.locator('table').boundingBox();
+  expect(table?.width ?? 0).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
+});

@@ -17,8 +17,10 @@ import { getExercise, metricLabel } from '@kinetrace/exercises';
 import { db, type SetRecord } from '../db/schema.js';
 import { streakFromDates } from '../db/repositories.js';
 import { prescribedTarget } from '../session/target.js';
+import { formatBand } from '../routines/band.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
+import { Link } from 'react-router-dom';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { CalendarHeatmap } from '../components/CalendarHeatmap.js';
 import { SkeletonReplay } from '../components/SkeletonReplay.js';
@@ -119,7 +121,14 @@ export function ProgressScreen(): JSX.Element {
 
   return (
     <div className="space-y-6">
-      <ScreenHeader title={t('progress.title')} />
+      <ScreenHeader
+        title={t('progress.title')}
+        action={
+          <Link to="/report" className="btn-secondary px-4 py-2 text-sm">
+            {t('report.open')}
+          </Link>
+        }
+      />
 
       <section className="card p-4">
         <div className="mb-3 flex items-baseline justify-between">
@@ -225,13 +234,16 @@ export function ProgressScreen(): JSX.Element {
               <p className="mt-2 text-sm text-muted">
                 {target.by
                   ? t('progress.targetReviewed', {
-                      min: target.band.min,
-                      max: target.band.max,
+                      band: formatBand(target.band.min, target.band.max, t('common.to')),
                       name: target.by,
                     })
                   : target.prescribed
-                    ? t('progress.targetRoutine', { min: target.band.min, max: target.band.max })
-                    : t('progress.targetDefault', { min: target.band.min, max: target.band.max })}
+                    ? t('progress.targetRoutine', {
+                        band: formatBand(target.band.min, target.band.max, t('common.to')),
+                      })
+                    : t('progress.targetDefault', {
+                        band: formatBand(target.band.min, target.band.max, t('common.to')),
+                      })}
               </p>
             ) : null}
           </section>
