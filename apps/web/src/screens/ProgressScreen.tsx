@@ -23,6 +23,9 @@ import { ScreenHeader } from '../components/ScreenHeader.js';
 import { CalendarHeatmap } from '../components/CalendarHeatmap.js';
 import { SkeletonReplay } from '../components/SkeletonReplay.js';
 
+/** Enough recent notes to be useful without turning the screen into a diary. */
+const NOTES_SHOWN = 8;
+
 export function ProgressScreen(): JSX.Element {
   const { t, language } = useTranslation();
   const profileId = useSettingsStore((state) => state.activeProfileId);
@@ -88,6 +91,30 @@ export function ProgressScreen(): JSX.Element {
   }, [sets, selected, exercise]);
 
   const completed = sessions.filter((session) => session.endedAt !== undefined);
+
+  /**
+   * What the person wrote about themselves after each session. Shown back, never
+   * summarised: no average, no trend, no colour that grades it. It is their note,
+   * and the app promises not to make anything of it.
+   */
+  const painSeries = useMemo(
+    () =>
+      completed
+        .filter((session) => session.painScore !== undefined)
+        .sort((a, b) => a.startedAt - b.startedAt)
+        .map((session) => ({
+          day: new Date(session.startedAt).toISOString().slice(0, 10),
+          pain: session.painScore,
+        })),
+    [completed],
+  );
+  const written = useMemo(
+    () =>
+      completed
+        .filter((session) => (session.notes ?? '').trim().length > 0)
+        .sort((a, b) => b.startedAt - a.startedAt),
+    [completed],
+  );
   const setsForReplay = sets.filter((set) => set.exerciseId === selected);
 
   return (
@@ -103,6 +130,44 @@ export function ProgressScreen(): JSX.Element {
         </div>
         <CalendarHeatmap dates={completed.map((session) => session.startedAt)} />
       </section>
+
+      {painSeries.length > 0 || written.length > 0 ? (
+        <section className="card p-4">
+          <h2 className="font-medium">{t('progress.howYouFelt')}</h2>
+          {painSeries.length > 0 ? (
+            <div className="mt-3 h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={painSeries} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+                  <CartesianGrid stroke="#e3ded6" vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="#6a6761" />
+                  <YAxis domain={[0, 10]} tick={{ fontSize: 11 }} stroke="#6a6761" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="pain" stroke="#34618f" strokeWidth={2.5} dot />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ) : null}
+          <p className="mt-2 text-sm text-muted">{t('summary.painHelp')}</p>
+          {written.length > 0 ? (
+            <ul className="mt-3 divide-y divide-line">
+              {written.slice(0, NOTES_SHOWN).map((session) => (
+                <li key={session.id} className="flex gap-3 py-2">
+                  <span className="w-20 shrink-0 text-sm text-muted">
+                    {new Date(session.startedAt).toLocaleDateString(language, {
+                      day: 'numeric',
+                      month: 'short',
+                    })}
+                  </span>
+                  <span className="flex-1 text-sm leading-relaxed">{session.notes}</span>
+                  {session.painScore !== undefined ? (
+                    <span className="chip shrink-0 self-start text-xs">{session.painScore}</span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
 
       {exerciseIds.length === 0 ? (
         <p className="text-muted">{t('progress.noData')}</p>

@@ -7,6 +7,7 @@ import { getExercise, resolveText } from '@kinetrace/exercises';
 import { db, type SetRecord } from '../db/schema.js';
 import { finishSession } from '../db/repositories.js';
 import { useTranslation } from '../i18n/useTranslation.js';
+import { useInstallOffer } from '../pwa/useInstallOffer.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 
 export function SummaryScreen(): JSX.Element {
@@ -139,7 +140,34 @@ export function SummaryScreen(): JSX.Element {
           {t('summary.save')}
         </button>
       </section>
+
+      <InstallOfferCard />
     </div>
+  );
+}
+
+/**
+ * Asked here and nowhere else: a session has just been finished, so the person
+ * knows whether this is worth an icon on their home screen. Asked once.
+ */
+function InstallOfferCard(): JSX.Element | null {
+  const { t } = useTranslation();
+  const { offer, install, dismiss } = useInstallOffer();
+  if (!offer) return null;
+
+  return (
+    <section className="card space-y-2 p-4">
+      <h2 className="font-medium">{t('install.title')}</h2>
+      <p className="text-sm leading-relaxed text-muted">{t('install.body')}</p>
+      <div className="flex flex-wrap gap-2 pt-1">
+        <button className="btn-primary" onClick={() => void install()}>
+          {t('install.action')}
+        </button>
+        <button className="btn-ghost" onClick={dismiss}>
+          {t('install.no')}
+        </button>
+      </div>
+    </section>
   );
 }
 

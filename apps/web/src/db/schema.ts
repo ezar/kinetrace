@@ -135,6 +135,8 @@ export interface AppSettings {
   showCameraPreview: boolean;
   /** True once the first run has been walked through, or skipped. */
   onboarded: boolean;
+  /** True once installing the app has been offered and answered, either way. */
+  installOffered: boolean;
   /** Listen for spoken commands during a session. Off until asked for: it
    *  downloads a model and needs the microphone. */
   voiceCommands: boolean;
@@ -154,6 +156,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   earcons: true,
   showCameraPreview: true,
   onboarded: false,
+  installOffered: false,
   voiceCommands: false,
   voiceModel: 'tiny',
   poseModel: 'full',

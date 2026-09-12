@@ -34,7 +34,7 @@ import {
   type PrescriptionIssue,
 } from '@kinetrace/exercises';
 import { metricLandmarkIndices, type TargetBand } from '@kinetrace/engine';
-import { db, type Routine, type RoutineExercise } from '../db/schema.js';
+import { db, type Routine, type RoutineExercise, type Session } from '../db/schema.js';
 import { saveRoutineReview } from '../db/repositories.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
@@ -42,6 +42,9 @@ import { AngleGauge } from '../components/AngleGauge.js';
 import { NumberField } from '../components/NumberField.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { CheckIcon } from '../components/icons.js';
+
+/** Recent sessions carrying a note or a pain score, shown to the professional. */
+const FELT_SHOWN = 6;
 
 /**
  * Fill in what the routine leaves to the library, so the professional is
@@ -77,6 +80,7 @@ export function ReviewScreen(): JSX.Element {
 
   const [routine, setRoutine] = useState<Routine | undefined>();
   const [entries, setEntries] = useState<RoutineExercise[]>([]);
+  const [felt, setFelt] = useState<Session[]>([]);
   const [by, setBy] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -91,6 +95,29 @@ export function ReviewScreen(): JSX.Element {
       setNote(found.review?.note ?? '');
     });
   }, [routineId]);
+
+  /**
+   * What the person has written about themselves. It never feeds any logic — the
+   * app promises that — but somebody deciding a range should have read it.
+   */
+  useEffect(() => {
+    if (!routine) return;
+    void db.sessions
+      .where('profileId')
+      .equals(routine.profileId)
+      .toArray()
+      .then((sessions) => {
+        setFelt(
+          sessions
+            .filter(
+              (session) =>
+                session.painScore !== undefined || (session.notes ?? '').trim().length > 0,
+            )
+            .sort((a, b) => b.startedAt - a.startedAt)
+            .slice(0, FELT_SHOWN),
+        );
+      });
+  }, [routine]);
 
   const update = (index: number, patch: Partial<RoutineExercise>): void => {
     setEntries((current) =>
@@ -144,6 +171,31 @@ export function ReviewScreen(): JSX.Element {
           </p>
         ) : null}
       </section>
+
+      {felt.length > 0 ? (
+        <section className="card mt-4 p-4">
+          <h2 className="font-medium">{t('review.howTheyFelt')}</h2>
+          <p className="text-sm text-muted">{t('summary.painHelp')}</p>
+          <ul className="mt-2 divide-y divide-line">
+            {felt.map((session) => (
+              <li key={session.id} className="flex items-baseline gap-3 py-2 text-sm">
+                <span className="w-20 shrink-0 text-muted">
+                  {new Date(session.startedAt).toLocaleDateString(language, {
+                    day: 'numeric',
+                    month: 'short',
+                  })}
+                </span>
+                {session.painScore !== undefined ? (
+                  <span className="chip shrink-0 text-xs">
+                    {t('review.painValue', { value: session.painScore })}
+                  </span>
+                ) : null}
+                <span className="flex-1 leading-relaxed">{session.notes}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="mt-4 space-y-4">
         {entries.map((entry, index) => (

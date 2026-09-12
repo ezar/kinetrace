@@ -173,6 +173,7 @@ export const es = {
   'progress.targetDefault':
     'Objetivo {min}–{max}°, el de la biblioteca. Tu fisioterapeuta puede cambiarlo.',
   'progress.noData': 'Todavía no hay datos de este ejercicio',
+  'progress.howYouFelt': 'Cómo te has encontrado',
   'progress.replay': 'Repetición del esqueleto',
   'progress.compare': 'Comparar con',
   'progress.compareNone': 'Sin comparación',
@@ -258,6 +259,8 @@ export const es = {
   'review.cues': 'Lo que le va a decir ({count})',
   'review.noCues': 'Este ejercicio no tiene correcciones automáticas.',
   'review.untracked': 'Texto de una hoja importada. Kinetrace no lo mide.',
+  'review.howTheyFelt': 'Lo que ha anotado',
+  'review.painValue': 'dolor {value}',
   'review.priority.safety': 'seguridad',
   'review.priority.form': 'técnica',
   'review.priority.encouragement': 'ánimo',
@@ -284,6 +287,13 @@ export const es = {
   'review.issue.holdInvalid': 'El tiempo de sostén tiene que ser de al menos 1 segundo.',
   'review.issue.restInvalid': 'El descanso no puede ser negativo.',
 
+  'install.title': 'Instalar Kinetrace',
+  'install.body':
+    'Instalada se abre a pantalla completa, sin la barra del navegador robándole sitio a los números, y arranca desde su icono en vez de desde una pestaña.',
+  'install.action': 'Instalar',
+  'install.no': 'Ahora no',
+  'install.how':
+    'En Android, el navegador te lo ofrecerá al terminar una sesión. En iPhone se hace a mano: Compartir → «Añadir a pantalla de inicio».',
   'help.title': 'Ayuda',
   'help.subtitle': 'Cómo se usa, y qué hacer cuando algo no va',
   'help.intro': 'La introducción',

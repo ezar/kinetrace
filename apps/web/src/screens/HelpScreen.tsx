@@ -163,6 +163,12 @@ export function HelpScreen(): JSX.Element {
       </section>
 
       <section className="card space-y-2 p-4">
+        <h2 className="font-medium">{t('install.title')}</h2>
+        <p className="text-sm leading-relaxed text-muted">{t('install.body')}</p>
+        <p className="text-sm leading-relaxed text-muted">{t('install.how')}</p>
+      </section>
+
+      <section className="card space-y-2 p-4">
         <h2 className="font-medium">{t('help.data')}</h2>
         <p className="text-sm leading-relaxed text-muted">{t('help.dataHelp')}</p>
         <div className="flex flex-wrap gap-2 pt-1">

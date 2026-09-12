@@ -174,6 +174,7 @@ export const en: Record<TranslationKey, string> = {
   'progress.targetDefault':
     'Target {min}–{max}°, the library default. Your physiotherapist can change it.',
   'progress.noData': 'No data for this exercise yet',
+  'progress.howYouFelt': 'How you have felt',
   'progress.replay': 'Skeleton replay',
   'progress.compare': 'Compare with',
   'progress.compareNone': 'No comparison',
@@ -259,6 +260,8 @@ export const en: Record<TranslationKey, string> = {
   'review.cues': 'What it will say ({count})',
   'review.noCues': 'This exercise has no automatic corrections.',
   'review.untracked': 'Text from an imported sheet. Kinetrace does not measure it.',
+  'review.howTheyFelt': 'What they have written',
+  'review.painValue': 'pain {value}',
   'review.priority.safety': 'safety',
   'review.priority.form': 'form',
   'review.priority.encouragement': 'encouragement',
@@ -285,6 +288,13 @@ export const en: Record<TranslationKey, string> = {
   'review.issue.holdInvalid': 'The hold must be at least 1 second.',
   'review.issue.restInvalid': 'Rest cannot be negative.',
 
+  'install.title': 'Install Kinetrace',
+  'install.body':
+    'Installed it opens full screen, without the browser bar taking room from the numbers, and it starts from its own icon instead of a tab.',
+  'install.action': 'Install',
+  'install.no': 'Not now',
+  'install.how':
+    'On Android the browser will offer it after you finish a session. On iPhone it is manual: Share → "Add to Home Screen".',
   'help.title': 'Help',
   'help.subtitle': 'How to use it, and what to do when something is off',
   'help.intro': 'The introduction',
