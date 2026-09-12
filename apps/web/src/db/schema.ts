@@ -6,7 +6,7 @@
  */
 
 import Dexie, { type EntityTable } from 'dexie';
-import type { TargetBand } from '@kinetrace/engine';
+import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 import type { Language } from '../i18n/index.js';
 
@@ -46,6 +46,8 @@ export interface RoutineExercise {
   band?: TargetBand;
   /** Safety stop for this profile, in degrees. Absent means the library default. */
   safety?: TargetBand;
+  /** Seconds each phase should take. Absent means pacing is not judged. */
+  tempo?: TempoTarget[];
   /** A line from the professional who reviewed this exercise, for the patient. */
   physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */
@@ -135,6 +137,8 @@ export interface AppSettings {
   showCameraPreview: boolean;
   /** True once the first run has been walked through, or skipped. */
   onboarded: boolean;
+  /** True once installing the app has been offered and answered, either way. */
+  installOffered: boolean;
   /** Listen for spoken commands during a session. Off until asked for: it
    *  downloads a model and needs the microphone. */
   voiceCommands: boolean;
@@ -154,6 +158,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   earcons: true,
   showCameraPreview: true,
   onboarded: false,
+  installOffered: false,
   voiceCommands: false,
   voiceModel: 'tiny',
   poseModel: 'full',

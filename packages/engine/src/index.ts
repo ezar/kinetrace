@@ -7,6 +7,7 @@
  */
 
 export * from './types.js';
+export { MAX_FRAME_GAP_MS, isFrameGap } from './time.js';
 export * from './pose/landmarks.js';
 export { OneEuroFilter, LandmarkFilter, REHAB_FILTER_PARAMS } from './filter/oneEuro.js';
 export type { OneEuroParams } from './filter/oneEuro.js';
@@ -42,6 +43,8 @@ export type {
   TargetBand,
 } from './state/repMachine.js';
 export { HoldTimer } from './state/holdTimer.js';
+export { TempoMonitor } from './state/tempoMonitor.js';
+export type { TempoTarget, TempoOptions, TempoEvent } from './state/tempoMonitor.js';
 export type { HoldConfig, HoldEvent, HoldState } from './state/holdTimer.js';
 export { GestureDetector } from './gestures/detector.js';
 export { GESTURE_MOTIONS } from './gestures/demo.js';

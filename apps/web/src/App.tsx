@@ -27,6 +27,9 @@ const SheetImportScreen = lazy(() =>
 );
 import { SettingsScreen } from './screens/SettingsScreen.js';
 import { HelpScreen } from './screens/HelpScreen.js';
+const ReportScreen = lazy(() =>
+  import('./screens/ReportScreen.js').then((module) => ({ default: module.ReportScreen })),
+);
 import { PrivacyScreen } from './screens/PrivacyScreen.js';
 import { AboutScreen } from './screens/AboutScreen.js';
 import { useSettingsStore } from './store/useSettingsStore.js';
@@ -63,6 +66,7 @@ export function App(): JSX.Element {
             <Route path="/routines/:routineId" element={<RoutineBuilderScreen />} />
             <Route path="/progress" element={<ProgressScreen />} />
             <Route path="/import" element={<SheetImportScreen />} />
+            <Route path="/report" element={<ReportScreen />} />
             <Route path="/help" element={<HelpScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/settings/privacy" element={<PrivacyScreen />} />

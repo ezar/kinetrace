@@ -5,7 +5,7 @@
  * numbers in the library are only defaults: the physiotherapist's numbers win.
  */
 
-import type { ExerciseRunnerConfig, TargetBand } from '@kinetrace/engine';
+import type { ExerciseRunnerConfig, TargetBand, TempoTarget } from '@kinetrace/engine';
 import type { ExerciseDefinition } from './types.js';
 
 export interface RunnerOptions {
@@ -17,6 +17,8 @@ export interface RunnerOptions {
   reps?: number;
   /** Hold time requested by the routine, in seconds. */
   holdSeconds?: number;
+  /** Seconds per phase from the routine, replacing the library's. */
+  tempo?: readonly TempoTarget[];
 }
 
 export function toRunnerConfig(
@@ -37,6 +39,7 @@ export function toRunnerConfig(
     },
     rules: exercise.rules,
     targetReps: options.reps ?? exercise.defaults.reps,
+    ...((options.tempo ?? exercise.tempo) ? { tempo: options.tempo ?? exercise.tempo } : {}),
     ...(exercise.mode === 'hold'
       ? {
           hold: {

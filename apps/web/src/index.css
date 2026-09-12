@@ -160,3 +160,37 @@
     @apply bg-far-bg text-far-ink;
   }
 }
+
+/*
+ * Printing. Only the report is meant to be printed, and what comes out is a
+ * page for a clinician: no navigation, no buttons, no shadows, and nothing
+ * split across a page break mid-table.
+ */
+@media print {
+  nav,
+  [data-print='hide'] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .card {
+    border-color: #c9c4bb;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  table {
+    break-inside: auto;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+}

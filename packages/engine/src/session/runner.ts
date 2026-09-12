@@ -10,6 +10,7 @@ import type { MetricFrame, PoseFrame, ViewOrientation } from '../types.js';
 import { MetricEvaluator, type MetricSpec } from '../metrics/evaluator.js';
 import { RepMachine, type PhaseDef, type RepEvent, type RepTargets } from '../state/repMachine.js';
 import { HoldTimer, type HoldEvent } from '../state/holdTimer.js';
+import { TempoMonitor, type TempoEvent, type TempoTarget } from '../state/tempoMonitor.js';
 import { RuleEngine, type CueCandidate, type RuleDef } from '../rules/engine.js';
 import { CueScheduler, type ScheduledCue } from '../cues/scheduler.js';
 import { ConfidenceGate, type TrackingEvent } from './confidenceGate.js';
@@ -22,6 +23,7 @@ export const BUILT_IN_CUES = {
   holdComplete: 'engine.holdComplete',
   trackingLost: 'engine.trackingLost',
   safetyStop: 'engine.safetyStop',
+  rushed: 'engine.rushed',
 } as const;
 
 export interface ExerciseRunnerConfig {
@@ -36,6 +38,8 @@ export interface ExerciseRunnerConfig {
   rules: readonly RuleDef[];
   /** Repetitions requested by the routine. Only used to report progress. */
   targetReps?: number;
+  /** Seconds each phase should take. Absent means pacing is not judged. */
+  tempo?: readonly TempoTarget[];
   /** Hold configuration, required when `mode` is `hold`. */
   hold?: {
     stabilityToleranceDeg: number;
@@ -45,7 +49,7 @@ export interface ExerciseRunnerConfig {
 }
 
 export type EngineEvent =
-  RepEvent | HoldEvent | TrackingEvent | { type: 'safetyStop'; timestampMs: number };
+  RepEvent | HoldEvent | TrackingEvent | TempoEvent | { type: 'safetyStop'; timestampMs: number };
 
 export interface RunnerState {
   phaseId: string | null;
@@ -85,12 +89,14 @@ export class ExerciseRunner {
   private readonly rules: RuleEngine;
   private readonly scheduler = new CueScheduler();
   private readonly gate = new ConfidenceGate();
+  private readonly tempo: TempoMonitor;
   private readonly issues: Record<string, number> = {};
   private unsafe = false;
   private safetyReported = false;
 
   constructor(private readonly config: ExerciseRunnerConfig) {
     this.evaluator = new MetricEvaluator(config.metrics, { view: config.view });
+    this.tempo = new TempoMonitor(config.tempo ?? []);
     this.rules = new RuleEngine(config.rules, config.primaryMetric);
     this.repMachine =
       config.mode === 'reps'
@@ -118,6 +124,7 @@ export class ExerciseRunner {
     this.rules.reset();
     this.scheduler.reset();
     this.gate.reset();
+    this.tempo.reset();
     for (const key of Object.keys(this.issues)) delete this.issues[key];
     this.unsafe = false;
     this.safetyReported = false;
@@ -147,6 +154,18 @@ export class ExerciseRunner {
       if (this.repMachine) {
         for (const event of this.repMachine.update(metrics)) {
           events.push(event);
+          if (event.type === 'phase') {
+            for (const rushed of this.tempo.enter(event.phaseId, event.timestampMs)) {
+              events.push(rushed);
+              candidates.push({
+                ruleId: 'engine.rushed',
+                cueKey: BUILT_IN_CUES.rushed,
+                priority: 'form',
+                timestampMs: rushed.timestampMs,
+                params: { seconds: rushed.targetSeconds },
+              });
+            }
+          }
           if (event.type !== 'rep') continue;
           candidates.push({
             ruleId: event.good ? 'engine.goodRep' : 'engine.partialRep',

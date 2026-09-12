@@ -28,13 +28,14 @@ import {
   metricDescription,
   metricLabel,
   metricRange,
+  phaseLabel,
   reviewPrescription,
   type ExerciseDefinition,
   type Prescription,
   type PrescriptionIssue,
 } from '@kinetrace/exercises';
 import { metricLandmarkIndices, type TargetBand } from '@kinetrace/engine';
-import { db, type Routine, type RoutineExercise } from '../db/schema.js';
+import { db, type Routine, type RoutineExercise, type Session } from '../db/schema.js';
 import { saveRoutineReview } from '../db/repositories.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
@@ -42,6 +43,9 @@ import { AngleGauge } from '../components/AngleGauge.js';
 import { NumberField } from '../components/NumberField.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { CheckIcon } from '../components/icons.js';
+
+/** Recent sessions carrying a note or a pain score, shown to the professional. */
+const FELT_SHOWN = 6;
 
 /**
  * Fill in what the routine leaves to the library, so the professional is
@@ -67,8 +71,12 @@ function prescriptionOf(entry: RoutineExercise, exercise: ExerciseDefinition): P
     ...(entry.reps !== undefined ? { reps: entry.reps } : {}),
     ...(entry.holdSeconds !== undefined ? { holdSeconds: entry.holdSeconds } : {}),
     restSeconds: entry.restSeconds,
+    ...(entry.tempo ? { tempo: entry.tempo } : {}),
   };
 }
+
+/** Seconds to start from when a pace is switched on and nobody has set one. */
+const DEFAULT_PHASE_SECONDS = 2;
 
 export function ReviewScreen(): JSX.Element {
   const { routineId } = useParams();
@@ -77,6 +85,7 @@ export function ReviewScreen(): JSX.Element {
 
   const [routine, setRoutine] = useState<Routine | undefined>();
   const [entries, setEntries] = useState<RoutineExercise[]>([]);
+  const [felt, setFelt] = useState<Session[]>([]);
   const [by, setBy] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -91,6 +100,29 @@ export function ReviewScreen(): JSX.Element {
       setNote(found.review?.note ?? '');
     });
   }, [routineId]);
+
+  /**
+   * What the person has written about themselves. It never feeds any logic — the
+   * app promises that — but somebody deciding a range should have read it.
+   */
+  useEffect(() => {
+    if (!routine) return;
+    void db.sessions
+      .where('profileId')
+      .equals(routine.profileId)
+      .toArray()
+      .then((sessions) => {
+        setFelt(
+          sessions
+            .filter(
+              (session) =>
+                session.painScore !== undefined || (session.notes ?? '').trim().length > 0,
+            )
+            .sort((a, b) => b.startedAt - a.startedAt)
+            .slice(0, FELT_SHOWN),
+        );
+      });
+  }, [routine]);
 
   const update = (index: number, patch: Partial<RoutineExercise>): void => {
     setEntries((current) =>
@@ -144,6 +176,31 @@ export function ReviewScreen(): JSX.Element {
           </p>
         ) : null}
       </section>
+
+      {felt.length > 0 ? (
+        <section className="card mt-4 p-4">
+          <h2 className="font-medium">{t('review.howTheyFelt')}</h2>
+          <p className="text-sm text-muted">{t('summary.painHelp')}</p>
+          <ul className="mt-2 divide-y divide-line">
+            {felt.map((session) => (
+              <li key={session.id} className="flex items-baseline gap-3 py-2 text-sm">
+                <span className="w-20 shrink-0 text-muted">
+                  {new Date(session.startedAt).toLocaleDateString(language, {
+                    day: 'numeric',
+                    month: 'short',
+                  })}
+                </span>
+                {session.painScore !== undefined ? (
+                  <span className="chip shrink-0 text-xs">
+                    {t('review.painValue', { value: session.painScore })}
+                  </span>
+                ) : null}
+                <span className="flex-1 leading-relaxed">{session.notes}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="mt-4 space-y-4">
         {entries.map((entry, index) => (
@@ -348,6 +405,55 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
           onChange={(value) => onChange({ restSeconds: value })}
         />
       </div>
+
+      {/* Pacing. Only for counted exercises: a hold has one resting phase and
+          nothing to pace. Off unless somebody sets it, and the sixteen library
+          exercises that declare no tempo stay exactly as they are. */}
+      {exercise.mode === 'reps' ? (
+        <div className="space-y-2 border-t border-line p-4">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="h-5 w-5"
+              checked={entry.tempo !== undefined}
+              onChange={(event) =>
+                onChange({
+                  tempo: event.target.checked
+                    ? (exercise.tempo?.map((target) => ({ ...target })) ??
+                      exercise.phases.map((phase) => ({
+                        phase: phase.id,
+                        seconds: DEFAULT_PHASE_SECONDS,
+                      })))
+                    : undefined,
+                })
+              }
+            />
+            {t('review.tempo')}
+          </label>
+          {entry.tempo ? (
+            <>
+              <div className="grid grid-cols-2 gap-2">
+                {entry.tempo.map((target, position) => (
+                  <NumberField
+                    key={target.phase}
+                    label={phaseLabel(target.phase, language)}
+                    value={target.seconds}
+                    unit="s"
+                    onChange={(value) =>
+                      onChange({
+                        tempo: (entry.tempo ?? []).map((item, index) =>
+                          index === position ? { ...item, seconds: value } : item,
+                        ),
+                      })
+                    }
+                  />
+                ))}
+              </div>
+              <p className="text-sm leading-relaxed text-muted">{t('review.tempoHelp')}</p>
+            </>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="border-t border-line p-4">
         <button

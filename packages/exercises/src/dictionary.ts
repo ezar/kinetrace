@@ -23,7 +23,35 @@ export const ENGINE_CUES: Record<string, Localized> = {
     en: 'I lost you, step back into view',
   },
   'engine.safetyStop': { es: 'para y descansa', en: 'stop and rest' },
+  'engine.rushed': { es: 'más despacio, {seconds} s', en: 'slower, {seconds} s' },
 };
+
+/**
+ * Names for the phases of a repetition cycle. The ids are internal; these are
+ * what a person reads when they are asked how long a phase should take.
+ */
+export const PHASE_LABELS: Record<string, Localized> = {
+  rest: { es: 'reposo', en: 'rest' },
+  top: { es: 'arriba', en: 'top' },
+  bottom: { es: 'abajo', en: 'bottom' },
+  up: { es: 'subida', en: 'up' },
+  down: { es: 'bajada', en: 'down' },
+  hold: { es: 'sostén', en: 'hold' },
+  stand: { es: 'de pie', en: 'standing' },
+  neutral: { es: 'neutro', en: 'neutral' },
+  extended: { es: 'extensión', en: 'extended' },
+  tilted: { es: 'báscula', en: 'tilted' },
+  tabletop: { es: 'cuadrupedia', en: 'tabletop' },
+  rotated: { es: 'giro', en: 'rotated' },
+  hinged: { es: 'flexión de cadera', en: 'hinged' },
+  cat: { es: 'gato', en: 'cat' },
+  camel: { es: 'camello', en: 'camel' },
+};
+
+/** The readable name of a phase, or the id itself when it has no entry yet. */
+export function phaseLabel(id: string, language: 'es' | 'en'): string {
+  return PHASE_LABELS[id]?.[language] ?? id;
+}
 
 /** Cues referenced by the form rules in the library. */
 export const RULE_CUES: Record<string, Localized> = {

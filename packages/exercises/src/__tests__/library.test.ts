@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { METRIC_IDS } from '@kinetrace/engine';
 import { EXERCISES } from '../library/index.js';
+import { PHASE_LABELS } from '../dictionary.js';
 import { DEFAULT_ROUTINE_IDS, getExercise } from '../index.js';
 import { EXERCISE_TEXT, resolveText } from '../dictionary.js';
 import { formatIssues, validateExercise, validateLibrary } from '../validate.js';
@@ -137,5 +138,17 @@ describe('toRunnerConfig', () => {
   it('converts hold seconds into the engine unit', () => {
     const config = toRunnerConfig(getExercise('front-plank')!, { holdSeconds: 45 });
     expect(config.hold?.targetMs).toBe(45_000);
+  });
+});
+
+describe('phase names', () => {
+  it('exist for every phase the library declares', () => {
+    for (const exercise of EXERCISES) {
+      for (const phase of exercise.phases) {
+        expect(`${exercise.id}/${phase.id}: ${phase.id in PHASE_LABELS}`).toBe(
+          `${exercise.id}/${phase.id}: true`,
+        );
+      }
+    }
   });
 });

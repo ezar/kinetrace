@@ -1,7 +1,7 @@
 /** Turn a routine into the flat list of sets a session walks through. */
 
 import { getExercise, type ExerciseDefinition } from '@kinetrace/exercises';
-import type { TargetBand } from '@kinetrace/engine';
+import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 import type { Routine, RoutineExercise } from '../db/schema.js';
 
 export interface PlanItem {
@@ -19,6 +19,8 @@ export interface PlanItem {
   restSeconds: number;
   band?: TargetBand;
   safety?: TargetBand;
+  /** Seconds per phase, when somebody has prescribed a pace. */
+  tempo?: TempoTarget[];
   /** A line from the professional who reviewed this exercise. */
   physioNote?: string;
   /** Text from a sheet import that matched no exercise; shown but not tracked. */
@@ -45,6 +47,7 @@ export function buildPlan(routine: Pick<Routine, 'exercises'>): PlanItem[] {
         restSeconds: entry.restSeconds,
         band: entry.band,
         safety: entry.safety,
+        tempo: entry.tempo,
         physioNote: entry.physioNote,
         customNote: entry.customNote,
         tracked: Boolean(exercise),

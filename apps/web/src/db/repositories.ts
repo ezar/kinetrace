@@ -6,6 +6,7 @@ import {
   type AppSettings,
   type Profile,
   type Routine,
+  type Session,
   type RoutineExercise,
   type RoutineReview,
   type SetRecord,
@@ -141,6 +142,46 @@ export async function startSession(profileId: number, routineId: number): Promis
   return db.sessions.add({ profileId, routineId, startedAt: Date.now() } as never);
 }
 
+/**
+ * How long an abandoned session stays worth offering to continue. Past this it
+ * is yesterday's, and starting again is the honest thing.
+ */
+export const RESUMABLE_WINDOW_MS = 12 * 60 * 60 * 1000;
+
+export interface ResumableSession {
+  session: Session;
+  /** Position in the plan to carry on from. */
+  nextIndex: number;
+}
+
+/**
+ * A session that was started and never finished, recent enough to pick up.
+ *
+ * Every set is written the moment it ends, so nothing was lost when the app
+ * closed — but the session row stayed open and the next attempt began at zero.
+ * Only offered when at least one set was done, since otherwise continuing and
+ * starting are the same thing.
+ */
+export async function resumableSession(profileId: number): Promise<ResumableSession | undefined> {
+  const sessions = await db.sessions.where('profileId').equals(profileId).toArray();
+  const open = sessions
+    .filter(
+      (session) =>
+        session.endedAt === undefined && Date.now() - session.startedAt < RESUMABLE_WINDOW_MS,
+    )
+    .sort((a, b) => b.startedAt - a.startedAt)[0];
+  if (!open) return undefined;
+  const sets = await db.sets.where('sessionId').equals(open.id).toArray();
+  if (sets.length === 0) return undefined;
+  return { session: open, nextIndex: Math.max(...sets.map((set) => set.index)) + 1 };
+}
+
+/** Sets already recorded against a session, in plan order. */
+export async function setsForSession(sessionId: number): Promise<SetRecord[]> {
+  const sets = await db.sets.where('sessionId').equals(sessionId).toArray();
+  return sets.sort((a, b) => a.index - b.index);
+}
+
 export async function finishSession(
   sessionId: number,
   patch: { notes?: string; painScore?: number },
@@ -238,8 +279,6 @@ export interface ProfileExport {
     sets: Array<Omit<SetRecord, 'id' | 'sessionId'>>;
   }>;
 }
-
-import type { Session } from './schema.js';
 
 export async function exportProfile(profileId: number): Promise<ProfileExport> {
   const profile = await db.profiles.get(profileId);

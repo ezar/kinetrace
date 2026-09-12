@@ -8,6 +8,7 @@
  */
 
 import type { MetricFrame } from '../types.js';
+import { MAX_FRAME_GAP_MS } from '../time.js';
 import type { TargetBand } from './repMachine.js';
 
 export interface HoldConfig {
@@ -84,7 +85,11 @@ export class HoldTimer {
       this.outsideSince = null;
       this.reportedLoss = false;
       if (previousTimestamp !== null && this.holding) {
-        this.heldMs += Math.max(0, frame.timestampMs - previousTimestamp);
+        // Only time the engine actually watched. A longer gap means the frames
+        // stopped — a locked screen, a call — and crediting it would hand
+        // somebody a finished plank they never held.
+        const delta = Math.max(0, frame.timestampMs - previousTimestamp);
+        this.heldMs += Math.min(delta, MAX_FRAME_GAP_MS);
       }
       this.holding = true;
       if (this.heldMs >= this.config.targetMs) {

@@ -1,11 +1,18 @@
 /** Home: who is training, what they are doing today, and one big Start. */
 
 import type { JSX } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getExercise } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
-import { createStarterRoutine, streakFromDates } from '../db/repositories.js';
+import {
+  createStarterRoutine,
+  deleteSession,
+  resumableSession,
+  streakFromDates,
+  type ResumableSession,
+} from '../db/repositories.js';
 import { estimateMinutes } from '../session/plan.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
@@ -44,6 +51,29 @@ export function HomeScreen(): JSX.Element {
     [profile?.id],
     [],
   );
+
+  /**
+   * A session that was started and never finished. Every set it recorded is
+   * already saved, so continuing means carrying on after the last one rather
+   * than doing the whole routine again.
+   */
+  const [unfinished, setUnfinished] = useState<ResumableSession | null>(null);
+  useEffect(() => {
+    if (profile === undefined) return;
+    let cancelled = false;
+    void resumableSession(profile.id).then((found) => {
+      if (!cancelled) setUnfinished(found ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.id, routines]);
+
+  const discardUnfinished = async (): Promise<void> => {
+    if (!unfinished) return;
+    await deleteSession(unfinished.session.id);
+    setUnfinished(null);
+  };
 
   const startStarterRoutine = async (): Promise<void> => {
     if (!profile) return;
@@ -87,6 +117,31 @@ export function HomeScreen(): JSX.Element {
           {profile ? <ProfileChip profile={profile} /> : null}
         </Link>
       </header>
+
+      {unfinished ? (
+        <section className="card flex flex-wrap items-center justify-between gap-3 p-4">
+          <div>
+            <h2 className="font-medium">{t('home.unfinished')}</h2>
+            <p className="text-sm text-muted">
+              {t('home.unfinishedHelp', { count: unfinished.nextIndex })}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              to={`/session/${unfinished.session.routineId}?resume=${unfinished.session.id}`}
+              className="btn-primary px-4 py-2 text-sm"
+            >
+              {t('home.unfinishedContinue')}
+            </Link>
+            <button
+              className="btn-ghost px-3 py-2 text-sm"
+              onClick={() => void discardUnfinished()}
+            >
+              {t('common.delete')}
+            </button>
+          </div>
+        </section>
+      ) : null}
 
       {today ? (
         <TodayCard routine={today} language={language} />

@@ -8,7 +8,7 @@
 
 import type { JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   SetupAssistant,
   metricLandmarkIndices,
@@ -52,6 +52,8 @@ const NO_BODY_CHECKS: SetupCheck[] = [
 
 export function SessionScreen(): JSX.Element {
   const { routineId } = useParams();
+  const [search] = useSearchParams();
+  const resumeSessionId = Number(search.get('resume')) || undefined;
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const settings = useSettingsStore();
@@ -63,7 +65,7 @@ export function SessionScreen(): JSX.Element {
     void db.routines.get(Number(routineId)).then(setRoutine);
   }, [routineId]);
 
-  const session = useSessionRunner(routine, settings.activeProfileId);
+  const session = useSessionRunner(routine, settings.activeProfileId, resumeSessionId);
   const exercise = session.item?.exercise;
 
   // The camera setup assistant runs until every check has been stable for two seconds.
@@ -231,6 +233,7 @@ export function SessionScreen(): JSX.Element {
             reference={exercise?.reference}
             view={exercise?.view.orientation ?? 'side'}
             tip={exercise ? t(exercise.cameraTipKey) : ''}
+            canKeepScreenAwake={session.canKeepScreenAwake}
             onStart={() => void session.start()}
           />
         ) : session.stage === 'rest' ? (
@@ -288,6 +291,14 @@ export function SessionScreen(): JSX.Element {
           <p className="text-far-sm">{t('session.paused')}</p>
           <button className="btn-primary bg-canvas text-ink" onClick={session.togglePause}>
             {t('session.resume')}
+          </button>
+          {/* Reachable from the mat: both hands up pauses, and the decision is
+              here at full size rather than needing a gesture of its own. */}
+          <button
+            className="btn-secondary border-far-line bg-far-surface text-far-ink"
+            onClick={session.redoSet}
+          >
+            {t('session.redoSet')}
           </button>
           <button className="btn-ghost text-canvas" onClick={() => void endSession()}>
             {t('session.end')}
@@ -438,6 +449,8 @@ interface SetupPanelProps {
   modelLoading: boolean;
   reference?: Parameters<typeof SilhouetteGuide>[0]['reference'];
   view: 'side' | 'front';
+  /** False where the browser cannot hold the screen awake; the user should know. */
+  canKeepScreenAwake: boolean;
   onStart: () => void;
 }
 
@@ -450,6 +463,7 @@ function SetupPanel({
   reference,
   view,
   tip,
+  canKeepScreenAwake,
   onStart,
 }: SetupPanelProps): JSX.Element {
   const { t } = useTranslation();
@@ -544,6 +558,12 @@ function SetupPanel({
         <CameraIcon size={22} className="mt-0.5 shrink-0 text-far-muted" />
         <span className="text-[15px] leading-relaxed text-far-muted">{tip}</span>
       </div>
+
+      {/* Kinetrace keeps the screen on by itself where it can. Where it cannot,
+          saying so beats a black screen halfway through the second set. */}
+      {!canKeepScreenAwake ? (
+        <p className="text-[14px] leading-relaxed text-far-dim">{t('session.screenMaySleep')}</p>
+      ) : null}
 
       <div className="mt-auto flex flex-col items-center gap-3">
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-far-track">
