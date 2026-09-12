@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+    body { margin: 0; font-family: Figtree, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+    a { color: #d9702f; } a:hover { color: #b45a22; }
+    .card { background: #fff; border: 1px solid #e3ded6; border-radius: 18px; padding: 16px; }
+    .h2 { font-size: 16px; font-weight: 600; margin: 0; }
+    .p { font-size: 14px; line-height: 1.6; color: #6a6761; margin: 4px 0 0; }
+    .row { display: grid; grid-template-columns: 6rem 1fr; gap: 0 12px; padding: 8px 0; font-size: 14px; border-top: 1px solid #e3ded6; }
+    .row span:first-child { color: #6a6761; }
+    .item { padding: 8px 0; border-top: 1px solid #e3ded6; }
+    .term { font-size: 14px; font-weight: 500; }
+    .def { font-size: 14px; line-height: 1.55; color: #6a6761; }
+    .btn { font-size: 14px; padding: 9px 16px; border-radius: 999px; border: 1px solid #cdc6bc; background: #f7f5f2; display: inline-flex; align-items: center; gap: 7px; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 2800px; background: #f7f5f2; color: #1b1a18; box-sizing: border-box; overflow: hidden; padding: 24px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+
+  <div>
+    <h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em">Ayuda</h1>
+    <p class="p" style="font-size: 15px">Cómo se usa, y qué hacer cuando algo no va</p>
+  </div>
+
+  <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+    <div>
+      <h2 class="h2">La introducción</h2>
+      <p class="p">Las cuatro cosas que conviene saber antes de empezar.</p>
+    </div>
+    <span class="btn" style="flex-shrink: 0">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>Verla otra vez</span>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Manejarlo desde la esterilla</h2>
+    <p class="p">El móvil está a dos o tres metros: no hace falta levantarse a tocar la pantalla a mitad de una serie.</p>
+    <div style="display: flex; gap: 10px; margin-top: 12px">
+      <div style="flex: 1; background: #f7f5f2; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 6px; align-items: center">
+        <svg viewBox="0 0 160 150" style="width: 100%">
+          <line x1="14" y1="138" x2="146" y2="138" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/>
+          <g fill="none" stroke="#1b1a18" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M80 36 L80 96"/>
+            <path d="M80 96 L64 134"/>
+            <path d="M80 96 L96 134"/>
+          </g>
+          <path d="M66 96 A 48 48 0 0 1 42 32" fill="none" stroke="#e8c3a5" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>
+          <path d="M94 96 A 48 48 0 0 0 118 32" fill="none" stroke="#e8c3a5" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>
+          <path d="M80 52 L44 22" fill="none" stroke="#d9702f" stroke-width="9" stroke-linecap="round"/>
+          <path d="M80 52 L116 22" fill="none" stroke="#d9702f" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="26" r="10" fill="none" stroke="#1b1a18" stroke-width="7"/>
+        </svg>
+        <span style="font-size: 12.5px; line-height: 1.35; text-align: center">Levanta las dos manos para pausar</span>
+      </div>
+      <div style="flex: 1; background: #f7f5f2; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 6px; align-items: center">
+        <svg viewBox="0 0 160 150" style="width: 100%">
+          <line x1="14" y1="138" x2="146" y2="138" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/>
+          <g fill="none" stroke="#1b1a18" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M80 36 L80 96"/>
+            <path d="M80 96 L64 134"/>
+            <path d="M80 96 L96 134"/>
+            <path d="M80 52 L52 82"/>
+          </g>
+          <path d="M108 78 A 44 44 0 0 0 120 40" fill="none" stroke="#e8c3a5" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>
+          <path d="M80 52 L118 28" fill="none" stroke="#d9702f" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="26" r="10" fill="none" stroke="#1b1a18" stroke-width="7"/>
+        </svg>
+        <span style="font-size: 12.5px; line-height: 1.35; text-align: center">Saluda con una mano para pasar al siguiente</span>
+      </div>
+    </div>
+
+    <h3 class="h2" style="margin-top: 14px">Hablarle</h3>
+    <div style="margin-top: 6px">
+      <div class="row"><span>Pausar</span><span>«pausa», «espera», «un momento»</span></div>
+      <div class="row"><span>Seguir</span><span>«sigue», «seguimos», «continúa», «vamos»</span></div>
+      <div class="row"><span>Siguiente</span><span>«siguiente», «siguiente ejercicio», «salta»</span></div>
+      <div class="row"><span>Repetir</span><span>«repite», «otra vez», «qué hago»</span></div>
+      <div class="row"><span>Terminar</span><span>«terminar», «parar», «fin de la sesión»</span></div>
+    </div>
+    <p class="p">Los comandos de voz están apagados. Puedes encenderlos en <span style="color: #d9702f; text-decoration: underline; text-underline-offset: 4px">Ajustes</span>.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Dónde poner la cámara</h2>
+    <p class="p">Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.</p>
+    <div style="margin-top: 8px">
+      <div class="item"><div class="term">Tumbado, cuatro patas · de lado</div><div class="def">Móvil en el suelo apoyado en un libro, a 2,5 m, apuntando a la esterilla desde el lado</div></div>
+      <div class="item"><div class="term">Tumbado · de frente</div><div class="def">Móvil en el suelo a 2,5 m, apuntando a la esterilla de frente</div></div>
+      <div class="item"><div class="term">De pie, sentado · de lado</div><div class="def">Móvil en una silla, a 3 m, de lado a ti</div></div>
+      <div class="item"><div class="term">De pie · de frente</div><div class="def">Móvil en una silla, a 3 m, de frente a ti</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Qué significan los números</h2>
+    <div style="margin-top: 8px">
+      <div class="item"><div class="term">Repeticiones</div><div class="def">Las que llegaron al rango que te han marcado.</div></div>
+      <div class="item"><div class="term">Parciales</div><div class="def">Las que hiciste enteras pero se quedaron cortas. Cuentan como hechas, no como buenas: es mejor saberlo que inflar el número.</div></div>
+      <div class="item"><div class="term">Rango</div><div class="def">Hasta dónde llegaste, en grados. Kinetrace guarda el mejor de la serie y la media, y los dibuja semana a semana.</div></div>
+      <div class="item"><div class="term">Porcentaje de buenas</div><div class="def">Qué parte de las repeticiones llegó al rango.</div></div>
+      <div class="item"><div class="term">El rango objetivo</div><div class="def">Los grados a los que apuntas. La biblioteca trae unos por defecto; los de tu fisioterapeuta los sustituyen.</div></div>
+      <div class="item"><div class="term">La parada de seguridad</div><div class="def">El punto en el que Kinetrace te dice que pares. Si lo cruzas, la indicación es parar y descansar, por encima de cualquier otra.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Cuando no te ve</h2>
+    <p class="p">Antes de empezar, Kinetrace comprueba que te ve entero y bien colocado, y no cuenta nada hasta que sea así. Esto es lo que te va a pedir:</p>
+    <ul style="margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Que se te vea entero, de la cabeza a los pies</li>
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Aléjate un poco</li>
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Acércate un poco</li>
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Ponte de lado a la cámara</li>
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Ponte de frente a la cámara</li>
+      <li style="display: flex; gap: 8px; font-size: 14px"><span style="color: #d9702f">·</span>Hace falta más luz</li>
+    </ul>
+    <p class="p">Si aun así te pierde, prueba con más luz, con ropa que contraste con el suelo, o con un modelo de postura más preciso en Ajustes.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Instalar Kinetrace</h2>
+    <p class="p">Instalada se abre a pantalla completa, sin la barra del navegador, y arranca desde el icono.</p>
+    <p class="p">En iPhone: Compartir → Añadir a la pantalla de inicio.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Tus datos</h2>
+    <p class="p">Todo vive en este dispositivo. Puedes exportar un perfil a un archivo, llevártelo a otro sitio, o borrarlo todo, desde Ajustes.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px">
+      <span class="btn">Privacidad</span>
+      <span class="btn" style="border-color: transparent; background: transparent; color: #6a6761">Acerca de</span>
+    </div>
+  </div>
+
+  <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #6a6761">Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta.</p>
+</div>
+</x-dc>
+</body>
+</html>

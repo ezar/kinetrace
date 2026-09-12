@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+    body { margin: 0; font-family: Figtree, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+    a { color: #d9702f; } a:hover { color: #b45a22; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #f7f5f2; color: #1b1a18; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden; padding: 16px 20px 24px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1b1a18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      <div style="display: flex; gap: 6px">
+        <span style="width: 24px; height: 5px; border-radius: 999px; background: #d9702f"></span>
+        <span style="width: 24px; height: 5px; border-radius: 999px; background: #d9702f"></span>
+        <span style="width: 24px; height: 5px; border-radius: 999px; background: #e3ded6"></span>
+        <span style="width: 24px; height: 5px; border-radius: 999px; background: #e3ded6"></span>
+        <span style="width: 24px; height: 5px; border-radius: 999px; background: #e3ded6"></span>
+      </div>
+    </div>
+    <span style="font-size: 14px; color: #6a6761">Saltar</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 24px 0">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-size: 27px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15">La cámara no sale de aquí</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6a6761">El vídeo se procesa en tu dispositivo, fotograma a fotograma, y se descarta. No se guarda ni se envía a ningún sitio. Lo que se guarda son ángulos y repeticiones, aquí mismo.</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 7px 13px; border-radius: 999px; border: 1px solid #e3ded6; background: #fff">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2c7a58" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>Sin vídeo</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 7px 13px; border-radius: 999px; border: 1px solid #e3ded6; background: #fff">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2c7a58" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>Sin cuenta</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 7px 13px; border-radius: 999px; border: 1px solid #e3ded6; background: #fff">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2c7a58" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>Sin analítica</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 7px 13px; border-radius: 999px; border: 1px solid #e3ded6; background: #fff">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2c7a58" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>Funciona sin conexión</span>
+    </div>
+
+    <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 16px">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="14" height="11" rx="2.5"/><path d="m16.5 11.5 5-3v7l-5-3z"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d9702f" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h12"/><path d="m13 8 4 4-4 4"/></svg>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <div style="width: 58px; height: 58px; border-radius: 16px; border: 1px solid #e3ded6; background: #f7f5f2; display: flex; align-items: center; justify-content: center">
+          <span style="font-size: 19px; font-weight: 700; color: #2c7a58">142°</span>
+        </div>
+        <span style="font-size: 11px; color: #6a6761">se guarda</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <div style="width: 58px; height: 58px; border-radius: 16px; border: 1px dashed #cdc6bc; display: flex; align-items: center; justify-content: center">
+          <svg viewBox="0 0 60 60" style="width: 42px">
+            <g fill="none" stroke="#cdc6bc" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M30 22 L30 38"/><path d="M30 24 L20 32"/><path d="M30 24 L40 32"/>
+              <path d="M30 38 L23 50"/><path d="M30 38 L37 50"/>
+            </g>
+            <circle cx="30" cy="14" r="6" fill="none" stroke="#cdc6bc" stroke-width="4"/>
+            <path d="M12 50 L48 10" stroke="#b3352a" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span style="font-size: 11px; color: #6a6761">se descarta</span>
+      </div>
+    </div>
+
+    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #6a6761">Kinetrace te pedirá la cámara cuando empieces una sesión, y el micrófono solo si enciendes los comandos de voz. Nunca antes.</p>
+  </div>
+
+  <button style="border: 0; cursor: pointer; height: 56px; border-radius: 999px; background: #1b1a18; color: #f7f5f2; font-family: inherit; font-size: 17px; font-weight: 600">Continuar</button>
+</div>
+</x-dc>
+</body>
+</html>

@@ -2,7 +2,9 @@
   "pages": [
     { "id": "page-1", "name": "Sistema" },
     { "id": "page-2", "name": "Pantallas" },
-    { "id": "page-3", "name": "Sesión" }
+    { "id": "page-3", "name": "Sesión" },
+    { "id": "page-4", "name": "Primer arranque" },
+    { "id": "page-5", "name": "Profesional" }
   ],
   "artboards": [
     { "file": "Tokens.dc.html", "page": "page-1", "x": 0, "y": 0, "w": 880, "h": 1100, "title": "Fundamentos" },
@@ -18,13 +20,23 @@
     { "file": "Replay.dc.html", "page": "page-2", "x": 470, "y": 964, "w": 390, "h": 844, "title": "Repetición del esqueleto" },
     { "file": "Importar.dc.html", "page": "page-2", "x": 940, "y": 964, "w": 390, "h": 844, "title": "Importar la hoja" },
     { "file": "Ajustes.dc.html", "page": "page-2", "x": 1410, "y": 964, "w": 390, "h": 844, "title": "Ajustes" },
+    { "file": "Ayuda.dc.html", "page": "page-2", "x": 1880, "y": 964, "w": 390, "h": 2800, "title": "Ayuda" },
 
     { "file": "Camara.dc.html", "page": "page-3", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Colocar la cámara" },
     { "file": "SesionVertical.dc.html", "page": "page-3", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Sesión · vertical" },
     { "file": "Descanso.dc.html", "page": "page-3", "x": 940, "y": 0, "w": 390, "h": 844, "title": "Descanso" },
     { "file": "Resumen.dc.html", "page": "page-3", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "Resumen" },
     { "file": "SesionHorizontal.dc.html", "page": "page-3", "x": 0, "y": 964, "w": 844, "h": 390, "title": "Sesión · horizontal" },
-    { "file": "SesionPortatil.dc.html", "page": "page-3", "x": 924, "y": 964, "w": 1280, "h": 800, "title": "Sesión · portátil 13\"" }
+    { "file": "SesionPortatil.dc.html", "page": "page-3", "x": 924, "y": 964, "w": 1280, "h": 800, "title": "Sesión · portátil 13\"" },
+
+    { "file": "ArranqueQue.dc.html", "page": "page-4", "x": 0, "y": 0, "w": 390, "h": 844, "title": "1 · Qué es esto" },
+    { "file": "ArranquePrivacidad.dc.html", "page": "page-4", "x": 470, "y": 0, "w": 390, "h": 844, "title": "2 · La cámara" },
+    { "file": "ArranquePerfil.dc.html", "page": "page-4", "x": 940, "y": 0, "w": 390, "h": 844, "title": "3 · Quién entrena" },
+    { "file": "ArranqueRutina.dc.html", "page": "page-4", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "4 · Qué vas a hacer" },
+    { "file": "ArranqueEsterilla.dc.html", "page": "page-4", "x": 1880, "y": 0, "w": 390, "h": 844, "title": "5 · Desde la esterilla" },
+
+    { "file": "Revision.dc.html", "page": "page-5", "x": 0, "y": 0, "w": 390, "h": 1740, "title": "Revisión profesional" },
+    { "file": "Hoja.dc.html", "page": "page-5", "x": 470, "y": 0, "w": 794, "h": 1123, "title": "Hoja para la consulta" }
   ],
   "annotations": [
     {
@@ -74,7 +86,47 @@
       "y": -190,
       "w": 400,
       "text": "Nadie está cerca del móvil: el asistente arranca la sesión solo cuando los puntos llevan dos segundos estables, y la barra inferior recuerda los dos gestos."
+    },
+    {
+      "id": "nota-ayuda",
+      "page": "page-2",
+      "x": 1880,
+      "y": 754,
+      "w": 400,
+      "text": "Casi toda esta pantalla se genera a partir de la biblioteca y del motor: los gestos los dibuja el mismo muñeco que la sesión, el vocabulario de voz es el que usa el reconocedor, los consejos de cámara son los de los ejercicios y el apartado de «cuando no te ve» es, palabra por palabra, lo que dice el asistente de colocación.\n\nEs la única forma de que la ayuda siga siendo cierta cuando se añada el ejercicio número veinte."
+    },
+    {
+      "id": "nota-arranque",
+      "page": "page-4",
+      "x": 0,
+      "y": -230,
+      "w": 470,
+      "text": "Cinco pantallas, en el orden en que alguien las necesita. Dos no son decoración:\n\nLa promesa de privacidad va ANTES de que el navegador pida la cámara. Ese diálogo es donde se gana o se pierde la confianza, y llega en la sesión, no aquí.\n\nY los gestos son lo único de Kinetrace que nadie encontraría solo: durante la sesión la ayuda está a tres metros y cabe en una línea."
+    },
+    {
+      "id": "nota-arranque-repaso",
+      "page": "page-4",
+      "x": 1410,
+      "y": -230,
+      "w": 460,
+      "text": "Todo esto se salta y se repite desde Ayuda. Al repetirlo solo se ven tres pasos — qué es, la cámara y la esterilla: el perfil y la rutina ya existen, y volver a pasar por ellos crearía un segundo de cada uno.\n\nNinguna de las cinco pide un permiso. La cámara la pide la sesión y el micrófono los comandos de voz, cada uno cuando se usa."
+    },
+    {
+      "id": "nota-revision",
+      "page": "page-5",
+      "x": 0,
+      "y": -250,
+      "w": 430,
+      "text": "La esfera se escala alrededor del objetivo, no de la parada de seguridad: un rango de seguridad de 80 a 200° aplastaría un objetivo de 20° hasta dejarlo en una rendija.\n\nEl ritmo solo aparece en los ejercicios de repeticiones — un isométrico tiene una sola fase y nada que marcar — y las fases se piden por su nombre, no por su número.\n\nLo que la persona ha anotado se enseña, nunca se resume: ni media, ni tendencia, ni color que lo califique."
+    },
+    {
+      "id": "nota-hoja",
+      "page": "page-5",
+      "x": 470,
+      "y": -250,
+      "w": 470,
+      "text": "Una hoja de papel, no una pantalla: la consulta dura veinte minutos y un teléfono con gráficas que hay que ir tocando no sirve.\n\nCuatro columnas, porque caben en un móvil. La medida va en la misma celda que el objetivo contra el que se juzga — leer una contra otro es para lo que existe la columna — y el objetivo es el que está en vigor, con el nombre de quien lo puso.\n\n«18 series · 212 rep.» son dos hechos, no una multiplicación: «18 × 212» diría doscientas doce repeticiones en cada serie."
     }
   ],
-  "launch": { "view": "canvas", "page": "page-2" }
+  "launch": { "view": "canvas", "page": "page-4" }
 }
