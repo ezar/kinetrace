@@ -169,3 +169,60 @@ test('offers voice commands, or says why it cannot', async ({ page }) => {
   await expect(toggle).toBeChecked();
   await expect(page.getByText(/«pausa»|«pause»/)).toBeVisible();
 });
+
+/**
+ * The professional review. The numbers the library ships are defaults, and this
+ * is where somebody qualified replaces them — including the check that knows
+ * how the engine counts and will not let a target be signed that the engine
+ * could never judge against.
+ */
+test('lets a professional review the exercises and sign', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+
+  // Through the first run to get a profile and the starter routine.
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  await page.getByRole('link', { name: /editar|edit/i }).click();
+  await expect(page.getByText(/rangos por defecto|default ranges/i)).toBeVisible();
+  await page.getByRole('button', { name: /revisar los ejercicios|review the exercises/i }).click();
+
+  const sign = page.getByRole('button', { name: /^firmar$|^sign$/i });
+  const signature = page.getByLabel(/firma|signature/i);
+  const bridge = page
+    .locator('section')
+    .filter({ hasText: /puente de glúteos|glute bridge/i })
+    .first();
+
+  // The library's own numbers raise nothing, and can be signed.
+  await signature.fill('Dra. Ruiz');
+  await expect(sign).toBeEnabled();
+
+  // A target below the point a repetition is counted at is only a warning: the
+  // professional is the authority, the app just makes sure they can see it.
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('140');
+  await expect(bridge.getByText(/148/)).toBeVisible();
+  await expect(sign).toBeEnabled();
+
+  // A target nobody could reach is an error, and blocks the signature.
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('200');
+  await expect(page.getByText(/marcado en rojo|marked in red/i)).toBeVisible();
+  await expect(sign).toBeDisabled();
+
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('170');
+  await expect(sign).toBeEnabled();
+  await sign.click();
+
+  // Signed, and the routine says so from here on.
+  await expect(page).toHaveURL(/routines\/\d+$/);
+  await expect(page.getByText(/dra\. ruiz/i)).toBeVisible();
+  expect(errors).toEqual([]);
+});

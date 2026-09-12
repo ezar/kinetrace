@@ -12,6 +12,7 @@ import { useTranslation } from '../i18n/useTranslation.js';
 import { EmptyState } from '../components/EmptyState.js';
 import { ProfileChip } from '../components/ProfileChip.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
+import { ReviewStamp } from '../components/ReviewStamp.js';
 import { PlayIcon, PlusIcon } from '../components/icons.js';
 
 /** Up to four exercises are shown as thumbnails; the rest become a count. */
@@ -185,6 +186,9 @@ function TodayCard({
           {routine.exercises.length} ·{' '}
           {t('routine.estimated', { minutes: estimateMinutes(routine) })}
         </span>
+        {/* Only when somebody has signed: an unreviewed routine is the normal
+            case and does not need nagging about on the home screen. */}
+        {routine.review ? <ReviewStamp review={routine.review} className="mt-1" /> : null}
       </div>
 
       <div className="mt-4 flex gap-2">

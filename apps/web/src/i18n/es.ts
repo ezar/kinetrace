@@ -140,6 +140,7 @@ export const es = {
   'session.exerciseOf': 'Ejercicio {current} de {total}',
   'session.getReady': 'Prepárate',
   'session.safetyStop': 'Para y descansa',
+  'session.physioSays': 'Tu fisio: {note}',
 
   'summary.title': 'Resumen',
   'summary.goodReps': 'Repeticiones buenas',
@@ -226,6 +227,56 @@ export const es = {
   'welcome.mat.voice': 'También puedes hablarle: «pausa», «sigue», «siguiente», «repite».',
   'welcome.mat.voiceOn': 'Activar los comandos de voz ({size} MB)',
   'welcome.mat.voiceDone': 'Comandos de voz activados',
+
+  'review.title': 'Revisión profesional',
+  'review.open': 'Revisar los ejercicios',
+  'review.again': 'Revisar otra vez',
+  'review.intro':
+    'Estas son las cifras con las que Kinetrace va a contar, medir y corregir. Ajústalas a esta persona y fírmalas.',
+  'review.privacy':
+    'Todo se queda en este dispositivo. La firma es constancia de que alguien lo ha revisado, no una identificación.',
+  'review.notReviewed': 'Con los rangos por defecto de la biblioteca',
+  'review.signedBy': 'Revisado por {name} el {date}',
+  'review.signature': 'Firma',
+  'review.signaturePlaceholder': 'Nombre del profesional',
+  'review.sign': 'Firmar',
+  'review.notePlaceholder': 'Nota sobre la rutina (opcional)',
+  'review.notePlaceholderExercise': 'Lo que quieras que lea antes de esta serie',
+  'review.note': 'Nota para la persona',
+  'review.blocked': 'Corrige lo que está marcado en rojo antes de firmar',
+  'review.bandMin': 'Objetivo desde',
+  'review.bandMax': 'hasta',
+  'review.safety': 'Parada de seguridad',
+  'review.safetyMin': 'Mínimo',
+  'review.safetyMax': 'Máximo',
+  'review.cues': 'Lo que le va a decir ({count})',
+  'review.noCues': 'Este ejercicio no tiene correcciones automáticas.',
+  'review.untracked': 'Texto de una hoja importada. Kinetrace no lo mide.',
+  'review.priority.safety': 'seguridad',
+  'review.priority.form': 'técnica',
+  'review.priority.encouragement': 'ánimo',
+
+  'review.issue.bandInverted': 'El objetivo está al revés: {min} no es menor que {max}.',
+  'review.issue.safetyInverted':
+    'La parada de seguridad está al revés: {min} no es menor que {max}.',
+  'review.issue.bandOutsideSafety':
+    'El objetivo se sale de la parada de seguridad ({min}–{max}°): hacer lo que le pides cortaría la sesión.',
+  'review.issue.bandOutsideMetric':
+    'Fuera de lo que se puede medir aquí ({min}–{max}°). Nadie puede llegar a ese ángulo.',
+  'review.issue.safetyNeverFires':
+    'La parada de seguridad abarca todo lo medible ({min}–{max}°), así que nunca va a saltar.',
+  'review.issue.bandOutsideCountingRange':
+    'Una repetición no se cuenta hasta pasar de {threshold}°, y el objetivo entero se queda por debajo: ninguna repetición podría darse por buena.',
+  'review.issue.bandNotDiscriminating':
+    'Una repetición ya tiene que pasar de {threshold}° para contarse, así que con este objetivo todas saldrían buenas. Súbelo si quieres que distinga.',
+  'review.issue.bandNarrowerThanWobble':
+    'Un margen de {width}° es más estrecho que el temblor normal de la medida ({wobble}°). Va a parecer aleatorio.',
+  'review.issue.farFromDefault':
+    'Muy lejos del rango de la biblioteca ({min}–{max}°). Si es a propósito, adelante; si es un dedazo, aquí está.',
+  'review.issue.setsInvalid': 'Las series tienen que ser un número entero de al menos 1.',
+  'review.issue.repsInvalid': 'Las repeticiones tienen que ser un número entero de al menos 1.',
+  'review.issue.holdInvalid': 'El tiempo de sostén tiene que ser de al menos 1 segundo.',
+  'review.issue.restInvalid': 'El descanso no puede ser negativo.',
 
   'settings.title': 'Ajustes',
   'settings.language': 'Idioma',

@@ -141,6 +141,7 @@ export const en: Record<TranslationKey, string> = {
   'session.exerciseOf': 'Exercise {current} of {total}',
   'session.getReady': 'Get ready',
   'session.safetyStop': 'Stop and rest',
+  'session.physioSays': 'Your physio: {note}',
 
   'summary.title': 'Summary',
   'summary.goodReps': 'Good reps',
@@ -227,6 +228,56 @@ export const en: Record<TranslationKey, string> = {
   'welcome.mat.voice': 'You can also talk to it: "pause", "continue", "next", "repeat".',
   'welcome.mat.voiceOn': 'Turn on voice commands ({size} MB)',
   'welcome.mat.voiceDone': 'Voice commands are on',
+
+  'review.title': 'Professional review',
+  'review.open': 'Review the exercises',
+  'review.again': 'Review again',
+  'review.intro':
+    'These are the numbers Kinetrace will count, measure and correct against. Fit them to this person and sign.',
+  'review.privacy':
+    'All of it stays on this device. The signature is a record that somebody checked, not an identification.',
+  'review.notReviewed': "Using the library's default ranges",
+  'review.signedBy': 'Reviewed by {name} on {date}',
+  'review.signature': 'Signature',
+  'review.signaturePlaceholder': "The professional's name",
+  'review.sign': 'Sign',
+  'review.notePlaceholder': 'A note about the routine (optional)',
+  'review.notePlaceholderExercise': 'What they should read before this set',
+  'review.note': 'Note for the person',
+  'review.blocked': 'Fix what is marked in red before signing',
+  'review.bandMin': 'Target from',
+  'review.bandMax': 'to',
+  'review.safety': 'Safety stop',
+  'review.safetyMin': 'Lowest',
+  'review.safetyMax': 'Highest',
+  'review.cues': 'What it will say ({count})',
+  'review.noCues': 'This exercise has no automatic corrections.',
+  'review.untracked': 'Text from an imported sheet. Kinetrace does not measure it.',
+  'review.priority.safety': 'safety',
+  'review.priority.form': 'form',
+  'review.priority.encouragement': 'encouragement',
+
+  'review.issue.bandInverted': 'The target is the wrong way round: {min} is not below {max}.',
+  'review.issue.safetyInverted':
+    'The safety stop is the wrong way round: {min} is not below {max}.',
+  'review.issue.bandOutsideSafety':
+    'The target runs past the safety stop ({min}–{max}°): doing what you asked for would cut the session short.',
+  'review.issue.bandOutsideMetric':
+    'Outside what can be measured here ({min}–{max}°). Nobody can reach that angle.',
+  'review.issue.safetyNeverFires':
+    'The safety stop covers everything measurable ({min}–{max}°), so it can never fire.',
+  'review.issue.bandOutsideCountingRange':
+    'A repetition is not counted until it passes {threshold}°, and the whole target sits below that: no repetition could ever be marked good.',
+  'review.issue.bandNotDiscriminating':
+    'A repetition already has to pass {threshold}° to be counted, so with this target every one of them would be good. Raise it if you want it to tell them apart.',
+  'review.issue.bandNarrowerThanWobble':
+    'A {width}° window is narrower than the measurement normally wobbles ({wobble}°). It will feel random.',
+  'review.issue.farFromDefault':
+    "A long way from the library's range ({min}–{max}°). If that is deliberate, go ahead; if it is a typo, here it is.",
+  'review.issue.setsInvalid': 'Sets must be a whole number, at least 1.',
+  'review.issue.repsInvalid': 'Repetitions must be a whole number, at least 1.',
+  'review.issue.holdInvalid': 'The hold must be at least 1 second.',
+  'review.issue.restInvalid': 'Rest cannot be negative.',
 
   'settings.title': 'Settings',
   'settings.language': 'Language',

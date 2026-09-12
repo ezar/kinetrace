@@ -7,6 +7,7 @@ import {
   type Profile,
   type Routine,
   type RoutineExercise,
+  type RoutineReview,
   type SetRecord,
 } from './schema.js';
 import { DEFAULT_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
@@ -108,6 +109,15 @@ export async function createStarterRoutine(profileId: number, name: string): Pro
     ];
   });
   return saveRoutine({ profileId, name, exercises });
+}
+
+/** Save the numbers a professional went through, and the signature under them. */
+export async function saveRoutineReview(
+  id: number,
+  exercises: RoutineExercise[],
+  review: RoutineReview,
+): Promise<void> {
+  await db.routines.update(id, { exercises, review, updatedAt: Date.now() });
 }
 
 export async function duplicateRoutine(id: number): Promise<number | undefined> {

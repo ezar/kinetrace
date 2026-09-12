@@ -238,6 +238,7 @@ export function SessionScreen(): JSX.Element {
             seconds={session.restRemainingSeconds}
             nextName={exercise?.names[language] ?? ''}
             tip={exercise ? t(exercise.cameraTipKey) : ''}
+            {...(session.item?.physioNote ? { physioNote: session.item.physioNote } : {})}
             onSkip={session.skipSet}
           />
         ) : session.stage === 'finished' ? (
@@ -563,16 +564,24 @@ interface RestPanelProps {
   seconds: number;
   nextName: string;
   tip: string;
+  /** What the professional wrote for the exercise coming up, if anybody has. */
+  physioNote?: string;
   onSkip: () => void;
 }
 
-function RestPanel({ seconds, nextName, tip, onSkip }: RestPanelProps): JSX.Element {
+function RestPanel({ seconds, nextName, tip, physioNote, onSkip }: RestPanelProps): JSX.Element {
   const { t } = useTranslation();
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
       <p className="text-xl opacity-70">{t('session.rest')}</p>
       <p className="text-far font-semibold">{seconds}</p>
       <p className="text-far-cue">{t('session.restNext', { name: nextName })}</p>
+      {/* What the physiotherapist wrote for this exercise outranks our tip. */}
+      {physioNote ? (
+        <p className="max-w-lg rounded-2xl bg-far-surface px-5 py-3 text-lg text-far-accent">
+          {t('session.physioSays', { note: physioNote })}
+        </p>
+      ) : null}
       <p className="max-w-lg text-lg opacity-70">{tip}</p>
       <button className="btn-primary bg-canvas text-ink" onClick={onSkip}>
         {t('common.skip')}

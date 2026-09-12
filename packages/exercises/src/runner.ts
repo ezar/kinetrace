@@ -11,6 +11,8 @@ import type { ExerciseDefinition } from './types.js';
 export interface RunnerOptions {
   /** Target band from the routine, replacing the library default. */
   band?: TargetBand;
+  /** Safety stop from the routine, replacing the library default. */
+  safety?: TargetBand;
   /** Repetitions requested by the routine. */
   reps?: number;
   /** Hold time requested by the routine, in seconds. */
@@ -28,7 +30,11 @@ export function toRunnerConfig(
     view: exercise.view.orientation,
     mode: exercise.mode,
     phases: exercise.phases,
-    targets: options.band ? { ...exercise.targets, band: options.band } : exercise.targets,
+    targets: {
+      ...exercise.targets,
+      ...(options.band ? { band: options.band } : {}),
+      ...(options.safety ? { safety: options.safety } : {}),
+    },
     rules: exercise.rules,
     targetReps: options.reps ?? exercise.defaults.reps,
     ...(exercise.mode === 'hold'

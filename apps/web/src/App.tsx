@@ -5,6 +5,9 @@ import { Layout } from './components/Layout.js';
 import { HomeScreen } from './screens/HomeScreen.js';
 import { ProfilesScreen } from './screens/ProfilesScreen.js';
 import { WelcomeScreen } from './screens/WelcomeScreen.js';
+const ReviewScreen = lazy(() =>
+  import('./screens/ReviewScreen.js').then((module) => ({ default: module.ReviewScreen })),
+);
 import { LibraryScreen } from './screens/LibraryScreen.js';
 import { ExerciseDetailScreen } from './screens/ExerciseDetailScreen.js';
 import { RoutineBuilderScreen } from './screens/RoutineBuilderScreen.js';
@@ -47,6 +50,7 @@ export function App(): JSX.Element {
           {/* The first run, the session and its summary run full screen,
               without the navigation: each is one thing at a time. */}
           <Route path="/welcome" element={<WelcomeScreen />} />
+          <Route path="/review/:routineId" element={<ReviewScreen />} />
           <Route path="/session/:routineId" element={<SessionScreen />} />
           <Route path="/summary/:sessionId" element={<SummaryScreen />} />
           <Route element={<Layout />}>

@@ -44,8 +44,24 @@ export interface RoutineExercise {
   restSeconds: number;
   /** Target band for this profile, in degrees. Absent means the library default. */
   band?: TargetBand;
+  /** Safety stop for this profile, in degrees. Absent means the library default. */
+  safety?: TargetBand;
+  /** A line from the professional who reviewed this exercise, for the patient. */
+  physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */
   customNote?: string;
+}
+
+/**
+ * A professional's sign-off on a routine. Local like everything else: it is a
+ * record that somebody sat down and checked the numbers, not an authentication.
+ */
+export interface RoutineReview {
+  /** The name the professional signed with. */
+  by: string;
+  at: number;
+  /** A note about the routine as a whole. */
+  note?: string;
 }
 
 export interface Routine {
@@ -53,6 +69,8 @@ export interface Routine {
   profileId: number;
   name: string;
   exercises: RoutineExercise[];
+  /** Set when a professional has been through the exercises and signed. */
+  review?: RoutineReview;
   createdAt: number;
   updatedAt: number;
 }

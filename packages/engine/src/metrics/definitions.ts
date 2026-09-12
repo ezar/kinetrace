@@ -76,6 +76,13 @@ export interface MetricDefinition {
   bilateral: boolean;
   /** Human-readable unit, always degrees in v1. */
   unit: 'deg';
+  /**
+   * The values this metric can physically take, in degrees. Interior joint
+   * angles run 0 to 180; signed measurements run either side of zero. Used to
+   * bound the prescription a professional can write and the dials that show it,
+   * so nobody can be given a target their body cannot express.
+   */
+  range: { min: number; max: number };
   /** Short description used in the library UI and in generated documentation. */
   description: string;
   compute: (context: MetricContext) => number;
@@ -130,6 +137,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'side',
     bilateral: true,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Interior hip-knee-ankle angle. 180 deg is a straight knee.',
     compute: (context) =>
       jointAngle(
@@ -145,6 +153,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'side',
     bilateral: true,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Interior shoulder-hip-knee angle. 180 deg is a fully extended hip.',
     compute: (context) =>
       jointAngle(
@@ -160,6 +169,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'any',
     bilateral: true,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Interior shoulder-elbow-wrist angle. 180 deg is a straight arm.',
     compute: (context) =>
       jointAngle(
@@ -175,6 +185,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'side',
     bilateral: true,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Arm elevation in the sagittal plane. 0 deg is arm alongside the trunk.',
     compute: (context) => armElevationInPlane(context, context.frame.lateral),
   },
@@ -185,6 +196,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Arm elevation in the frontal plane. 0 deg is arm alongside the trunk.',
     compute: (context) => armElevationInPlane(context, context.frame.anterior),
   },
@@ -195,6 +207,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'any',
     bilateral: false,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description: 'Angle of the trunk against gravity. 0 deg is upright, 90 deg is horizontal.',
     compute: (context) => angleBetween(context.frame.up, context.gravityUp),
   },
@@ -205,6 +218,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'side',
     bilateral: false,
     unit: 'deg',
+    range: { min: -60, max: 60 },
     description:
       'Sagittal angle between the trunk axis and the femur axis. Positive is anterior tilt (the lower back arches away from the mat), negative is posterior tilt.',
     compute: (context) => {
@@ -222,6 +236,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'front',
     bilateral: false,
     unit: 'deg',
+    range: { min: -90, max: 90 },
     description:
       'Transverse angle between the shoulder line and the hip line. Positive is rotation towards the subject’s left.',
     compute: (context) => {
@@ -240,6 +255,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'front',
     bilateral: false,
     unit: 'deg',
+    range: { min: -45, max: 45 },
     description:
       'Tilt of the hip line against the horizontal. Positive means the left hip is higher.',
     compute: (context) => {
@@ -255,6 +271,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
+    range: { min: -45, max: 45 },
     description:
       'Deviation of the knee from the hip-to-ankle line, in the frontal plane. Positive means the knee falls inwards (valgus).',
     compute: (context) => {
@@ -282,6 +299,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'any',
     bilateral: false,
     unit: 'deg',
+    range: { min: -60, max: 60 },
     description:
       'Angle between the shoulder-to-ankle line and the shoulder-to-hip line. Positive means the hips hang below the line (sagging), negative means they are lifted above it (piking). Set the `distal` option to `knee` for exercises supported on the knees.',
     compute: (context) => {
@@ -310,6 +328,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     preferredView: 'side',
     bilateral: false,
     unit: 'deg',
+    range: { min: 0, max: 180 },
     description:
       'Interior angle at the hip midpoint between the shoulder midpoint and the knee midpoint. A proxy for global spine flexion in quadruped positions; 180 deg is a flat back.',
     compute: (context) => {

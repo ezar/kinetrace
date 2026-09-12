@@ -4,13 +4,14 @@ import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EXERCISES, getExercise } from '@kinetrace/exercises';
-import { db, type RoutineExercise } from '../db/schema.js';
+import { db, type RoutineReview, type RoutineExercise } from '../db/schema.js';
 import { deleteRoutine, duplicateRoutine, saveRoutine } from '../db/repositories.js';
 import { estimateMinutes } from '../session/plan.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
+import { ReviewStamp } from '../components/ReviewStamp.js';
 
 export function RoutineBuilderScreen(): JSX.Element {
   const { routineId } = useParams();
@@ -20,6 +21,7 @@ export function RoutineBuilderScreen(): JSX.Element {
 
   const [name, setName] = useState('');
   const [exercises, setExercises] = useState<RoutineExercise[]>([]);
+  const [review, setReview] = useState<RoutineReview | undefined>();
   const [picking, setPicking] = useState(false);
   const [editing, setEditing] = useState<number | null>(null);
   const id = routineId && routineId !== 'new' ? Number(routineId) : undefined;
@@ -33,6 +35,7 @@ export function RoutineBuilderScreen(): JSX.Element {
       if (!routine) return;
       setName(routine.name);
       setExercises(routine.exercises);
+      setReview(routine.review);
     });
   }, [id, t]);
 
@@ -87,6 +90,20 @@ export function RoutineBuilderScreen(): JSX.Element {
         <span className="mb-1 block text-sm text-muted">{t('routine.name')}</span>
         <input className="field" value={name} onChange={(event) => setName(event.target.value)} />
       </label>
+
+      {/* The numbers below are the library's defaults until a professional has
+          been through them, and the card says which of the two it is. */}
+      {id !== undefined ? (
+        <div className="card mt-4 flex flex-wrap items-center justify-between gap-3 p-4">
+          <ReviewStamp review={review} />
+          <button
+            className="btn-secondary px-4 py-2 text-sm"
+            onClick={() => navigate(`/review/${id}`)}
+          >
+            {review ? t('review.again') : t('review.open')}
+          </button>
+        </div>
+      ) : null}
 
       <ul className="mt-4 space-y-3">
         {exercises.map((entry, index) => {

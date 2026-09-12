@@ -23,7 +23,13 @@ export const thoracicRotationQuadruped: ExerciseDefinition = {
     { id: 'neutral', when: { below: 15 }, minDwellMs: 300 },
     { id: 'rotated', when: { above: 30 }, minDwellMs: 500 },
   ],
-  targets: { direction: 'increase', band: { min: 45, max: 90 }, safety: { min: 0, max: 100 } },
+  /**
+   * No safety stop. The primary metric is the magnitude of the rotation, which
+   * runs 0 to 90 degrees, so the old limits of 0 to 100 bracketed everything it
+   * could ever report and never fired. Turning too far is not the risk here;
+   * the rules below watch for the hips following the shoulders, which is.
+   */
+  targets: { direction: 'increase', band: { min: 45, max: 90 } },
   rules: [
     {
       id: 'reachFurther',

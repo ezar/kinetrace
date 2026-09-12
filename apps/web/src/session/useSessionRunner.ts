@@ -221,6 +221,7 @@ export function useSessionRunner(
     recorderRef.current = new TrackRecorder();
     const config = toRunnerConfig(item.exercise, {
       band: item.band,
+      safety: item.safety,
       reps: item.reps,
       holdSeconds: item.holdSeconds,
     });
