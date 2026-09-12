@@ -190,6 +190,44 @@ export const en: Record<TranslationKey, string> = {
   'import.download': 'Download ({size} MB)',
   'import.noMatch': 'Nothing matched the library',
 
+  'welcome.skip': 'Skip',
+  'welcome.begin': 'Start',
+  'welcome.step': 'Step {current} of {total}',
+
+  'welcome.what.title': 'A coach that can see you',
+  'welcome.what.body':
+    'You do the exercises your physiotherapist gave you in front of the camera. Kinetrace counts the repetitions, measures how far you get, and corrects you one cue at a time.',
+
+  'welcome.privacy.title': 'The camera stays here',
+  'welcome.privacy.body':
+    'The video is processed on your device, frame by frame, and dropped. It is never stored and never sent anywhere. What is stored are angles and repetitions, right here.',
+  'welcome.privacy.permissions':
+    'Kinetrace will ask for the camera when you start a session, and for the microphone only if you turn on voice commands. Never before that.',
+
+  'welcome.profile.title': 'Who is training?',
+  'welcome.profile.body':
+    'Everyone in the house gets their own profile and history. You can add more whenever you like.',
+
+  'welcome.routine.title': 'What are you going to do?',
+  'welcome.routine.body': 'You can change all of it later: exercises, sets and ranges.',
+  'welcome.routine.starter': 'Start with the example routine',
+  'welcome.routine.starterHelp': 'Five back exercises, about ten minutes.',
+  'welcome.routine.import': "Import my physio's sheet",
+  'welcome.routine.importHelp':
+    'Photograph it and Kinetrace proposes the routine. You review it before anything is saved.',
+  'welcome.routine.later': "I'll build one later",
+  'welcome.routine.laterHelp': 'You can create a routine from scratch whenever you want.',
+
+  'welcome.mat.title': 'Run it from the mat',
+  'welcome.mat.body': 'No getting up to touch the screen halfway through a set.',
+  'welcome.mat.camera':
+    'Prop the phone up two or three metres away, pointing at the mat. The numbers are enormous and there is only ever one cue, so it reads from across the room.',
+  'welcome.mat.pause': 'Both hands up to pause',
+  'welcome.mat.skip': 'Wave one hand to move on',
+  'welcome.mat.voice': 'You can also talk to it: "pause", "continue", "next", "repeat".',
+  'welcome.mat.voiceOn': 'Turn on voice commands ({size} MB)',
+  'welcome.mat.voiceDone': 'Voice commands are on',
+
   'settings.title': 'Settings',
   'settings.language': 'Language',
   'settings.voice': 'Voice',
@@ -219,6 +257,7 @@ export const en: Record<TranslationKey, string> = {
     'Are you sure? Profiles, routines and history will be deleted from this device.',
   'settings.keepTracks': 'Keep skeletons for replay',
   'settings.keepTracksHelp': 'They delete themselves after 90 days. Video is never stored.',
+  'settings.showWelcome': 'See the introduction again',
   'settings.privacy': 'Privacy',
   'settings.about': 'About',
 

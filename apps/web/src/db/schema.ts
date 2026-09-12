@@ -23,6 +23,17 @@ export interface Profile {
   createdAt: number;
 }
 
+/** The accent colours a profile can take. Shared by the profile form and the
+ *  first run, which must offer the same ones. */
+export const PROFILE_COLORS = [
+  '#d9702f',
+  '#34618f',
+  '#2c7a58',
+  '#8a5bab',
+  '#b3352a',
+  '#3f7f8f',
+] as const;
+
 export interface RoutineExercise {
   exerciseId: string;
   sets: number;
@@ -104,6 +115,8 @@ export interface AppSettings {
   speakCues: boolean;
   earcons: boolean;
   showCameraPreview: boolean;
+  /** True once the first run has been walked through, or skipped. */
+  onboarded: boolean;
   /** Listen for spoken commands during a session. Off until asked for: it
    *  downloads a model and needs the microphone. */
   voiceCommands: boolean;
@@ -122,6 +135,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   speakCues: true,
   earcons: true,
   showCameraPreview: true,
+  onboarded: false,
   voiceCommands: false,
   voiceModel: 'tiny',
   poseModel: 'full',

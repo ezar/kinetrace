@@ -189,6 +189,44 @@ export const es = {
   'import.download': 'Descargar ({size} MB)',
   'import.noMatch': 'Nada ha coincidido con la biblioteca',
 
+  'welcome.skip': 'Saltar',
+  'welcome.begin': 'Empezar',
+  'welcome.step': 'Paso {current} de {total}',
+
+  'welcome.what.title': 'Un entrenador que te ve',
+  'welcome.what.body':
+    'Haces delante de la cámara los ejercicios que te ha mandado tu fisioterapeuta. Kinetrace cuenta las repeticiones, mide hasta dónde llegas y te va corrigiendo con una indicación cada vez.',
+
+  'welcome.privacy.title': 'La cámara no sale de aquí',
+  'welcome.privacy.body':
+    'El vídeo se procesa en tu dispositivo, fotograma a fotograma, y se descarta. No se guarda ni se envía a ningún sitio. Lo que se guarda son ángulos y repeticiones, aquí mismo.',
+  'welcome.privacy.permissions':
+    'Kinetrace te pedirá la cámara cuando empieces una sesión, y el micrófono solo si enciendes los comandos de voz. Nunca antes.',
+
+  'welcome.profile.title': '¿Quién va a entrenar?',
+  'welcome.profile.body':
+    'Cada persona de la casa tiene su perfil y su historial. Puedes añadir más cuando quieras.',
+
+  'welcome.routine.title': '¿Qué vas a hacer?',
+  'welcome.routine.body': 'Puedes cambiarlo todo después: ejercicios, series y rangos.',
+  'welcome.routine.starter': 'Empezar con la rutina de ejemplo',
+  'welcome.routine.starterHelp': 'Cinco ejercicios de espalda, unos diez minutos.',
+  'welcome.routine.import': 'Importar la hoja de mi fisio',
+  'welcome.routine.importHelp':
+    'Le haces una foto y Kinetrace propone la rutina. La revisas antes de guardar nada.',
+  'welcome.routine.later': 'Lo monto yo más tarde',
+  'welcome.routine.laterHelp': 'Puedes crear una rutina desde cero cuando te apetezca.',
+
+  'welcome.mat.title': 'Se maneja desde la esterilla',
+  'welcome.mat.body': 'No hace falta que te levantes a tocar la pantalla a mitad de una serie.',
+  'welcome.mat.camera':
+    'Deja el móvil apoyado a dos o tres metros, apuntando a la esterilla. Los números son enormes y solo hay una indicación cada vez, para que se lea de lejos.',
+  'welcome.mat.pause': 'Levanta las dos manos para pausar',
+  'welcome.mat.skip': 'Saluda con una mano para pasar al siguiente',
+  'welcome.mat.voice': 'También puedes hablarle: «pausa», «sigue», «siguiente», «repite».',
+  'welcome.mat.voiceOn': 'Activar los comandos de voz ({size} MB)',
+  'welcome.mat.voiceDone': 'Comandos de voz activados',
+
   'settings.title': 'Ajustes',
   'settings.language': 'Idioma',
   'settings.voice': 'Voz',
@@ -218,6 +256,7 @@ export const es = {
     '¿Seguro? Se borrarán perfiles, rutinas e historial de este dispositivo.',
   'settings.keepTracks': 'Guardar esqueletos para repetir',
   'settings.keepTracksHelp': 'Se borran solos a los 90 días. Nunca se guarda vídeo.',
+  'settings.showWelcome': 'Ver la introducción otra vez',
   'settings.privacy': 'Privacidad',
   'settings.about': 'Acerca de',
 

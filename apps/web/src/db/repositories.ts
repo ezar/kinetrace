@@ -9,6 +9,7 @@ import {
   type RoutineExercise,
   type SetRecord,
 } from './schema.js';
+import { DEFAULT_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
 import type { SkeletonTrack } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 
@@ -85,6 +86,28 @@ export async function saveRoutine(
     return routine.id;
   }
   return db.routines.add({ ...routine, createdAt: now, updatedAt: now } as Routine);
+}
+
+/**
+ * Seed the maker's own back routine, so a new profile has something to do on
+ * the first day. Used by the first run and by an empty home screen, which must
+ * create the same thing.
+ */
+export async function createStarterRoutine(profileId: number, name: string): Promise<number> {
+  const exercises = DEFAULT_ROUTINE_IDS.flatMap((id) => {
+    const exercise = getExercise(id);
+    if (!exercise) return [];
+    return [
+      {
+        exerciseId: id,
+        sets: exercise.defaults.sets,
+        reps: exercise.defaults.reps,
+        holdSeconds: exercise.defaults.holdSeconds,
+        restSeconds: exercise.defaults.restSeconds,
+      },
+    ];
+  });
+  return saveRoutine({ profileId, name, exercises });
 }
 
 export async function duplicateRoutine(id: number): Promise<number | undefined> {

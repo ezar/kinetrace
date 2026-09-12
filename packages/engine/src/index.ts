@@ -44,6 +44,7 @@ export type {
 export { HoldTimer } from './state/holdTimer.js';
 export type { HoldConfig, HoldEvent, HoldState } from './state/holdTimer.js';
 export { GestureDetector } from './gestures/detector.js';
+export { GESTURE_MOTIONS } from './gestures/demo.js';
 export type { GestureEvent, GestureOptions } from './gestures/detector.js';
 export {
   matchVoiceCommand,

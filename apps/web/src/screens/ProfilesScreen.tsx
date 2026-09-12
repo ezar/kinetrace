@@ -3,15 +3,13 @@
 import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Profile } from '../db/schema.js';
+import { db, PROFILE_COLORS, type Profile } from '../db/schema.js';
 import { createProfile, deleteProfile, updateProfile } from '../db/repositories.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { LANGUAGES, LANGUAGE_NAMES } from '../i18n/index.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { ProfileChip } from '../components/ProfileChip.js';
-
-const COLORS = ['#d9702f', '#34618f', '#2c7a58', '#8a5bab', '#b3352a', '#3f7f8f'];
 
 interface DraftProfile {
   id?: number;
@@ -24,7 +22,7 @@ interface DraftProfile {
 
 const EMPTY_DRAFT: DraftProfile = {
   name: '',
-  color: COLORS[0] as string,
+  color: PROFILE_COLORS[0],
   language: 'es',
   heightCm: '',
   physioNotes: '',
@@ -93,7 +91,7 @@ export function ProfilesScreen(): JSX.Element {
           <fieldset>
             <legend className="mb-1 text-sm text-muted">{t('profiles.color')}</legend>
             <div className="flex gap-2">
-              {COLORS.map((color) => (
+              {PROFILE_COLORS.map((color) => (
                 <button
                   key={color}
                   type="button"
