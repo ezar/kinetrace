@@ -378,6 +378,26 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
         ) : null}
       </div>
 
+      {exercise.unilateral ? (
+        <div className="space-y-2 border-t border-line p-4">
+          <span className="block text-sm text-muted">{t('review.side')}</span>
+          <div className="flex flex-wrap gap-2">
+            {([undefined, 'left', 'right'] as const).map((option) => (
+              <button
+                key={option ?? 'both'}
+                type="button"
+                aria-pressed={entry.side === option}
+                className={`chip ${entry.side === option ? 'border-ink bg-ink text-canvas' : ''}`}
+                onClick={() => onChange({ side: option })}
+              >
+                {option ? t(`side.${option}`) : t('review.side.both')}
+              </button>
+            ))}
+          </div>
+          <p className="text-sm leading-relaxed text-muted">{t('review.sideHelp')}</p>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-3 gap-2 border-t border-line p-4">
         <NumberField
           label={t('common.sets')}

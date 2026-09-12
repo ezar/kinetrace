@@ -335,3 +335,128 @@ test('prints a sheet for the physiotherapist', async ({ page }) => {
   const table = await page.locator('table').boundingBox();
   expect(table?.width ?? 0).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
 });
+
+/**
+ * The privacy promise is a header, not an intention.
+ *
+ * The policy is served by `vite preview` as well as by the deployment, so this
+ * runs against the real thing. A violation is reported to the console rather
+ * than thrown, which is exactly how a broken CSP reaches production unnoticed:
+ * the fix is to fail a test on it.
+ */
+test('serves a policy that leaves nowhere for the data to go', async ({ page, request }) => {
+  const violations: string[] = [];
+  page.on('console', (message) => {
+    if (/Content Security Policy|Refused to/i.test(message.text())) violations.push(message.text());
+  });
+
+  const response = await request.get('./');
+  const policy = response.headers()['content-security-policy'] ?? '';
+  expect(policy, 'no Content-Security-Policy header').not.toBe('');
+
+  const directives = new Map(
+    policy
+      .split(';')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const [name, ...values] = part.split(/\s+/);
+        return [name ?? '', values];
+      }),
+  );
+
+  // Nothing may be sent anywhere but this origin and the two public model
+  // hosts. This is the line that makes "video never leaves the device" true by
+  // construction rather than by inspection.
+  const connect = directives.get('connect-src') ?? [];
+  expect(connect).toContain("'self'");
+  expect(
+    connect.every(
+      (source) => source === "'self'" || source === 'blob:' || /^https:\/\//.test(source),
+    ),
+  ).toBe(true);
+  expect(connect).not.toContain('*');
+  expect(directives.get('default-src')).toEqual(["'self'"]);
+  expect(directives.get('object-src')).toEqual(["'none'"]);
+  expect(directives.get('frame-ancestors')).toEqual(["'none'"]);
+
+  // And the app still boots under it: a policy that breaks the pose worker or
+  // the audio worklet would be worse than none.
+  await page.goto('./');
+  await expect(
+    page.getByRole('heading', { name: /un entrenador que te ve|a coach that can see you/i }),
+  ).toBeVisible();
+  expect(violations, violations.join('\n')).toEqual([]);
+});
+
+/**
+ * The side of a unilateral exercise.
+ *
+ * The starter routine is all bilateral, so nothing else in this suite ever
+ * renders the control — and a prescription the professional cannot express is
+ * the same as one the app ignores.
+ */
+test('lets the professional prescribe a side, and counts both when they do not', async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  await page.getByRole('link', { name: /editar|edit/i }).click();
+  const beforeAdding = await page.getByText(/unos \d+ min|about \d+ min/i).innerText();
+
+  await page.getByRole('button', { name: /añadir ejercicio|add exercise/i }).click();
+  await page
+    .locator('button')
+    .filter({ hasText: /plancha lateral completa|full side plank/i })
+    .first()
+    .click();
+  // Both sides are twice the work, and the estimate has to say so.
+  await expect(page.getByText(/unos \d+ min|about \d+ min/i)).not.toHaveText(beforeAdding);
+  await page.getByRole('button', { name: /^guardar$|^save$/i }).click();
+
+  // Saving lands on the routine, where the review is one click away.
+  await page.getByRole('button', { name: /revisar los ejercicios|review the exercises/i }).click();
+
+  const plank = page
+    .locator('section')
+    .filter({ hasText: /plancha lateral completa|full side plank/i })
+    .first();
+  await expect(plank.getByRole('button', { name: /^los dos$|^both$/i })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+
+  // Naming a side is what stops the camera answering a clinical question.
+  await plank.getByRole('button', { name: /^derecha$|^right$/i }).click();
+  await expect(plank.getByRole('button', { name: /^derecha$|^right$/i })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+
+  await page.getByLabel(/firma|signature/i).fill('Dra. Ruiz');
+  await page.getByRole('button', { name: /^firmar$|^sign$/i }).click();
+  await expect(page).toHaveURL(/routines\/\d+$/);
+
+  // And it survives the round trip through the database.
+  await page.getByRole('button', { name: /revisar otra vez|review again/i }).click();
+  await expect(
+    page
+      .locator('section')
+      .filter({ hasText: /plancha lateral completa|full side plank/i })
+      .first()
+      .getByRole('button', { name: /^derecha$|^right$/i }),
+  ).toHaveAttribute('aria-pressed', 'true');
+
+  expect(errors).toEqual([]);
+});

@@ -18,6 +18,7 @@ export const sidePlankFull: ExerciseDefinition = {
   },
   primaryMetric: 'line',
   mode: 'hold',
+  unilateral: true,
   phases: [{ id: 'hold', when: { always: true }, minDwellMs: 0 }],
   targets: { direction: 'decrease', band: { min: -7, max: 7 }, safety: { min: -28, max: 28 } },
   hold: { stabilityToleranceDeg: 4 },

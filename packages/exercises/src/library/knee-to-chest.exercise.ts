@@ -18,6 +18,7 @@ export const kneeToChest: ExerciseDefinition = {
   },
   primaryMetric: 'hip',
   mode: 'reps',
+  unilateral: true,
   phases: [
     { id: 'rest', when: { above: 150 }, minDwellMs: 300 },
     { id: 'top', when: { below: 100 }, minDwellMs: 600 },

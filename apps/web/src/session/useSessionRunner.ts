@@ -234,6 +234,7 @@ export function useSessionRunner(
             goodRepPct: finalState.goodRepPct,
             issues: finalState.issues,
             peaks: finalState.peaks,
+            ...(current.side ? { side: current.side } : {}),
             startedAt: setStartedAtRef.current,
           },
           track,
@@ -276,6 +277,7 @@ export function useSessionRunner(
       tempo: item.tempo,
       reps: item.reps,
       holdSeconds: item.holdSeconds,
+      ...(item.side ? { side: item.side } : {}),
     });
     const client = createEngineClient(
       config,

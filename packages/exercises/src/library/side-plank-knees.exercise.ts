@@ -21,6 +21,7 @@ export const sidePlankKnees: ExerciseDefinition = {
   },
   primaryMetric: 'line',
   mode: 'hold',
+  unilateral: true,
   phases: [{ id: 'hold', when: { always: true }, minDwellMs: 0 }],
   targets: { direction: 'decrease', band: { min: -8, max: 8 }, safety: { min: -30, max: 30 } },
   hold: { stabilityToleranceDeg: 4 },

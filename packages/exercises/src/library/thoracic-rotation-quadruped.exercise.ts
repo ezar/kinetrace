@@ -19,6 +19,7 @@ export const thoracicRotationQuadruped: ExerciseDefinition = {
   },
   primaryMetric: 'rotation',
   mode: 'reps',
+  unilateral: true,
   phases: [
     { id: 'neutral', when: { below: 15 }, minDwellMs: 300 },
     { id: 'rotated', when: { above: 30 }, minDwellMs: 500 },
