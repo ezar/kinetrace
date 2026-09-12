@@ -158,7 +158,12 @@ export function HomeScreen(): JSX.Element {
         </Link>
       </section>
 
-      <p className="pt-1 text-xs leading-relaxed text-muted">{t('app.disclaimer')}</p>
+      <p className="pt-1 text-xs leading-relaxed text-muted">
+        {t('app.disclaimer')}{' '}
+        <Link to="/help" className="underline underline-offset-4">
+          {t('help.title')}
+        </Link>
+      </p>
     </div>
   );
 }

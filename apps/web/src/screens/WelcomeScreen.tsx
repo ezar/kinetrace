@@ -20,7 +20,7 @@ import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { GESTURE_MOTIONS, metricLandmarkIndices, POSE_LANDMARK } from '@kinetrace/engine';
+import { metricLandmarkIndices } from '@kinetrace/engine';
 import { getExercise } from '@kinetrace/exercises';
 import { db, PROFILE_COLORS } from '../db/schema.js';
 import { createProfile, createStarterRoutine } from '../db/repositories.js';
@@ -28,6 +28,7 @@ import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { LANGUAGES, LANGUAGE_NAMES, type Language } from '../i18n/index.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
+import { GestureCard } from '../components/GestureCard.js';
 import { voiceCommandsSupported, whisperModel } from '../speech/listener.js';
 import { CameraIcon, CheckIcon, ChevronLeftIcon, MicIcon } from '../components/icons.js';
 
@@ -400,50 +401,5 @@ function MatStep(): JSX.Element {
         </div>
       ) : null}
     </Step>
-  );
-}
-
-/** The arm the gesture is made with, drawn in the accent colour. */
-const ARM_LANDMARKS = {
-  both: [
-    POSE_LANDMARK.LEFT_SHOULDER,
-    POSE_LANDMARK.LEFT_ELBOW,
-    POSE_LANDMARK.LEFT_WRIST,
-    POSE_LANDMARK.RIGHT_SHOULDER,
-    POSE_LANDMARK.RIGHT_ELBOW,
-    POSE_LANDMARK.RIGHT_WRIST,
-  ],
-  right: [POSE_LANDMARK.RIGHT_SHOULDER, POSE_LANDMARK.RIGHT_ELBOW, POSE_LANDMARK.RIGHT_WRIST],
-} as const;
-
-/**
- * The gesture, performed rather than described. The motion comes from the
- * engine, next to the detector that reads it, so the two cannot drift apart.
- *
- * Both cards are a standing figure, so at a glance they look alike: the arm
- * that makes the gesture is drawn in the accent colour to say where to look.
- * The frame is square because the figure is scaled to fit its box, and a short
- * wide box would shrink a standing body to nothing.
- */
-function GestureCard({
-  motion,
-  arms,
-  caption,
-}: {
-  motion: keyof typeof GESTURE_MOTIONS;
-  arms: keyof typeof ARM_LANDMARKS;
-  caption: string;
-}): JSX.Element {
-  return (
-    <figure className="card flex flex-1 flex-col items-center gap-1 p-3">
-      <ExerciseDemo
-        reference={GESTURE_MOTIONS[motion]}
-        view="front"
-        highlight={ARM_LANDMARKS[arms]}
-        highlightStroke="var(--color-accent)"
-        className="aspect-square w-full text-ink"
-      />
-      <figcaption className="text-center text-[13px] leading-snug text-muted">{caption}</figcaption>
-    </figure>
   );
 }

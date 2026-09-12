@@ -26,6 +26,7 @@ const SheetImportScreen = lazy(() =>
   })),
 );
 import { SettingsScreen } from './screens/SettingsScreen.js';
+import { HelpScreen } from './screens/HelpScreen.js';
 import { PrivacyScreen } from './screens/PrivacyScreen.js';
 import { AboutScreen } from './screens/AboutScreen.js';
 import { useSettingsStore } from './store/useSettingsStore.js';
@@ -62,6 +63,7 @@ export function App(): JSX.Element {
             <Route path="/routines/:routineId" element={<RoutineBuilderScreen />} />
             <Route path="/progress" element={<ProgressScreen />} />
             <Route path="/import" element={<SheetImportScreen />} />
+            <Route path="/help" element={<HelpScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/settings/privacy" element={<PrivacyScreen />} />
             <Route path="/settings/about" element={<AboutScreen />} />

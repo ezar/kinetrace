@@ -278,6 +278,56 @@ export const es = {
   'review.issue.holdInvalid': 'El tiempo de sostén tiene que ser de al menos 1 segundo.',
   'review.issue.restInvalid': 'El descanso no puede ser negativo.',
 
+  'help.title': 'Ayuda',
+  'help.subtitle': 'Cómo se usa, y qué hacer cuando algo no va',
+  'help.intro': 'La introducción',
+  'help.introHelp': 'Las cuatro cosas que conviene saber antes de empezar.',
+  'help.introAction': 'Verla otra vez',
+
+  'help.mat': 'Manejarlo desde la esterilla',
+  'help.matHelp':
+    'El móvil está a dos o tres metros: no hace falta levantarse a tocar la pantalla a mitad de una serie.',
+  'help.voice': 'Hablarle',
+  'help.voice.pause': 'Pausar',
+  'help.voice.resume': 'Seguir',
+  'help.voice.next': 'Siguiente',
+  'help.voice.repeat': 'Repetir',
+  'help.voice.stop': 'Terminar',
+  'help.voiceOn': 'Los comandos de voz están encendidos. Puedes apagarlos en',
+  'help.voiceOff': 'Los comandos de voz están apagados. Puedes encenderlos en',
+
+  'help.camera': 'Dónde poner la cámara',
+  'help.cameraHelp':
+    'Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.',
+
+  'help.numbers': 'Qué significan los números',
+  'help.term.reps': 'Repeticiones',
+  'help.term.reps.body': 'Las que llegaron al rango que te han marcado.',
+  'help.term.partials': 'Parciales',
+  'help.term.partials.body':
+    'Las que hiciste enteras pero se quedaron cortas. Cuentan como hechas, no como buenas: es mejor saberlo que inflar el número.',
+  'help.term.rom': 'Rango',
+  'help.term.rom.body':
+    'Hasta dónde llegaste, en grados. Kinetrace guarda el mejor de la serie y la media, y los dibuja semana a semana.',
+  'help.term.goodPct': 'Porcentaje de buenas',
+  'help.term.goodPct.body': 'Qué parte de las repeticiones llegó al rango.',
+  'help.term.band': 'El rango objetivo',
+  'help.term.band.body':
+    'Los grados a los que apuntas. La biblioteca trae unos por defecto; los de tu fisioterapeuta los sustituyen.',
+  'help.term.safety': 'La parada de seguridad',
+  'help.term.safety.body':
+    'El punto en el que Kinetrace te dice que pares. Si lo cruzas, la indicación es parar y descansar, por encima de cualquier otra.',
+
+  'help.lost': 'Cuando no te ve',
+  'help.lostHelp':
+    'Antes de empezar, Kinetrace comprueba que te ve entero y bien colocado, y no cuenta nada hasta que sea así. Esto es lo que te va a pedir:',
+  'help.lostModel':
+    'Si aun así te pierde, prueba con más luz, con ropa que contraste con el suelo, o con un modelo de postura más preciso en Ajustes.',
+
+  'help.data': 'Tus datos',
+  'help.dataHelp':
+    'Todo vive en este dispositivo. Puedes exportar un perfil a un archivo, llevártelo a otro sitio, o borrarlo todo, desde Ajustes.',
+
   'settings.title': 'Ajustes',
   'settings.language': 'Idioma',
   'settings.voice': 'Voz',

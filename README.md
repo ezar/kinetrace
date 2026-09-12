@@ -45,6 +45,11 @@ account.** What is stored is skeletons, angles and counts — never pixels.
   replay and compare — around 2 kB per second, and no video anywhere.
 - **Reads your physio's sheet.** Photograph it and Kinetrace proposes a routine,
   with every mapping shown for review before anything is saved.
+- **Explains itself.** A help screen generated from the library and the engine
+  rather than written beside them: the gestures performed by the same figure the
+  session draws, the recogniser's own vocabulary, every camera placement the library
+  uses, and — word for word — what the setup assistant says while it is blocking a
+  session. The introduction can be watched again from there at any time.
 - **Spanish and English**, UI and cues.
 
 ## Try it

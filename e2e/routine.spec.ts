@@ -226,3 +226,27 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
   await expect(page.getByText(/dra\. ruiz/i)).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+/**
+ * Help. Most of it is generated from the library and the engine, so the test
+ * checks the generated parts are there rather than the prose: the gestures
+ * drawn, the real voice vocabulary, and the way back into the introduction.
+ */
+test('has a help screen that can reopen the introduction', async ({ page }) => {
+  await page.goto('help');
+  await expect(page.getByRole('heading', { name: /^ayuda$|^help$/i })).toBeVisible();
+
+  // The gestures are performed by the same figure the session draws.
+  await expect(page.getByRole('img', { name: /esqueleto|skeleton/i })).toHaveCount(2);
+  await expect(page.getByText(/levanta las dos manos|both hands up/i)).toBeVisible();
+
+  // The vocabulary comes from the matcher's own table, accents and all.
+  await expect(page.getByText('«siguiente ejercicio»', { exact: false })).toBeVisible();
+  await expect(page.getByText('«fin de la sesión»', { exact: false })).toBeVisible();
+
+  // Every camera placement the library uses, told apart by position and view.
+  await expect(page.getByText(/móvil en una silla, a 3 m, de frente a ti/i)).toBeVisible();
+
+  await page.getByRole('link', { name: /verla otra vez|watch it again/i }).click();
+  await expect(page).toHaveURL(/welcome/);
+});

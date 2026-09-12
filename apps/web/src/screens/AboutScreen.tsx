@@ -20,7 +20,7 @@ export function AboutScreen(): JSX.Element {
         <h2 className="font-medium">{t('about.models')}</h2>
         <ul className="mt-2 space-y-1 text-sm text-muted">
           <li>MediaPipe Pose Landmarker — Apache 2.0, Google</li>
-          <li>Florence-2 base ft — MIT, Microsoft (sheet import, optional)</li>
+          <li>Tesseract — Apache 2.0 (sheet import, optional)</li>
           <li>Qwen2.5 Instruct — Apache 2.0, Alibaba (sheet import, optional)</li>
           <li>Whisper — MIT, OpenAI (voice commands, optional)</li>
         </ul>

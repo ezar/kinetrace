@@ -279,6 +279,56 @@ export const en: Record<TranslationKey, string> = {
   'review.issue.holdInvalid': 'The hold must be at least 1 second.',
   'review.issue.restInvalid': 'Rest cannot be negative.',
 
+  'help.title': 'Help',
+  'help.subtitle': 'How to use it, and what to do when something is off',
+  'help.intro': 'The introduction',
+  'help.introHelp': 'The four things worth knowing before you start.',
+  'help.introAction': 'Watch it again',
+
+  'help.mat': 'Running it from the mat',
+  'help.matHelp':
+    'The phone is two or three metres away: no getting up to touch the screen halfway through a set.',
+  'help.voice': 'Talking to it',
+  'help.voice.pause': 'Pause',
+  'help.voice.resume': 'Continue',
+  'help.voice.next': 'Next',
+  'help.voice.repeat': 'Repeat',
+  'help.voice.stop': 'Finish',
+  'help.voiceOn': 'Voice commands are on. You can turn them off in',
+  'help.voiceOff': 'Voice commands are off. You can turn them on in',
+
+  'help.camera': 'Where to put the camera',
+  'help.cameraHelp':
+    'Each exercise tells you before it starts, but these are every placement the library uses.',
+
+  'help.numbers': 'What the numbers mean',
+  'help.term.reps': 'Repetitions',
+  'help.term.reps.body': 'The ones that reached the range you were given.',
+  'help.term.partials': 'Partials',
+  'help.term.partials.body':
+    'The ones you completed but that fell short. They count as done, not as good: better to know than to inflate the number.',
+  'help.term.rom': 'Range',
+  'help.term.rom.body':
+    'How far you got, in degrees. Kinetrace keeps the best of the set and the average, and charts them week by week.',
+  'help.term.goodPct': 'Good repetitions',
+  'help.term.goodPct.body': 'What share of the repetitions reached the range.',
+  'help.term.band': 'The target range',
+  'help.term.band.body':
+    'The degrees you are aiming for. The library ships defaults; your physiotherapist’s numbers replace them.',
+  'help.term.safety': 'The safety stop',
+  'help.term.safety.body':
+    'The point at which Kinetrace tells you to stop. Cross it and the cue is to stop and rest, ahead of anything else.',
+
+  'help.lost': 'When it cannot see you',
+  'help.lostHelp':
+    'Before it starts, Kinetrace checks that it can see all of you, framed properly, and counts nothing until it can. This is what it will ask for:',
+  'help.lostModel':
+    'If it still loses you, try more light, clothes that contrast with the floor, or a more accurate pose model in Settings.',
+
+  'help.data': 'Your data',
+  'help.dataHelp':
+    'All of it lives on this device. You can export a profile to a file, take it somewhere else, or delete everything, from Settings.',
+
   'settings.title': 'Settings',
   'settings.language': 'Language',
   'settings.voice': 'Voice',
