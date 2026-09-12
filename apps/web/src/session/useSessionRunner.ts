@@ -25,7 +25,7 @@ import { LEVEL_CAMERA, watchGravity, type GravityReading } from '../pose/gravity
 import { browserWakeLock, ScreenWakeLock } from './wakeLock.js';
 import { Speaker } from '../speech/speech.js';
 import { EarconPlayer } from '../speech/earcons.js';
-import { saveSet, startSession } from '../db/repositories.js';
+import { saveSet, setsForSession, startSession } from '../db/repositories.js';
 import type { Routine } from '../db/schema.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
@@ -63,6 +63,8 @@ export interface SessionControls {
   setPaused: (paused: boolean) => void;
   /** Say the last cue again, or where the set is up to if there was none. */
   repeatCue: () => void;
+  /** Throw the current set away and do it again. Nothing is written. */
+  redoSet: () => void;
   skipSet: () => void;
   finish: () => Promise<number | undefined>;
   cameraStatus: ReturnType<typeof useCamera>['status'];
@@ -74,6 +76,8 @@ const CUE_VISIBLE_MS = 3500;
 export function useSessionRunner(
   routine: Routine | undefined,
   profileId: number | undefined,
+  /** Carry on a session that was started and never finished. */
+  resumeSessionId?: number,
 ): SessionView & SessionControls {
   const settings = useSettingsStore();
   const { t, language } = useTranslation();
@@ -82,12 +86,14 @@ export function useSessionRunner(
   const plan = useMemo(() => (routine ? buildPlan(routine) : []), [routine]);
   const [stage, setStage] = useState<SessionStage>('loading');
   const [index, setIndex] = useState(0);
+  /** Bumped to start the current set over; nothing else depends on its value. */
+  const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<RunnerState | null>(null);
   const [frame, setFrame] = useState<PoseFrame | null>(null);
   const [cueText, setCueText] = useState<string | null>(null);
   const [restRemaining, setRestRemaining] = useState(0);
   const [error, setError] = useState<string | undefined>();
-  const [sessionId, setSessionId] = useState<number | undefined>();
+  const [sessionId, setSessionId] = useState<number | undefined>(resumeSessionId);
   const [modelLoading, setModelLoading] = useState(true);
   const [gravity, setGravity] = useState<GravityReading>(LEVEL_CAMERA);
 
@@ -121,6 +127,25 @@ export function useSessionRunner(
     earconRef.current ??= new EarconPlayer(settings.earcons);
     earconRef.current.setEnabled(settings.earcons);
   }, [language, settings.speakCues, settings.earcons]);
+
+  /**
+   * Picking up where an interrupted session stopped. Every set was written the
+   * moment it ended, so the position to carry on from is simply after the last
+   * one recorded — no state had to survive the app closing.
+   */
+  useEffect(() => {
+    if (resumeSessionId === undefined) return;
+    let cancelled = false;
+    void setsForSession(resumeSessionId).then((sets) => {
+      if (cancelled || sets.length === 0) return;
+      const next = Math.max(...sets.map((set) => set.index)) + 1;
+      setIndex(Math.min(next, Math.max(0, plan.length - 1)));
+      if (next >= plan.length) setStage('finished');
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [resumeSessionId, plan.length]);
 
   // Load the pose model once per session.
   useEffect(() => {
@@ -275,7 +300,7 @@ export function useSessionRunner(
       client.dispose();
       engineRef.current = null;
     };
-  }, [stage, item, completeSet, showCue, t]);
+  }, [stage, item, attempt, completeSet, showCue, t]);
 
   // Rest countdown.
   useEffect(() => {
@@ -332,6 +357,20 @@ export function useSessionRunner(
     const text = lastCueRef.current ?? [name, progressText].filter(Boolean).join('. ');
     if (text) showCue(text, true);
   }, [language, plan, showCue, state?.reps, t]);
+
+  /**
+   * The counterpart to skipping. A set ruined by the tracking losing you, or by
+   * lying down crooked, was saved as it came out and the session moved on — so
+   * the history filled up with sets the person knew did not count. This writes
+   * nothing: the engine is rebuilt and the same set starts again.
+   */
+  const redoSet = useCallback(() => {
+    if (stageRef.current !== 'active' && stageRef.current !== 'paused') return;
+    recorderRef.current = null;
+    setState(null);
+    setAttempt((current) => current + 1);
+    setStage('active');
+  }, []);
 
   const skipSet = useCallback(() => {
     if (stageRef.current === 'rest') {
@@ -415,6 +454,7 @@ export function useSessionRunner(
     togglePause,
     setPaused,
     repeatCue,
+    redoSet,
     skipSet,
     finish,
     cameraStatus: camera.status,

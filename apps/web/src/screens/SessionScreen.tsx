@@ -8,7 +8,7 @@
 
 import type { JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   SetupAssistant,
   metricLandmarkIndices,
@@ -52,6 +52,8 @@ const NO_BODY_CHECKS: SetupCheck[] = [
 
 export function SessionScreen(): JSX.Element {
   const { routineId } = useParams();
+  const [search] = useSearchParams();
+  const resumeSessionId = Number(search.get('resume')) || undefined;
   const navigate = useNavigate();
   const { t, language } = useTranslation();
   const settings = useSettingsStore();
@@ -63,7 +65,7 @@ export function SessionScreen(): JSX.Element {
     void db.routines.get(Number(routineId)).then(setRoutine);
   }, [routineId]);
 
-  const session = useSessionRunner(routine, settings.activeProfileId);
+  const session = useSessionRunner(routine, settings.activeProfileId, resumeSessionId);
   const exercise = session.item?.exercise;
 
   // The camera setup assistant runs until every check has been stable for two seconds.
@@ -289,6 +291,14 @@ export function SessionScreen(): JSX.Element {
           <p className="text-far-sm">{t('session.paused')}</p>
           <button className="btn-primary bg-canvas text-ink" onClick={session.togglePause}>
             {t('session.resume')}
+          </button>
+          {/* Reachable from the mat: both hands up pauses, and the decision is
+              here at full size rather than needing a gesture of its own. */}
+          <button
+            className="btn-secondary border-far-line bg-far-surface text-far-ink"
+            onClick={session.redoSet}
+          >
+            {t('session.redoSet')}
           </button>
           <button className="btn-ghost text-canvas" onClick={() => void endSession()}>
             {t('session.end')}
