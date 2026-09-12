@@ -10,6 +10,13 @@ import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 import type { Language } from '../i18n/index.js';
 
+/**
+ * A limb, as prescribed and as recorded. Narrower than the engine's `BodySide`
+ * on purpose: `auto` and `mean` are answers about how to measure, not about
+ * which side somebody was told to work.
+ */
+export type PrescribedSide = 'left' | 'right';
+
 export interface Profile {
   id: number;
   name: string;
@@ -48,6 +55,12 @@ export interface RoutineExercise {
   safety?: TargetBand;
   /** Seconds each phase should take. Absent means pacing is not judged. */
   tempo?: TempoTarget[];
+  /**
+   * Which limb a unilateral exercise is prescribed for. Absent means both, done
+   * as a full run of sets on one side and then the other — which is also what
+   * every routine written before this field existed means.
+   */
+  side?: PrescribedSide;
   /** A line from the professional who reviewed this exercise, for the patient. */
   physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */
@@ -106,6 +119,8 @@ export interface SetRecord {
   issues: Record<string, number>;
   /** Peak of every repetition, in degrees. */
   peaks: number[];
+  /** The limb this set was done on, for a unilateral exercise. */
+  side?: PrescribedSide;
   startedAt: number;
 }
 

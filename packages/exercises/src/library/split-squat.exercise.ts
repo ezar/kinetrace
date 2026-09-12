@@ -19,6 +19,7 @@ export const splitSquat: ExerciseDefinition = {
   },
   primaryMetric: 'knee',
   mode: 'reps',
+  unilateral: true,
   phases: [
     { id: 'stand', when: { above: 155 }, minDwellMs: 250 },
     { id: 'bottom', when: { below: 125 }, minDwellMs: 300 },

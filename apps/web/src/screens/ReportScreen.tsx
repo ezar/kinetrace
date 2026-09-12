@@ -18,7 +18,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { getExercise, metricLabel, resolveText } from '@kinetrace/exercises';
 import { db, type Session, type SetRecord } from '../db/schema.js';
 import { streakFromDates } from '../db/repositories.js';
-import { prescribedTarget } from '../session/target.js';
+import { reportRows } from '../routines/report.js';
 import { formatBand } from '../routines/band.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
@@ -28,24 +28,6 @@ import { ReviewStamp } from '../components/ReviewStamp.js';
 /** How far back the page looks. Long enough to show a trend, short enough to read. */
 const WEEKS = 8;
 const PERIOD_MS = WEEKS * 7 * 24 * 60 * 60 * 1000;
-
-interface ExerciseRow {
-  exerciseId: string;
-  name: string;
-  metric: string;
-  sets: number;
-  reps: number;
-  partials: number;
-  holdMinutes: number;
-  best: number;
-  mean: number;
-  goodPct: number;
-  /** Holds have no range to report: the time is the measurement. */
-  isHold: boolean;
-  target: { min: number; max: number };
-  targetBy?: string;
-  issues: Array<{ ruleId: string; count: number }>;
-}
 
 export function ReportScreen(): JSX.Element {
   const { t, language } = useTranslation();
@@ -81,53 +63,7 @@ export function ReportScreen(): JSX.Element {
     void db.sets.where('sessionId').anyOf(ids).toArray().then(setSets);
   }, [inPeriod]);
 
-  const rows = useMemo<ExerciseRow[]>(() => {
-    const byExercise = new Map<string, SetRecord[]>();
-    for (const set of sets) {
-      byExercise.set(set.exerciseId, [...(byExercise.get(set.exerciseId) ?? []), set]);
-    }
-    return [...byExercise.entries()].flatMap(([exerciseId, records]) => {
-      const exercise = getExercise(exerciseId);
-      if (!exercise) return [];
-      const target = prescribedTarget(routines, exerciseId, exercise);
-      const peaks = records.map((set) => set.romMax).filter((value) => value > 0);
-      const decreasing = exercise.targets.direction === 'decrease';
-      const issues = new Map<string, number>();
-      for (const set of records) {
-        for (const [ruleId, count] of Object.entries(set.issues)) {
-          issues.set(ruleId, (issues.get(ruleId) ?? 0) + count);
-        }
-      }
-      return [
-        {
-          exerciseId,
-          name: exercise.names[language],
-          metric: metricLabel(
-            exercise.metrics[exercise.primaryMetric]?.id ?? 'hipFlexion',
-            language,
-          ),
-          sets: records.length,
-          reps: records.reduce((total, set) => total + set.reps, 0),
-          partials: records.reduce((total, set) => total + set.partials, 0),
-          holdMinutes: Math.round(records.reduce((total, set) => total + set.holdMs, 0) / 60000),
-          best: peaks.length ? Math.round(decreasing ? Math.min(...peaks) : Math.max(...peaks)) : 0,
-          mean: peaks.length
-            ? Math.round(peaks.reduce((total, value) => total + value, 0) / peaks.length)
-            : 0,
-          isHold: exercise.mode === 'hold',
-          goodPct: records.length
-            ? Math.round(records.reduce((total, set) => total + set.goodRepPct, 0) / records.length)
-            : 0,
-          target: target.band,
-          ...(target.by ? { targetBy: target.by } : {}),
-          issues: [...issues.entries()]
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-            .map(([ruleId, count]) => ({ ruleId, count })),
-        },
-      ];
-    });
-  }, [sets, routines, language]);
+  const rows = useMemo(() => reportRows({ sets, routines, getExercise }), [sets, routines]);
 
   const felt = useMemo(
     () =>
@@ -200,50 +136,69 @@ export function ReportScreen(): JSX.Element {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
-                <tr key={row.exerciseId} className="border-b border-line align-top">
-                  <td className="py-2 pr-3">
-                    <span className="font-medium">{row.name}</span>
-                    <span className="block text-xs text-muted">{row.metric}</span>
-                    {row.issues.length > 0 ? (
-                      <span className="mt-1 block text-xs text-muted">
-                        {row.issues
-                          .map((issue) => `${resolveText(issue.ruleId, language)} ×${issue.count}`)
-                          .join(' · ')}
+              {rows.map((row) => {
+                const exercise = getExercise(row.exerciseId);
+                const metric = exercise?.metrics[exercise.primaryMetric];
+                return (
+                  <tr
+                    key={`${row.exerciseId}-${row.side ?? 'both'}`}
+                    className="border-b border-line align-top"
+                  >
+                    <td className="py-2 pr-3">
+                      <span className="font-medium">
+                        {exercise?.names[language] ?? row.exerciseId}
+                        {/* The side belongs beside the name: two rows with the
+                          same name and different numbers is a bug, not a
+                          measurement, unless it says which limb each one is. */}
+                        {row.side ? (
+                          <span className="font-normal text-muted"> · {t(`side.${row.side}`)}</span>
+                        ) : null}
                       </span>
-                    ) : null}
-                  </td>
-                  <td className="py-2 pr-3">
-                    {/* Two facts, not a multiplication: `6 × 72` would read as
-                        seventy-two repetitions in each of six sets. */}
-                    {row.holdMinutes > 0
-                      ? t('report.doneHold', { sets: row.sets, minutes: row.holdMinutes })
-                      : t('report.doneReps', { sets: row.sets, reps: row.reps })}
-                    {row.partials > 0 ? (
                       <span className="block text-xs text-muted">
-                        {t('report.partials', { count: row.partials })}
+                        {metricLabel(metric?.id ?? 'hipFlexion', language)}
                       </span>
-                    ) : null}
-                  </td>
-                  <td className="py-2 pr-3">
-                    {row.isHold ? (
-                      <span className="text-muted">{t('report.noRange')}</span>
-                    ) : (
-                      <>
-                        {row.best}° / {row.mean}°
-                        <span className="block text-xs text-muted">{t('report.bestMean')}</span>
-                      </>
-                    )}
-                    <span className="block text-xs text-muted">
-                      {t('report.targetIs', {
-                        band: formatBand(row.target.min, row.target.max, t('common.to')),
-                      })}
-                      {row.targetBy ? ` · ${row.targetBy}` : ''}
-                    </span>
-                  </td>
-                  <td className="py-2">{row.goodPct}%</td>
-                </tr>
-              ))}
+                      {row.issues.length > 0 ? (
+                        <span className="mt-1 block text-xs text-muted">
+                          {row.issues
+                            .map(
+                              (issue) => `${resolveText(issue.ruleId, language)} ×${issue.count}`,
+                            )
+                            .join(' · ')}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {/* Two facts, not a multiplication: `6 × 72` would read as
+                        seventy-two repetitions in each of six sets. */}
+                      {row.holdMinutes > 0
+                        ? t('report.doneHold', { sets: row.sets, minutes: row.holdMinutes })
+                        : t('report.doneReps', { sets: row.sets, reps: row.reps })}
+                      {row.partials > 0 ? (
+                        <span className="block text-xs text-muted">
+                          {t('report.partials', { count: row.partials })}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {row.isHold ? (
+                        <span className="text-muted">{t('report.noRange')}</span>
+                      ) : (
+                        <>
+                          {row.best}° / {row.mean}°
+                          <span className="block text-xs text-muted">{t('report.bestMean')}</span>
+                        </>
+                      )}
+                      <span className="block text-xs text-muted">
+                        {t('report.targetIs', {
+                          band: formatBand(row.target.min, row.target.max, t('common.to')),
+                        })}
+                        {row.targetBy ? ` · ${row.targetBy}` : ''}
+                      </span>
+                    </td>
+                    <td className="py-2">{row.goodPct}%</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </section>

@@ -17,6 +17,7 @@ import { getExercise, metricLabel } from '@kinetrace/exercises';
 import { db, type SetRecord } from '../db/schema.js';
 import { streakFromDates } from '../db/repositories.js';
 import { prescribedTarget } from '../session/target.js';
+import { dailySeries, subjectKey, subjectsIn } from '../routines/progress.js';
 import { formatBand } from '../routines/band.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
@@ -31,7 +32,7 @@ const NOTES_SHOWN = 8;
 export function ProgressScreen(): JSX.Element {
   const { t, language } = useTranslation();
   const profileId = useSettingsStore((state) => state.activeProfileId);
-  const [exerciseId, setExerciseId] = useState<string | null>(null);
+  const [subjectKeySelected, setSubjectKeySelected] = useState<string | null>(null);
   const [replaySetId, setReplaySetId] = useState<number | null>(null);
   const [compareSetId, setCompareSetId] = useState<number | null>(null);
 
@@ -56,8 +57,12 @@ export function ProgressScreen(): JSX.Element {
     void db.sets.where('sessionId').anyOf(ids).toArray().then(setSets);
   }, [sessions]);
 
-  const exerciseIds = useMemo(() => [...new Set(sets.map((set) => set.exerciseId))], [sets]);
-  const selected = exerciseId ?? exerciseIds[0] ?? null;
+  // One entry per exercise, or per limb of a unilateral one: plotting both
+  // sides as a single line would report the better limb and hide the weaker.
+  const subjects = useMemo(() => subjectsIn(sets), [sets]);
+  const subject =
+    subjects.find((candidate) => subjectKey(candidate) === subjectKeySelected) ?? subjects[0];
+  const selected = subject?.exerciseId ?? null;
   const exercise = selected ? getExercise(selected) : undefined;
 
   const target = useMemo(
@@ -65,32 +70,10 @@ export function ProgressScreen(): JSX.Element {
     [routines, selected, exercise],
   );
 
-  const series = useMemo(() => {
-    if (!selected) return [];
-    const byDay = new Map<string, { rom: number[]; reps: number; good: number[]; setId: number }>();
-    for (const set of sets.filter((entry) => entry.exerciseId === selected)) {
-      const day = new Date(set.startedAt).toISOString().slice(0, 10);
-      const bucket = byDay.get(day) ?? { rom: [], reps: 0, good: [], setId: set.id };
-      if (set.romMax > 0) bucket.rom.push(set.romMax);
-      bucket.reps += set.reps;
-      bucket.good.push(set.goodRepPct);
-      byDay.set(day, bucket);
-    }
-    const decreasing = exercise?.targets.direction === 'decrease';
-    return [...byDay.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([day, bucket]) => ({
-        day,
-        rom: bucket.rom.length
-          ? Math.round(decreasing ? Math.min(...bucket.rom) : Math.max(...bucket.rom))
-          : null,
-        reps: bucket.reps,
-        good: Math.round(
-          bucket.good.reduce((total, value) => total + value, 0) / bucket.good.length,
-        ),
-        setId: bucket.setId,
-      }));
-  }, [sets, selected, exercise]);
+  const series = useMemo(
+    () => (subject ? dailySeries(sets, subject, exercise?.targets.direction === 'decrease') : []),
+    [sets, subject, exercise],
+  );
 
   const completed = sessions.filter((session) => session.endedAt !== undefined);
 
@@ -117,7 +100,9 @@ export function ProgressScreen(): JSX.Element {
         .sort((a, b) => b.startedAt - a.startedAt),
     [completed],
   );
-  const setsForReplay = sets.filter((set) => set.exerciseId === selected);
+  const setsForReplay = sets.filter(
+    (set) => subject && set.exerciseId === subject.exerciseId && set.side === subject.side,
+  );
 
   return (
     <div className="space-y-6">
@@ -178,7 +163,7 @@ export function ProgressScreen(): JSX.Element {
         </section>
       ) : null}
 
-      {exerciseIds.length === 0 ? (
+      {subjects.length === 0 ? (
         <p className="text-muted">{t('progress.noData')}</p>
       ) : (
         <>
@@ -186,16 +171,17 @@ export function ProgressScreen(): JSX.Element {
             <span className="mb-1 block text-sm text-muted">{t('progress.selectExercise')}</span>
             <select
               className="field"
-              value={selected ?? ''}
+              value={subject ? subjectKey(subject) : ''}
               onChange={(event) => {
-                setExerciseId(event.target.value);
+                setSubjectKeySelected(event.target.value);
                 setReplaySetId(null);
                 setCompareSetId(null);
               }}
             >
-              {exerciseIds.map((id) => (
-                <option key={id} value={id}>
-                  {getExercise(id)?.names[language] ?? id}
+              {subjects.map((candidate) => (
+                <option key={subjectKey(candidate)} value={subjectKey(candidate)}>
+                  {getExercise(candidate.exerciseId)?.names[language] ?? candidate.exerciseId}
+                  {candidate.side ? ` · ${t(`side.${candidate.side}`)}` : ''}
                 </option>
               ))}
             </select>

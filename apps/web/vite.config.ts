@@ -17,6 +17,26 @@ const base = process.env.BASE_PATH ?? '/';
  * is what makes a deep link like `/library/glute-bridge` load the app instead
  * of a "not found" page.
  */
+/**
+ * The privacy promise, enforced rather than intended.
+ *
+ * Everything Kinetrace needs is its own origin: the app, the pose models, the
+ * MediaPipe and ONNX WebAssembly. The only exceptions are the weights of the
+ * two optional on-device engines, which their libraries fetch from a public
+ * model host the first time somebody turns the feature on.
+ *
+ * With `connect-src` this narrow, there is nowhere for a landmark, an angle or
+ * a note to go — and a dependency that tries grows a console error instead of
+ * quietly phoning home. `blob:` covers the audio worklet and the module
+ * workers; `wasm-unsafe-eval` is what compiling the pose model needs.
+ *
+ * It is kept here as well as in `vercel.json` so that `pnpm preview`, and
+ * therefore the end to end suite, runs against the same policy the deployment
+ * serves. A CSP nobody exercises is a CSP that breaks in production.
+ */
+const CONTENT_SECURITY_POLICY =
+  "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; manifest-src 'self'; connect-src 'self' blob: https://huggingface.co https://cdn-lfs.huggingface.co https://cdn-lfs-us-1.huggingface.co https://raw.githubusercontent.com";
+
 function spaFallback(): Plugin {
   return {
     name: 'kinetrace:spa-fallback',
@@ -30,6 +50,7 @@ function spaFallback(): Plugin {
 
 export default defineConfig({
   base,
+  preview: { headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY } },
   plugins: [
     react(),
     tailwindcss(),

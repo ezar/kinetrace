@@ -83,6 +83,15 @@ export interface ExerciseDefinition {
   /** Slot name used for counting, for the big number on screen and for progress charts. */
   primaryMetric: string;
   mode: 'reps' | 'hold';
+  /**
+   * Worked one limb at a time, so a whole set belongs to one side and the side
+   * is part of both the prescription and the history.
+   *
+   * Movements that alternate *within* a set — a bird dog, a dead bug — are not
+   * unilateral by this definition: the worked side changes every repetition, so
+   * there is no side to prescribe and `side: 'auto'` is the right answer.
+   */
+  unilateral?: true;
   /** Repetition cycle. Hold exercises declare a single resting phase for context. */
   phases: PhaseDef[];
   /**
