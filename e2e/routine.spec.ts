@@ -1,32 +1,60 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * The path a new user actually walks: create a profile, get the starter
- * routine, look at an exercise, and check the privacy screen says what the
- * README promises.
+ * The path a new user actually walks: the first run, out of it with a profile
+ * and a routine, then the library and the privacy promise the README makes.
  */
 test.describe('first run', () => {
-  test('creates a profile and a routine', async ({ page }) => {
+  test('walks somebody from nothing to a routine', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
+    // Anybody who has never been here is sent to the first run.
     await page.goto('./');
+    await expect(page).toHaveURL(/welcome/);
+    await expect(
+      page.getByRole('heading', { name: /un entrenador que te ve|a coach that can see you/i }),
+    ).toBeVisible();
+
+    const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+    await next.click();
+    await expect(page.getByText(/sin vídeo|no video/i)).toBeVisible();
+    await next.click();
+
+    // The profile is the one step that cannot be walked past empty.
+    await expect(next).toBeDisabled();
+    await page.getByLabel(/nombre|name/i).fill('Ana');
+    await expect(next).toBeEnabled();
+    await next.click();
+
+    // The example routine is the default choice.
+    await expect(page.getByText(/rutina de ejemplo|example routine/i).first()).toBeVisible();
+    await next.click();
+
+    // The gestures are shown being performed, not described.
+    await expect(page.getByText(/levanta las dos manos|both hands up/i)).toBeVisible();
+    await expect(page.getByRole('img', { name: /esqueleto|skeleton/i }).first()).toBeVisible();
+    await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+
+    // Out on the home screen, with the starter routine ready to run.
+    await expect(page).toHaveURL(/127\.0\.0\.1:\d+\/$|\/kinetrace\/$/);
+    await expect(page.getByText('Ana')).toBeVisible();
+    await expect(page.getByRole('link', { name: /empezar|start/i }).first()).toBeVisible();
+
+    // And never again, however many times the app is opened.
+    await page.goto('./');
+    await expect(page).not.toHaveURL(/welcome/);
+    expect(errors).toEqual([]);
+  });
+
+  test('lets somebody skip the first run', async ({ page }) => {
+    await page.goto('./');
+    await expect(page).toHaveURL(/welcome/);
+    await page.getByRole('button', { name: /saltar|skip/i }).click();
+    await expect(page).not.toHaveURL(/welcome/);
     await expect(
       page.getByRole('heading', { name: /crea un perfil|create a profile/i }),
     ).toBeVisible();
-
-    await page.getByRole('link', { name: /añadir persona|add a person/i }).click();
-    await page.getByLabel(/nombre|name/i).fill('Ana');
-    await page.getByRole('button', { name: /guardar|save/i }).click();
-    await expect(page.getByText('Ana')).toBeVisible();
-
-    await page.getByRole('link', { name: /inicio|home/i }).click();
-    await page.getByRole('button', { name: /crear una rutina|create a routine/i }).click();
-
-    // The starter routine is the maker's own back routine.
-    await expect(page.getByText(/puente de glúteos|glute bridge/i)).toBeVisible();
-    await expect(page.getByText(/plancha frontal|front plank/i)).toBeVisible();
-    expect(errors).toEqual([]);
   });
 
   test('shows the exercise library with animated demos', async ({ page }) => {
@@ -140,4 +168,85 @@ test('offers voice commands, or says why it cannot', async ({ page }) => {
   await toggle.click();
   await expect(toggle).toBeChecked();
   await expect(page.getByText(/«pausa»|«pause»/)).toBeVisible();
+});
+
+/**
+ * The professional review. The numbers the library ships are defaults, and this
+ * is where somebody qualified replaces them — including the check that knows
+ * how the engine counts and will not let a target be signed that the engine
+ * could never judge against.
+ */
+test('lets a professional review the exercises and sign', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+
+  // Through the first run to get a profile and the starter routine.
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  await page.getByRole('link', { name: /editar|edit/i }).click();
+  await expect(page.getByText(/rangos por defecto|default ranges/i)).toBeVisible();
+  await page.getByRole('button', { name: /revisar los ejercicios|review the exercises/i }).click();
+
+  const sign = page.getByRole('button', { name: /^firmar$|^sign$/i });
+  const signature = page.getByLabel(/firma|signature/i);
+  const bridge = page
+    .locator('section')
+    .filter({ hasText: /puente de glúteos|glute bridge/i })
+    .first();
+
+  // The library's own numbers raise nothing, and can be signed.
+  await signature.fill('Dra. Ruiz');
+  await expect(sign).toBeEnabled();
+
+  // A target below the point a repetition is counted at is only a warning: the
+  // professional is the authority, the app just makes sure they can see it.
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('140');
+  await expect(bridge.getByText(/148/)).toBeVisible();
+  await expect(sign).toBeEnabled();
+
+  // A target nobody could reach is an error, and blocks the signature.
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('200');
+  await expect(page.getByText(/marcado en rojo|marked in red/i)).toBeVisible();
+  await expect(sign).toBeDisabled();
+
+  await bridge.getByLabel(/objetivo desde|target from/i).fill('170');
+  await expect(sign).toBeEnabled();
+  await sign.click();
+
+  // Signed, and the routine says so from here on.
+  await expect(page).toHaveURL(/routines\/\d+$/);
+  await expect(page.getByText(/dra\. ruiz/i)).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+/**
+ * Help. Most of it is generated from the library and the engine, so the test
+ * checks the generated parts are there rather than the prose: the gestures
+ * drawn, the real voice vocabulary, and the way back into the introduction.
+ */
+test('has a help screen that can reopen the introduction', async ({ page }) => {
+  await page.goto('help');
+  await expect(page.getByRole('heading', { name: /^ayuda$|^help$/i })).toBeVisible();
+
+  // The gestures are performed by the same figure the session draws.
+  await expect(page.getByRole('img', { name: /esqueleto|skeleton/i })).toHaveCount(2);
+  await expect(page.getByText(/levanta las dos manos|both hands up/i)).toBeVisible();
+
+  // The vocabulary comes from the matcher's own table, accents and all.
+  await expect(page.getByText('«siguiente ejercicio»', { exact: false })).toBeVisible();
+  await expect(page.getByText('«fin de la sesión»', { exact: false })).toBeVisible();
+
+  // Every camera placement the library uses, told apart by position and view.
+  await expect(page.getByText(/móvil en una silla, a 3 m, de frente a ti/i)).toBeVisible();
+
+  await page.getByRole('link', { name: /verla otra vez|watch it again/i }).click();
+  await expect(page).toHaveURL(/welcome/);
 });

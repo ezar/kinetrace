@@ -23,6 +23,17 @@ export interface Profile {
   createdAt: number;
 }
 
+/** The accent colours a profile can take. Shared by the profile form and the
+ *  first run, which must offer the same ones. */
+export const PROFILE_COLORS = [
+  '#d9702f',
+  '#34618f',
+  '#2c7a58',
+  '#8a5bab',
+  '#b3352a',
+  '#3f7f8f',
+] as const;
+
 export interface RoutineExercise {
   exerciseId: string;
   sets: number;
@@ -33,8 +44,24 @@ export interface RoutineExercise {
   restSeconds: number;
   /** Target band for this profile, in degrees. Absent means the library default. */
   band?: TargetBand;
+  /** Safety stop for this profile, in degrees. Absent means the library default. */
+  safety?: TargetBand;
+  /** A line from the professional who reviewed this exercise, for the patient. */
+  physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */
   customNote?: string;
+}
+
+/**
+ * A professional's sign-off on a routine. Local like everything else: it is a
+ * record that somebody sat down and checked the numbers, not an authentication.
+ */
+export interface RoutineReview {
+  /** The name the professional signed with. */
+  by: string;
+  at: number;
+  /** A note about the routine as a whole. */
+  note?: string;
 }
 
 export interface Routine {
@@ -42,6 +69,8 @@ export interface Routine {
   profileId: number;
   name: string;
   exercises: RoutineExercise[];
+  /** Set when a professional has been through the exercises and signed. */
+  review?: RoutineReview;
   createdAt: number;
   updatedAt: number;
 }
@@ -104,6 +133,8 @@ export interface AppSettings {
   speakCues: boolean;
   earcons: boolean;
   showCameraPreview: boolean;
+  /** True once the first run has been walked through, or skipped. */
+  onboarded: boolean;
   /** Listen for spoken commands during a session. Off until asked for: it
    *  downloads a model and needs the microphone. */
   voiceCommands: boolean;
@@ -122,6 +153,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   speakCues: true,
   earcons: true,
   showCameraPreview: true,
+  onboarded: false,
   voiceCommands: false,
   voiceModel: 'tiny',
   poseModel: 'full',

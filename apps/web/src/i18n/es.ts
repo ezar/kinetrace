@@ -140,6 +140,7 @@ export const es = {
   'session.exerciseOf': 'Ejercicio {current} de {total}',
   'session.getReady': 'Prepárate',
   'session.safetyStop': 'Para y descansa',
+  'session.physioSays': 'Tu fisio: {note}',
 
   'summary.title': 'Resumen',
   'summary.goodReps': 'Repeticiones buenas',
@@ -189,6 +190,144 @@ export const es = {
   'import.download': 'Descargar ({size} MB)',
   'import.noMatch': 'Nada ha coincidido con la biblioteca',
 
+  'welcome.skip': 'Saltar',
+  'welcome.begin': 'Empezar',
+  'welcome.step': 'Paso {current} de {total}',
+
+  'welcome.what.title': 'Un entrenador que te ve',
+  'welcome.what.body':
+    'Haces delante de la cámara los ejercicios que te ha mandado tu fisioterapeuta. Kinetrace cuenta las repeticiones, mide hasta dónde llegas y te va corrigiendo con una indicación cada vez.',
+
+  'welcome.privacy.title': 'La cámara no sale de aquí',
+  'welcome.privacy.body':
+    'El vídeo se procesa en tu dispositivo, fotograma a fotograma, y se descarta. No se guarda ni se envía a ningún sitio. Lo que se guarda son ángulos y repeticiones, aquí mismo.',
+  'welcome.privacy.permissions':
+    'Kinetrace te pedirá la cámara cuando empieces una sesión, y el micrófono solo si enciendes los comandos de voz. Nunca antes.',
+
+  'welcome.profile.title': '¿Quién va a entrenar?',
+  'welcome.profile.body':
+    'Cada persona de la casa tiene su perfil y su historial. Puedes añadir más cuando quieras.',
+
+  'welcome.routine.title': '¿Qué vas a hacer?',
+  'welcome.routine.body': 'Puedes cambiarlo todo después: ejercicios, series y rangos.',
+  'welcome.routine.starter': 'Empezar con la rutina de ejemplo',
+  'welcome.routine.starterHelp': 'Cinco ejercicios de espalda, unos diez minutos.',
+  'welcome.routine.import': 'Importar la hoja de mi fisio',
+  'welcome.routine.importHelp':
+    'Le haces una foto y Kinetrace propone la rutina. La revisas antes de guardar nada.',
+  'welcome.routine.later': 'Lo monto yo más tarde',
+  'welcome.routine.laterHelp': 'Puedes crear una rutina desde cero cuando te apetezca.',
+
+  'welcome.mat.title': 'Se maneja desde la esterilla',
+  'welcome.mat.body': 'No hace falta que te levantes a tocar la pantalla a mitad de una serie.',
+  'welcome.mat.camera':
+    'Deja el móvil apoyado a dos o tres metros, apuntando a la esterilla. Los números son enormes y solo hay una indicación cada vez, para que se lea de lejos.',
+  'welcome.mat.pause': 'Levanta las dos manos para pausar',
+  'welcome.mat.skip': 'Saluda con una mano para pasar al siguiente',
+  'welcome.mat.voice': 'También puedes hablarle: «pausa», «sigue», «siguiente», «repite».',
+  'welcome.mat.voiceOn': 'Activar los comandos de voz ({size} MB)',
+  'welcome.mat.voiceDone': 'Comandos de voz activados',
+
+  'review.title': 'Revisión profesional',
+  'review.open': 'Revisar los ejercicios',
+  'review.again': 'Revisar otra vez',
+  'review.intro':
+    'Estas son las cifras con las que Kinetrace va a contar, medir y corregir. Ajústalas a esta persona y fírmalas.',
+  'review.privacy':
+    'Todo se queda en este dispositivo. La firma es constancia de que alguien lo ha revisado, no una identificación.',
+  'review.notReviewed': 'Con los rangos por defecto de la biblioteca',
+  'review.signedBy': 'Revisado por {name} el {date}',
+  'review.signature': 'Firma',
+  'review.signaturePlaceholder': 'Nombre del profesional',
+  'review.sign': 'Firmar',
+  'review.notePlaceholder': 'Nota sobre la rutina (opcional)',
+  'review.notePlaceholderExercise': 'Lo que quieras que lea antes de esta serie',
+  'review.note': 'Nota para la persona',
+  'review.blocked': 'Corrige lo que está marcado en rojo antes de firmar',
+  'review.bandMin': 'Objetivo desde',
+  'review.bandMax': 'hasta',
+  'review.safety': 'Parada de seguridad',
+  'review.safetyMin': 'Mínimo',
+  'review.safetyMax': 'Máximo',
+  'review.cues': 'Lo que le va a decir ({count})',
+  'review.noCues': 'Este ejercicio no tiene correcciones automáticas.',
+  'review.untracked': 'Texto de una hoja importada. Kinetrace no lo mide.',
+  'review.priority.safety': 'seguridad',
+  'review.priority.form': 'técnica',
+  'review.priority.encouragement': 'ánimo',
+
+  'review.issue.bandInverted': 'El objetivo está al revés: {min} no es menor que {max}.',
+  'review.issue.safetyInverted':
+    'La parada de seguridad está al revés: {min} no es menor que {max}.',
+  'review.issue.bandOutsideSafety':
+    'El objetivo se sale de la parada de seguridad ({min}–{max}°): hacer lo que le pides cortaría la sesión.',
+  'review.issue.bandOutsideMetric':
+    'Fuera de lo que se puede medir aquí ({min}–{max}°). Nadie puede llegar a ese ángulo.',
+  'review.issue.safetyNeverFires':
+    'La parada de seguridad abarca todo lo medible ({min}–{max}°), así que nunca va a saltar.',
+  'review.issue.bandOutsideCountingRange':
+    'Una repetición no se cuenta hasta pasar de {threshold}°, y el objetivo entero se queda por debajo: ninguna repetición podría darse por buena.',
+  'review.issue.bandNotDiscriminating':
+    'Una repetición ya tiene que pasar de {threshold}° para contarse, así que con este objetivo todas saldrían buenas. Súbelo si quieres que distinga.',
+  'review.issue.bandNarrowerThanWobble':
+    'Un margen de {width}° es más estrecho que el temblor normal de la medida ({wobble}°). Va a parecer aleatorio.',
+  'review.issue.farFromDefault':
+    'Muy lejos del rango de la biblioteca ({min}–{max}°). Si es a propósito, adelante; si es un dedazo, aquí está.',
+  'review.issue.setsInvalid': 'Las series tienen que ser un número entero de al menos 1.',
+  'review.issue.repsInvalid': 'Las repeticiones tienen que ser un número entero de al menos 1.',
+  'review.issue.holdInvalid': 'El tiempo de sostén tiene que ser de al menos 1 segundo.',
+  'review.issue.restInvalid': 'El descanso no puede ser negativo.',
+
+  'help.title': 'Ayuda',
+  'help.subtitle': 'Cómo se usa, y qué hacer cuando algo no va',
+  'help.intro': 'La introducción',
+  'help.introHelp': 'Las cuatro cosas que conviene saber antes de empezar.',
+  'help.introAction': 'Verla otra vez',
+
+  'help.mat': 'Manejarlo desde la esterilla',
+  'help.matHelp':
+    'El móvil está a dos o tres metros: no hace falta levantarse a tocar la pantalla a mitad de una serie.',
+  'help.voice': 'Hablarle',
+  'help.voice.pause': 'Pausar',
+  'help.voice.resume': 'Seguir',
+  'help.voice.next': 'Siguiente',
+  'help.voice.repeat': 'Repetir',
+  'help.voice.stop': 'Terminar',
+  'help.voiceOn': 'Los comandos de voz están encendidos. Puedes apagarlos en',
+  'help.voiceOff': 'Los comandos de voz están apagados. Puedes encenderlos en',
+
+  'help.camera': 'Dónde poner la cámara',
+  'help.cameraHelp':
+    'Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.',
+
+  'help.numbers': 'Qué significan los números',
+  'help.term.reps': 'Repeticiones',
+  'help.term.reps.body': 'Las que llegaron al rango que te han marcado.',
+  'help.term.partials': 'Parciales',
+  'help.term.partials.body':
+    'Las que hiciste enteras pero se quedaron cortas. Cuentan como hechas, no como buenas: es mejor saberlo que inflar el número.',
+  'help.term.rom': 'Rango',
+  'help.term.rom.body':
+    'Hasta dónde llegaste, en grados. Kinetrace guarda el mejor de la serie y la media, y los dibuja semana a semana.',
+  'help.term.goodPct': 'Porcentaje de buenas',
+  'help.term.goodPct.body': 'Qué parte de las repeticiones llegó al rango.',
+  'help.term.band': 'El rango objetivo',
+  'help.term.band.body':
+    'Los grados a los que apuntas. La biblioteca trae unos por defecto; los de tu fisioterapeuta los sustituyen.',
+  'help.term.safety': 'La parada de seguridad',
+  'help.term.safety.body':
+    'El punto en el que Kinetrace te dice que pares. Si lo cruzas, la indicación es parar y descansar, por encima de cualquier otra.',
+
+  'help.lost': 'Cuando no te ve',
+  'help.lostHelp':
+    'Antes de empezar, Kinetrace comprueba que te ve entero y bien colocado, y no cuenta nada hasta que sea así. Esto es lo que te va a pedir:',
+  'help.lostModel':
+    'Si aun así te pierde, prueba con más luz, con ropa que contraste con el suelo, o con un modelo de postura más preciso en Ajustes.',
+
+  'help.data': 'Tus datos',
+  'help.dataHelp':
+    'Todo vive en este dispositivo. Puedes exportar un perfil a un archivo, llevártelo a otro sitio, o borrarlo todo, desde Ajustes.',
+
   'settings.title': 'Ajustes',
   'settings.language': 'Idioma',
   'settings.voice': 'Voz',
@@ -218,6 +357,7 @@ export const es = {
     '¿Seguro? Se borrarán perfiles, rutinas e historial de este dispositivo.',
   'settings.keepTracks': 'Guardar esqueletos para repetir',
   'settings.keepTracksHelp': 'Se borran solos a los 90 días. Nunca se guarda vídeo.',
+  'settings.showWelcome': 'Ver la introducción otra vez',
   'settings.privacy': 'Privacidad',
   'settings.about': 'Acerca de',
 

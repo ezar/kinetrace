@@ -8,6 +8,8 @@
 export * from './types.js';
 export * from './validate.js';
 export * from './matcher.js';
+export * from './prescription.js';
+export { describeCondition } from './explain.js';
 export * from './runner.js';
 export {
   METRIC_LABELS,

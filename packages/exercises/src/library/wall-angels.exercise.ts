@@ -23,7 +23,14 @@ export const wallAngels: ExerciseDefinition = {
     { id: 'down', when: { below: 100 }, minDwellMs: 300 },
     { id: 'up', when: { above: 130 }, minDwellMs: 500 },
   ],
-  targets: { direction: 'increase', band: { min: 150, max: 180 }, safety: { min: 0, max: 185 } },
+  /**
+   * No safety stop. Shoulder abduction is measured from 0 to 180 degrees and
+   * both ends are anatomically reachable, so there is no value of it to stop
+   * on; the limits this used to carry (0 to 185) simply bracketed the whole
+   * measurable range and could never fire. The elbow rule below is what
+   * actually protects the movement.
+   */
+  targets: { direction: 'increase', band: { min: 150, max: 180 } },
   rules: [
     {
       id: 'elbowsForward',

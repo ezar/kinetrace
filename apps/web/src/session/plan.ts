@@ -18,6 +18,9 @@ export interface PlanItem {
   holdSeconds?: number;
   restSeconds: number;
   band?: TargetBand;
+  safety?: TargetBand;
+  /** A line from the professional who reviewed this exercise. */
+  physioNote?: string;
   /** Text from a sheet import that matched no exercise; shown but not tracked. */
   customNote?: string;
   /** False for imported items the library cannot track. */
@@ -41,6 +44,8 @@ export function buildPlan(routine: Pick<Routine, 'exercises'>): PlanItem[] {
         holdSeconds: entry.holdSeconds ?? exercise?.defaults.holdSeconds,
         restSeconds: entry.restSeconds,
         band: entry.band,
+        safety: entry.safety,
+        physioNote: entry.physioNote,
         customNote: entry.customNote,
         tracked: Boolean(exercise),
       });

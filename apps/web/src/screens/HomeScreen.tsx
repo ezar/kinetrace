@@ -1,17 +1,18 @@
 /** Home: who is training, what they are doing today, and one big Start. */
 
 import type { JSX } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { DEFAULT_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
+import { getExercise } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
-import { saveRoutine, streakFromDates } from '../db/repositories.js';
+import { createStarterRoutine, streakFromDates } from '../db/repositories.js';
 import { estimateMinutes } from '../session/plan.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { EmptyState } from '../components/EmptyState.js';
 import { ProfileChip } from '../components/ProfileChip.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
+import { ReviewStamp } from '../components/ReviewStamp.js';
 import { PlayIcon, PlusIcon } from '../components/icons.js';
 
 /** Up to four exercises are shown as thumbnails; the rest become a count. */
@@ -21,8 +22,14 @@ export function HomeScreen(): JSX.Element {
   const { t, language } = useTranslation();
   const navigate = useNavigate();
   const activeProfileId = useSettingsStore((state) => state.activeProfileId);
+  const onboarded = useSettingsStore((state) => state.onboarded);
 
-  const profiles = useLiveQuery(() => db.profiles.toArray(), [], []);
+  // No initial value: `undefined` means the database has not answered yet, and
+  // an empty array means it has and there is nobody. Treating the first as the
+  // second would send somebody who already has a profile into the first run,
+  // and would flash the empty state at everybody else.
+  const loadedProfiles = useLiveQuery(() => db.profiles.toArray(), []);
+  const profiles = loadedProfiles ?? [];
   const profile = profiles.find((entry) => entry.id === activeProfileId) ?? profiles[0];
   const routines = useLiveQuery(
     () =>
@@ -38,29 +45,17 @@ export function HomeScreen(): JSX.Element {
     [],
   );
 
-  /** Seed the maker's own back routine, so a new profile has something to do. */
-  const createStarterRoutine = async (): Promise<void> => {
+  const startStarterRoutine = async (): Promise<void> => {
     if (!profile) return;
-    const exercises = DEFAULT_ROUTINE_IDS.flatMap((id) => {
-      const exercise = getExercise(id);
-      if (!exercise) return [];
-      return [
-        {
-          exerciseId: id,
-          sets: exercise.defaults.sets,
-          reps: exercise.defaults.reps,
-          holdSeconds: exercise.defaults.holdSeconds,
-          restSeconds: exercise.defaults.restSeconds,
-        },
-      ];
-    });
-    const id = await saveRoutine({
-      profileId: profile.id,
-      name: t('home.starterRoutine'),
-      exercises,
-    });
-    navigate(`/routines/${id}`);
+    navigate(`/routines/${await createStarterRoutine(profile.id, t('home.starterRoutine'))}`);
   };
+
+  if (loadedProfiles === undefined) return <div className="p-8 text-muted">…</div>;
+
+  // Somebody who has never been here goes through the first run. Somebody who
+  // already has a profile never does, however they arrived — an upgrade must
+  // not send an existing user back to the beginning.
+  if (!onboarded && profiles.length === 0) return <Navigate to="/welcome" replace />;
 
   if (profiles.length === 0) {
     return (
@@ -100,7 +95,7 @@ export function HomeScreen(): JSX.Element {
           title={t('home.noRoutine')}
           action={
             <div className="flex flex-wrap justify-center gap-2">
-              <button className="btn-primary" onClick={() => void createStarterRoutine()}>
+              <button className="btn-primary" onClick={() => void startStarterRoutine()}>
                 {t('home.createRoutine')}
               </button>
               <Link to="/import" className="btn-secondary">
@@ -163,7 +158,12 @@ export function HomeScreen(): JSX.Element {
         </Link>
       </section>
 
-      <p className="pt-1 text-xs leading-relaxed text-muted">{t('app.disclaimer')}</p>
+      <p className="pt-1 text-xs leading-relaxed text-muted">
+        {t('app.disclaimer')}{' '}
+        <Link to="/help" className="underline underline-offset-4">
+          {t('help.title')}
+        </Link>
+      </p>
     </div>
   );
 }
@@ -191,6 +191,9 @@ function TodayCard({
           {routine.exercises.length} ·{' '}
           {t('routine.estimated', { minutes: estimateMinutes(routine) })}
         </span>
+        {/* Only when somebody has signed: an unreviewed routine is the normal
+            case and does not need nagging about on the home screen. */}
+        {routine.review ? <ReviewStamp review={routine.review} className="mt-1" /> : null}
       </div>
 
       <div className="mt-4 flex gap-2">

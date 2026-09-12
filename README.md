@@ -35,10 +35,21 @@ account.** What is stored is skeletons, angles and counts — never pixels.
   voice commands: say "pausa", "sigue", "siguiente" or "repite" from the mat.
   Whisper runs on the device through WebGPU; the audio never leaves it, and it is
   not the Web Speech Recognition API, which in most browsers does not run locally.
+- **Made for the person who prescribed it.** A physiotherapist can go through the
+  routine exercise by exercise — what is measured and how reliably, the range to aim
+  for, the point at which the session stops, the dosage, and the exact words the app
+  will say — adjust it and sign. The numbers are checked as they are typed, including
+  against how the engine counts, so a target that has quietly stopped meaning anything
+  is caught before it reaches anybody.
 - **Remembers without watching.** Sessions store a 15 fps skeleton track you can
   replay and compare — around 2 kB per second, and no video anywhere.
 - **Reads your physio's sheet.** Photograph it and Kinetrace proposes a routine,
   with every mapping shown for review before anything is saved.
+- **Explains itself.** A help screen generated from the library and the engine
+  rather than written beside them: the gestures performed by the same figure the
+  session draws, the recogniser's own vocabulary, every camera placement the library
+  uses, and — word for word — what the setup assistant says while it is blocking a
+  session. The introduction can be watched again from there at any time.
 - **Spanish and English**, UI and cues.
 
 ## Try it

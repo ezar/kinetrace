@@ -141,6 +141,7 @@ export const en: Record<TranslationKey, string> = {
   'session.exerciseOf': 'Exercise {current} of {total}',
   'session.getReady': 'Get ready',
   'session.safetyStop': 'Stop and rest',
+  'session.physioSays': 'Your physio: {note}',
 
   'summary.title': 'Summary',
   'summary.goodReps': 'Good reps',
@@ -190,6 +191,144 @@ export const en: Record<TranslationKey, string> = {
   'import.download': 'Download ({size} MB)',
   'import.noMatch': 'Nothing matched the library',
 
+  'welcome.skip': 'Skip',
+  'welcome.begin': 'Start',
+  'welcome.step': 'Step {current} of {total}',
+
+  'welcome.what.title': 'A coach that can see you',
+  'welcome.what.body':
+    'You do the exercises your physiotherapist gave you in front of the camera. Kinetrace counts the repetitions, measures how far you get, and corrects you one cue at a time.',
+
+  'welcome.privacy.title': 'The camera stays here',
+  'welcome.privacy.body':
+    'The video is processed on your device, frame by frame, and dropped. It is never stored and never sent anywhere. What is stored are angles and repetitions, right here.',
+  'welcome.privacy.permissions':
+    'Kinetrace will ask for the camera when you start a session, and for the microphone only if you turn on voice commands. Never before that.',
+
+  'welcome.profile.title': 'Who is training?',
+  'welcome.profile.body':
+    'Everyone in the house gets their own profile and history. You can add more whenever you like.',
+
+  'welcome.routine.title': 'What are you going to do?',
+  'welcome.routine.body': 'You can change all of it later: exercises, sets and ranges.',
+  'welcome.routine.starter': 'Start with the example routine',
+  'welcome.routine.starterHelp': 'Five back exercises, about ten minutes.',
+  'welcome.routine.import': "Import my physio's sheet",
+  'welcome.routine.importHelp':
+    'Photograph it and Kinetrace proposes the routine. You review it before anything is saved.',
+  'welcome.routine.later': "I'll build one later",
+  'welcome.routine.laterHelp': 'You can create a routine from scratch whenever you want.',
+
+  'welcome.mat.title': 'Run it from the mat',
+  'welcome.mat.body': 'No getting up to touch the screen halfway through a set.',
+  'welcome.mat.camera':
+    'Prop the phone up two or three metres away, pointing at the mat. The numbers are enormous and there is only ever one cue, so it reads from across the room.',
+  'welcome.mat.pause': 'Both hands up to pause',
+  'welcome.mat.skip': 'Wave one hand to move on',
+  'welcome.mat.voice': 'You can also talk to it: "pause", "continue", "next", "repeat".',
+  'welcome.mat.voiceOn': 'Turn on voice commands ({size} MB)',
+  'welcome.mat.voiceDone': 'Voice commands are on',
+
+  'review.title': 'Professional review',
+  'review.open': 'Review the exercises',
+  'review.again': 'Review again',
+  'review.intro':
+    'These are the numbers Kinetrace will count, measure and correct against. Fit them to this person and sign.',
+  'review.privacy':
+    'All of it stays on this device. The signature is a record that somebody checked, not an identification.',
+  'review.notReviewed': "Using the library's default ranges",
+  'review.signedBy': 'Reviewed by {name} on {date}',
+  'review.signature': 'Signature',
+  'review.signaturePlaceholder': "The professional's name",
+  'review.sign': 'Sign',
+  'review.notePlaceholder': 'A note about the routine (optional)',
+  'review.notePlaceholderExercise': 'What they should read before this set',
+  'review.note': 'Note for the person',
+  'review.blocked': 'Fix what is marked in red before signing',
+  'review.bandMin': 'Target from',
+  'review.bandMax': 'to',
+  'review.safety': 'Safety stop',
+  'review.safetyMin': 'Lowest',
+  'review.safetyMax': 'Highest',
+  'review.cues': 'What it will say ({count})',
+  'review.noCues': 'This exercise has no automatic corrections.',
+  'review.untracked': 'Text from an imported sheet. Kinetrace does not measure it.',
+  'review.priority.safety': 'safety',
+  'review.priority.form': 'form',
+  'review.priority.encouragement': 'encouragement',
+
+  'review.issue.bandInverted': 'The target is the wrong way round: {min} is not below {max}.',
+  'review.issue.safetyInverted':
+    'The safety stop is the wrong way round: {min} is not below {max}.',
+  'review.issue.bandOutsideSafety':
+    'The target runs past the safety stop ({min}–{max}°): doing what you asked for would cut the session short.',
+  'review.issue.bandOutsideMetric':
+    'Outside what can be measured here ({min}–{max}°). Nobody can reach that angle.',
+  'review.issue.safetyNeverFires':
+    'The safety stop covers everything measurable ({min}–{max}°), so it can never fire.',
+  'review.issue.bandOutsideCountingRange':
+    'A repetition is not counted until it passes {threshold}°, and the whole target sits below that: no repetition could ever be marked good.',
+  'review.issue.bandNotDiscriminating':
+    'A repetition already has to pass {threshold}° to be counted, so with this target every one of them would be good. Raise it if you want it to tell them apart.',
+  'review.issue.bandNarrowerThanWobble':
+    'A {width}° window is narrower than the measurement normally wobbles ({wobble}°). It will feel random.',
+  'review.issue.farFromDefault':
+    "A long way from the library's range ({min}–{max}°). If that is deliberate, go ahead; if it is a typo, here it is.",
+  'review.issue.setsInvalid': 'Sets must be a whole number, at least 1.',
+  'review.issue.repsInvalid': 'Repetitions must be a whole number, at least 1.',
+  'review.issue.holdInvalid': 'The hold must be at least 1 second.',
+  'review.issue.restInvalid': 'Rest cannot be negative.',
+
+  'help.title': 'Help',
+  'help.subtitle': 'How to use it, and what to do when something is off',
+  'help.intro': 'The introduction',
+  'help.introHelp': 'The four things worth knowing before you start.',
+  'help.introAction': 'Watch it again',
+
+  'help.mat': 'Running it from the mat',
+  'help.matHelp':
+    'The phone is two or three metres away: no getting up to touch the screen halfway through a set.',
+  'help.voice': 'Talking to it',
+  'help.voice.pause': 'Pause',
+  'help.voice.resume': 'Continue',
+  'help.voice.next': 'Next',
+  'help.voice.repeat': 'Repeat',
+  'help.voice.stop': 'Finish',
+  'help.voiceOn': 'Voice commands are on. You can turn them off in',
+  'help.voiceOff': 'Voice commands are off. You can turn them on in',
+
+  'help.camera': 'Where to put the camera',
+  'help.cameraHelp':
+    'Each exercise tells you before it starts, but these are every placement the library uses.',
+
+  'help.numbers': 'What the numbers mean',
+  'help.term.reps': 'Repetitions',
+  'help.term.reps.body': 'The ones that reached the range you were given.',
+  'help.term.partials': 'Partials',
+  'help.term.partials.body':
+    'The ones you completed but that fell short. They count as done, not as good: better to know than to inflate the number.',
+  'help.term.rom': 'Range',
+  'help.term.rom.body':
+    'How far you got, in degrees. Kinetrace keeps the best of the set and the average, and charts them week by week.',
+  'help.term.goodPct': 'Good repetitions',
+  'help.term.goodPct.body': 'What share of the repetitions reached the range.',
+  'help.term.band': 'The target range',
+  'help.term.band.body':
+    'The degrees you are aiming for. The library ships defaults; your physiotherapist’s numbers replace them.',
+  'help.term.safety': 'The safety stop',
+  'help.term.safety.body':
+    'The point at which Kinetrace tells you to stop. Cross it and the cue is to stop and rest, ahead of anything else.',
+
+  'help.lost': 'When it cannot see you',
+  'help.lostHelp':
+    'Before it starts, Kinetrace checks that it can see all of you, framed properly, and counts nothing until it can. This is what it will ask for:',
+  'help.lostModel':
+    'If it still loses you, try more light, clothes that contrast with the floor, or a more accurate pose model in Settings.',
+
+  'help.data': 'Your data',
+  'help.dataHelp':
+    'All of it lives on this device. You can export a profile to a file, take it somewhere else, or delete everything, from Settings.',
+
   'settings.title': 'Settings',
   'settings.language': 'Language',
   'settings.voice': 'Voice',
@@ -219,6 +358,7 @@ export const en: Record<TranslationKey, string> = {
     'Are you sure? Profiles, routines and history will be deleted from this device.',
   'settings.keepTracks': 'Keep skeletons for replay',
   'settings.keepTracksHelp': 'They delete themselves after 90 days. Video is never stored.',
+  'settings.showWelcome': 'See the introduction again',
   'settings.privacy': 'Privacy',
   'settings.about': 'About',
 

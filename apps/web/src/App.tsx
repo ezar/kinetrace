@@ -4,6 +4,10 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout.js';
 import { HomeScreen } from './screens/HomeScreen.js';
 import { ProfilesScreen } from './screens/ProfilesScreen.js';
+import { WelcomeScreen } from './screens/WelcomeScreen.js';
+const ReviewScreen = lazy(() =>
+  import('./screens/ReviewScreen.js').then((module) => ({ default: module.ReviewScreen })),
+);
 import { LibraryScreen } from './screens/LibraryScreen.js';
 import { ExerciseDetailScreen } from './screens/ExerciseDetailScreen.js';
 import { RoutineBuilderScreen } from './screens/RoutineBuilderScreen.js';
@@ -22,6 +26,7 @@ const SheetImportScreen = lazy(() =>
   })),
 );
 import { SettingsScreen } from './screens/SettingsScreen.js';
+import { HelpScreen } from './screens/HelpScreen.js';
 import { PrivacyScreen } from './screens/PrivacyScreen.js';
 import { AboutScreen } from './screens/AboutScreen.js';
 import { useSettingsStore } from './store/useSettingsStore.js';
@@ -43,7 +48,10 @@ export function App(): JSX.Element {
           user actually opens those screens, which keeps the first load small. */}
       <Suspense fallback={<div className="p-8 text-muted">…</div>}>
         <Routes>
-          {/* The session and its summary run full screen, without the navigation. */}
+          {/* The first run, the session and its summary run full screen,
+              without the navigation: each is one thing at a time. */}
+          <Route path="/welcome" element={<WelcomeScreen />} />
+          <Route path="/review/:routineId" element={<ReviewScreen />} />
           <Route path="/session/:routineId" element={<SessionScreen />} />
           <Route path="/summary/:sessionId" element={<SummaryScreen />} />
           <Route element={<Layout />}>
@@ -55,6 +63,7 @@ export function App(): JSX.Element {
             <Route path="/routines/:routineId" element={<RoutineBuilderScreen />} />
             <Route path="/progress" element={<ProgressScreen />} />
             <Route path="/import" element={<SheetImportScreen />} />
+            <Route path="/help" element={<HelpScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/settings/privacy" element={<PrivacyScreen />} />
             <Route path="/settings/about" element={<AboutScreen />} />

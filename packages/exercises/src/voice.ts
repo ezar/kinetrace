@@ -5,8 +5,9 @@
  * small: every phrase added is another thing the recogniser can hear by
  * accident in a room where somebody is breathing hard and counting out loud.
  *
- * Phrases are written the way they are said, not the way they are spelled —
- * the matcher strips accents and punctuation before comparing.
+ * Phrases are written properly spelled, accents and all. The matcher strips
+ * them before comparing, so it makes no difference there — but the help screen
+ * prints this list to the user, and «fin de la sesion» reads as a typo.
  */
 
 import type { VoiceCommand, VoiceGrammar } from '@kinetrace/engine';
@@ -20,7 +21,7 @@ export const VOICE_PHRASES: Readonly<Record<VoiceCommand, PhraseSet>> = {
     en: ['pause', 'wait', 'hold on'],
   },
   resume: {
-    es: ['sigue', 'seguimos', 'continua', 'vamos'],
+    es: ['sigue', 'seguimos', 'continúa', 'vamos'],
     en: ['continue', 'resume', 'keep going', 'carry on'],
   },
   next: {
@@ -28,12 +29,12 @@ export const VOICE_PHRASES: Readonly<Record<VoiceCommand, PhraseSet>> = {
     en: ['next', 'next exercise', 'skip'],
   },
   repeat: {
-    es: ['repite', 'otra vez', 'que hago'],
+    es: ['repite', 'otra vez', 'qué hago'],
     en: ['repeat', 'again', 'say that again'],
   },
   // Only fires on an exact match: see the engine's grammar module.
   stop: {
-    es: ['terminar', 'parar', 'fin de la sesion'],
+    es: ['terminar', 'parar', 'fin de la sesión'],
     en: ['stop', 'finish', 'end session'],
   },
 };

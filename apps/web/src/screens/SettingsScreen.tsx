@@ -186,8 +186,14 @@ export function SettingsScreen(): JSX.Element {
       </section>
 
       <nav className="card divide-y divide-line">
+        <Link to="/help" className="block px-4 py-3">
+          {t('help.title')}
+        </Link>
         <Link to="/profiles" className="block px-4 py-3">
           {t('profiles.title')}
+        </Link>
+        <Link to="/welcome" className="block px-4 py-3">
+          {t('settings.showWelcome')}
         </Link>
         <Link to="/settings/privacy" className="block px-4 py-3">
           {t('settings.privacy')}

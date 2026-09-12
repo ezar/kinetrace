@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { GestureDetector } from '../gestures/detector.js';
+import { GESTURE_MOTIONS } from '../gestures/demo.js';
+import { synthesizeFrames } from '../synth/motion.js';
 import { LANDMARK_COUNT, POSE_LANDMARK } from '../pose/landmarks.js';
 import type { Landmark, PoseFrame } from '../types.js';
 
@@ -84,5 +86,31 @@ describe('GestureDetector', () => {
       events.push(...detector.update(poseFrame(t, { [POSE_LANDMARK.LEFT_WRIST]: { x: 0.4, y } })));
     }
     expect(events).toHaveLength(0);
+  });
+});
+
+/**
+ * The onboarding illustrates each gesture with a reference motion. If the
+ * illustration and the detector ever disagree, the app is teaching a gesture
+ * that does not work — so the detector is run over the illustration itself.
+ */
+describe('the gesture demonstrations', () => {
+  function detect(motion: (typeof GESTURE_MOTIONS)[keyof typeof GESTURE_MOTIONS]): string[] {
+    const frames = synthesizeFrames(motion, { view: 'front', cycles: 3, fps: 30, seed: 7 });
+    const detector = new GestureDetector();
+    return frames.flatMap((frame) => detector.update(frame).map((event) => event.type));
+  }
+
+  it('shows a pause that the detector reads as a pause', () => {
+    expect(detect(GESTURE_MOTIONS.pauseToggle)).toContain('pauseToggle');
+  });
+
+  it('shows a wave that the detector reads as a skip', () => {
+    expect(detect(GESTURE_MOTIONS.skip)).toContain('skip');
+  });
+
+  it('does not confuse one demonstration for the other', () => {
+    expect(detect(GESTURE_MOTIONS.pauseToggle)).not.toContain('skip');
+    expect(detect(GESTURE_MOTIONS.skip)).not.toContain('pauseToggle');
   });
 });
