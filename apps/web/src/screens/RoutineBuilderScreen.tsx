@@ -342,6 +342,13 @@ function NumberField({ label, value, onChange }: NumberFieldProps): JSX.Element 
           const next = Number(event.target.value);
           if (Number.isFinite(next)) onChange(next);
         }}
+        // Zero is a set that starts and ends in the same instant, or an
+        // exercise that never appears at all — a session that says nothing and
+        // records nothing. It has to be reachable while typing, because 30 is
+        // 3 then 0; it just cannot be where somebody is left.
+        onBlur={() => {
+          if (!Number.isFinite(value) || value < 1) onChange(1);
+        }}
       />
     </label>
   );

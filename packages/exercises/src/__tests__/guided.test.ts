@@ -192,6 +192,23 @@ describe('guidedScript · repetitions', () => {
     });
   });
 
+  it('calls the change of leg before naming the exercise again', () => {
+    const first = guidedScript({
+      exercise: getExercise('split-squat')!,
+      name: 'Zancada',
+      setNumber: 1,
+      totalSets: 3,
+      reps: 10,
+      side: 'left',
+      switchSide: true,
+    });
+    expect(first.preamble[0]).toEqual({ key: 'guided.switchSide' });
+    expect(first.preamble[1]).toEqual({
+      key: 'guided.exerciseSide',
+      params: { name: 'Zancada', side: 'left' },
+    });
+  });
+
   it('reads the note the professional left for this set', () => {
     const withNote = guidedScript({
       exercise: bridge,

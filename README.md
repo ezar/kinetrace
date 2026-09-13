@@ -79,8 +79,10 @@ pnpm models:fetch   # self-host the pose models (about 45 MB)
 pnpm dev
 ```
 
-Open the app, create a profile, and press Start. Everything works offline after the
-first load; it installs as a PWA.
+Open the app, create a profile, and press Start. It installs as a PWA. The app works
+offline after the first load, and camera mode after the first session that used it —
+the pose model and MediaPipe's runtime are fetched on demand and kept, rather than
+handed to everyone up front.
 
 ## How it works
 

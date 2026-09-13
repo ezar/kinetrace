@@ -39,9 +39,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm --filter @kinetrace/web preview --port 4173 --strictPort',
+    // Build here rather than relying on whatever is in `dist`. The base path is
+    // a build input, so a server left over from a run at a different base looks
+    // healthy, answers every request, and fails every asset — which is a whole
+    // evening of chasing a bug that is not in the app. For the same reason the
+    // server is never reused: `--strictPort` then says so out loud instead.
+    command:
+      'pnpm --filter @kinetrace/web build && pnpm --filter @kinetrace/web preview --port 4173 --strictPort',
     url: `http://127.0.0.1:4173${basePath}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    reuseExistingServer: false,
+    timeout: 180_000,
   },
 });

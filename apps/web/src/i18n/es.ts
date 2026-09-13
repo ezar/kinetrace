@@ -55,6 +55,10 @@ export const es = {
   'guided.seconds': 'segundos',
   'common.repeat': 'Repetir',
 
+  // The change of leg goes first and alone. The side is in every line that
+  // follows it, but a word at the end of a sentence is not what somebody
+  // lying on a mat with their eyes shut hears.
+  'guided.switchSide': 'Cambia de lado',
   'guided.exercise': '{name}',
   // Said aloud, so it has to agree: «lado derecha» is what the template used
   // to produce, and it is the one line somebody hears on every single set.
@@ -230,6 +234,10 @@ export const es = {
   'summary.romMean': 'Rango medio',
   'summary.issues': 'Lo que más se ha corregido',
   'summary.noIssues': 'Ninguna corrección. Muy bien.',
+  'summary.sets': 'Series',
+  'summary.repsGuided': 'Repeticiones hechas',
+  'summary.heldGuided': 'Tiempo de la serie',
+  'summary.guidedNoForm': 'Aquí irían las correcciones. Para verlas hace falta la cámara.',
   'summary.notes': 'Notas',
   'summary.notesPlaceholder': 'Cómo ha ido, qué has notado…',
   'summary.pain': '¿Cómo está tu dolor ahora? (0 a 10)',
@@ -431,7 +439,7 @@ export const es = {
   'help.guidedHelp':
     'Cuando no puedes colocar el móvil, la app te canta la sesión: el ritmo, las repeticiones y el propio movimiento («sube», «baja», «redondea», «arquea»), con la figura moviéndose al mismo compás. El ritmo no se lo inventa: sale de lo que dura una repetición del movimiento de referencia de cada ejercicio, o del tempo que te hayan prescrito.',
   'help.guidedMeasures':
-    'No mide nada, y lo dice: esas series quedan registradas como hechas pero sin medir, sin porcentaje en el resumen, fuera del rango en el informe y fuera de la gráfica de progreso.',
+    'No mide nada, y lo dice: esas series quedan registradas como hechas pero sin medir, sin nada sobre la técnica en el resumen, fuera del rango en el informe y fuera de la gráfica de progreso.',
   'help.camera': 'Dónde poner la cámara',
   'help.cameraHelp':
     'Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.',

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getExercise, resolveText } from '@kinetrace/exercises';
 import { db, type SetRecord } from '../db/schema.js';
 import { finishSession } from '../db/repositories.js';
+import { summariseExercise } from '../routines/summary.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { useInstallOffer } from '../pwa/useInstallOffer.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
@@ -41,41 +42,8 @@ export function SummaryScreen(): JSX.Element {
 
       {[...byExercise.entries()].map(([exerciseId, exerciseSets]) => {
         const exercise = getExercise(exerciseId);
-        // A voice guided set measured nothing: its repetitions are what was
-        // asked for, not what was seen. Counting them as good would report a
-        // hundred per cent for a session nobody watched — which is the one
-        // thing this app is built not to do.
-        const measuredSets = exerciseSets.filter((set) => set.measured !== false);
-        const nothingMeasured = measuredSets.length === 0;
-        const measuredReps = measuredSets.reduce((total, set) => total + set.reps, 0);
-        const reps = exerciseSets.reduce((total, set) => total + set.reps, 0);
-        const partials = exerciseSets.reduce((total, set) => total + set.partials, 0);
-        const goodPct =
-          measuredReps + partials > 0
-            ? Math.round((measuredReps / (measuredReps + partials)) * 100)
-            : 100;
-        const heldMs = exerciseSets.reduce((total, set) => total + set.holdMs, 0);
-        const romValues = exerciseSets
-          .filter((set) => set.measured !== false)
-          .map((set) => set.romMax)
-          .filter((value) => value > 0);
-        const decreasing = exercise?.targets.direction === 'decrease';
-        const best = romValues.length
-          ? decreasing
-            ? Math.min(...romValues)
-            : Math.max(...romValues)
-          : undefined;
-        const mean = measuredSets.length
-          ? measuredSets.reduce((total, set) => total + set.romMean, 0) / measuredSets.length
-          : 0;
-
-        const issues = new Map<string, number>();
-        for (const set of exerciseSets) {
-          for (const [ruleId, count] of Object.entries(set.issues)) {
-            issues.set(ruleId, (issues.get(ruleId) ?? 0) + count);
-          }
-        }
-        const topIssues = [...issues.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
+        const summary = summariseExercise(exerciseSets, exercise);
+        const nothingMeasured = !summary.measured;
 
         return (
           <section key={exerciseId} className="card mb-3 p-4">
@@ -83,40 +51,65 @@ export function SummaryScreen(): JSX.Element {
             {nothingMeasured ? <p className="text-sm text-muted">{t('summary.guided')}</p> : null}
             <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
               {exercise?.mode === 'hold' ? (
-                <Stat label={t('summary.held')} value={`${Math.round(heldMs / 1000)} s`} />
+                <Stat
+                  label={nothingMeasured ? t('summary.heldGuided') : t('summary.held')}
+                  value={`${Math.round(summary.heldMs / 1000)} s`}
+                />
+              ) : nothingMeasured ? (
+                // The count is the prescription, not an observation: label it
+                // as what was asked for, and leave out the partial count, which
+                // is zero only because nothing was watching.
+                <>
+                  <Stat label={t('summary.sets')} value={String(summary.sets)} />
+                  <Stat label={t('summary.repsGuided')} value={`${summary.reps}`} />
+                </>
               ) : (
                 <>
                   <Stat
                     label={t('summary.goodReps')}
-                    value={nothingMeasured ? `${reps}` : `${reps} (${goodPct}%)`}
+                    value={
+                      summary.goodPct === null
+                        ? `${summary.reps}`
+                        : `${summary.reps} (${summary.goodPct}%)`
+                    }
                   />
-                  <Stat label={t('summary.partials')} value={String(partials)} />
+                  <Stat label={t('summary.partials')} value={String(summary.partials)} />
                 </>
               )}
-              {best !== undefined ? (
-                <Stat label={t('summary.romBest')} value={`${Math.round(best)}°`} />
+              {summary.romBest !== undefined ? (
+                <Stat label={t('summary.romBest')} value={`${Math.round(summary.romBest)}°`} />
               ) : null}
-              {mean > 0 ? (
-                <Stat label={t('summary.romMean')} value={`${Math.round(mean)}°`} />
+              {summary.romMean !== undefined && summary.romMean > 0 ? (
+                <Stat label={t('summary.romMean')} value={`${Math.round(summary.romMean)}°`} />
               ) : null}
             </dl>
 
-            <h3 className="mt-3 text-sm text-muted">{t('summary.issues')}</h3>
-            {topIssues.length === 0 ? (
-              <p className="text-sm">{t('summary.noIssues')}</p>
+            {/* "No corrections. Well done." is a verdict on how it was done, and
+                without a camera there is nothing to base one on. Silence would
+                read as the same praise, so it says plainly that it did not
+                look. */}
+            {nothingMeasured ? (
+              <p className="mt-3 text-sm text-muted">{t('summary.guidedNoForm')}</p>
             ) : (
-              <ul className="mt-1 space-y-1 text-sm">
-                {topIssues.map(([ruleId, count]) => {
-                  const rule = exercise?.rules.find((entry) => entry.id === ruleId);
-                  const label = rule ? resolveText(rule.cueKey, language) : ruleId;
-                  return (
-                    <li key={ruleId} className="flex justify-between">
-                      <span>{label}</span>
-                      <span className="text-muted">×{count}</span>
-                    </li>
-                  );
-                })}
-              </ul>
+              <>
+                <h3 className="mt-3 text-sm text-muted">{t('summary.issues')}</h3>
+                {summary.topIssues.length === 0 ? (
+                  <p className="text-sm">{t('summary.noIssues')}</p>
+                ) : (
+                  <ul className="mt-1 space-y-1 text-sm">
+                    {summary.topIssues.map(([ruleId, count]) => {
+                      const rule = exercise?.rules.find((entry) => entry.id === ruleId);
+                      const label = rule ? resolveText(rule.cueKey, language) : ruleId;
+                      return (
+                        <li key={ruleId} className="flex justify-between">
+                          <span>{label}</span>
+                          <span className="text-muted">×{count}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
             )}
           </section>
         );

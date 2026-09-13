@@ -57,6 +57,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.seconds': 'seconds',
   'common.repeat': 'Repeat',
 
+  'guided.switchSide': 'Change sides',
   'guided.exercise': '{name}',
   'guided.exerciseSide': '{name}, {side} side',
   'guided.note': 'From your physio: {note}',
@@ -229,6 +230,10 @@ export const en: Record<TranslationKey, string> = {
   'summary.romMean': 'Mean range',
   'summary.issues': 'Most corrected',
   'summary.noIssues': 'No corrections. Well done.',
+  'summary.sets': 'Sets',
+  'summary.repsGuided': 'Repetitions done',
+  'summary.heldGuided': 'Set time',
+  'summary.guidedNoForm': 'Corrections would go here. Seeing them takes the camera.',
   'summary.notes': 'Notes',
   'summary.notesPlaceholder': 'How it went, what you felt…',
   'summary.pain': 'How is your pain right now? (0 to 10)',
@@ -430,7 +435,7 @@ export const en: Record<TranslationKey, string> = {
   'help.guidedHelp':
     'When the phone cannot be propped up, the app counts the session out loud instead: the pace, the repetitions and the movements themselves ("up", "down", "round your back", "arch your back"), with the figure moving to the same clock. The pace is not invented: it comes from how long one repetition of each exercise\'s reference motion takes, or from a tempo you were prescribed.',
   'help.guidedMeasures':
-    'It measures nothing, and says so: those sets are recorded as done but unmeasured — no percentage in the summary, out of the range in the report, and out of the progress chart entirely.',
+    'It measures nothing, and says so: those sets are recorded as done but unmeasured — nothing about your form in the summary, out of the range in the report, and out of the progress chart entirely.',
   'help.camera': 'Where to put the camera',
   'help.cameraHelp':
     'Each exercise tells you before it starts, but these are every placement the library uses.',

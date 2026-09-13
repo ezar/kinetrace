@@ -71,6 +71,15 @@ export interface GuidedInput {
   holdSeconds?: number;
   /** Prescribed side, for a unilateral exercise. */
   side?: 'left' | 'right';
+  /**
+   * This set is the first on its side, after sets on the other one.
+   *
+   * A unilateral exercise names its side in every announcement, but between
+   * the last set of one leg and the first of the other the only thing that
+   * changes is one word at the end of a sentence — easy to miss with your eyes
+   * shut on a mat. This puts the change first, on its own.
+   */
+  switchSide?: true;
   /** Seconds per phase, when a professional set a pace. */
   tempo?: ReadonlyArray<{ phase: string; seconds: number }>;
   /** A line from the professional, read out before the set. */
@@ -137,6 +146,7 @@ export function holdMarks(seconds: number): number[] {
 export function guidedScript(input: GuidedInput): GuidedSet {
   const isHold = input.exercise.mode === 'hold';
   const preamble: GuidedLine[] = [
+    ...(input.switchSide ? [{ key: 'guided.switchSide' }] : []),
     {
       key: input.side ? 'guided.exerciseSide' : 'guided.exercise',
       params: { name: input.name, ...(input.side ? { side: input.side } : {}) },

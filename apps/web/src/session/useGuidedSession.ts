@@ -188,8 +188,17 @@ export function useGuidedSession(
 
   const script = useMemo(() => {
     if (!item?.exercise) return null;
+    // The first set on the second leg: same exercise, other side. Everything
+    // else about the announcement is identical, so the switch gets said.
+    const previous = plan[index - 1];
+    const switchSide =
+      item.side !== undefined &&
+      previous?.exerciseId === item.exerciseId &&
+      previous.side !== undefined &&
+      previous.side !== item.side;
     return guidedScript({
       exercise: item.exercise,
+      ...(switchSide ? { switchSide: true as const } : {}),
       name: item.exercise.names[language],
       setNumber: item.setNumber,
       totalSets: item.totalSets,
@@ -199,7 +208,7 @@ export function useGuidedSession(
       ...(item.tempo ? { tempo: item.tempo } : {}),
       ...(item.physioNote ? { physioNote: item.physioNote } : {}),
     });
-  }, [item, language]);
+  }, [item, index, plan, language]);
 
   const completeSetRef = useRef<() => void>(() => undefined);
   const completeSet = useCallback(() => completeSetRef.current(), []);
