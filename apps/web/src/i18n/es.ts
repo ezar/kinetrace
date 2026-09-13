@@ -56,7 +56,9 @@ export const es = {
   'common.repeat': 'Repetir',
 
   'guided.exercise': '{name}',
-  'guided.exerciseSide': '{name}, lado {side}',
+  // Said aloud, so it has to agree: «lado derecha» is what the template used
+  // to produce, and it is the one line somebody hears on every single set.
+  'guided.exerciseSide': '{name}, {side}',
   'guided.note': 'Dice tu fisio: {note}',
   'guided.doseReps': 'Serie {set} de {sets}, {reps} repeticiones',
   'guided.doseHold': 'Serie {set} de {sets}, {seconds} segundos',
