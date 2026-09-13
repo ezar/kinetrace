@@ -25,6 +25,8 @@ export const hipHinge: ExerciseDefinition = {
   area: 'hips',
   position: 'standing',
   spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'none',
   view: { orientation: 'side', cameraHeight: 'chair', distanceMetres: 3 },
   cameraTipKey: 'tip.chairSide',

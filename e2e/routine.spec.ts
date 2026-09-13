@@ -222,6 +222,17 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
     .filter({ hasText: /puente de glúteos|glute bridge/i })
     .first();
 
+  // While nobody has signed, each card says where its two families of numbers
+  // came from — and says plainly that the dosage came from nowhere.
+  const anglesSource = page
+    .getByText(/salen de ejecutar el motor|running the engine over/i)
+    .first();
+  const doseSource = page
+    .getByText(/no prescriben series ni repeticiones|do not prescribe sets or repetitions/i)
+    .first();
+  await expect(anglesSource).toBeVisible();
+  await expect(doseSource).toBeVisible();
+
   // The library's own numbers raise nothing, and can be signed.
   await signature.fill('Dra. Ruiz');
   await expect(sign).toBeEnabled();
@@ -240,6 +251,10 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
   await bridge.getByLabel(/objetivo desde|target from/i).fill('170');
   await expect(sign).toBeEnabled();
   await sign.click();
+
+  // Once signed, they go: somebody has taken responsibility for every number.
+  await expect(anglesSource).toHaveCount(0);
+  await expect(doseSource).toHaveCount(0);
 
   // Signed, and the routine says so from here on.
   await expect(page).toHaveURL(/routines\/\d+$/);

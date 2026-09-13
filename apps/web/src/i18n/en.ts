@@ -117,6 +117,20 @@ export const en: Record<TranslationKey, string> = {
   'library.filterPosition': 'Position',
   'library.all': 'All',
   'library.defaultRangesNotice': 'Default ranges, adjust with your physiotherapist',
+  'review.source.derived.targets':
+    "These angles come from running the engine over this exercise's reference motion. They are consistent with how the app counts, not with this person.",
+  'review.source.authored.targets':
+    'These angles were written by whoever made the library, with no source behind them.',
+  'review.source.derived.dose': "This dosage comes from the exercise's reference motion.",
+  'review.source.authored.dose':
+    "This dosage was written by whoever made the library, with no source behind it: clinical guidelines for low back pain do not prescribe sets or repetitions. Until you set it, it is nobody's.",
+  'library.source': 'Where these numbers come from',
+  'library.source.targets.derived':
+    "Angles: read off the engine running over this exercise's reference motion.",
+  'library.source.targets.authored': 'Angles: written by hand, with no source.',
+  'library.source.dose.derived': 'Dosage: read off the reference motion.',
+  'library.source.dose.authored':
+    'Dosage: written by hand, with no source. Clinical guidelines do not prescribe sets or repetitions; this is a number your physiotherapist has to set.',
   'library.howTo': 'How it is done',
   'library.camera': 'Where to put the camera',
   'library.tracked': 'What is measured',

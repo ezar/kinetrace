@@ -54,6 +54,12 @@ account.** What is stored is skeletons, angles and counts — never pixels.
   chart entirely. The pace is not invented either — it comes from the duration each
   exercise declares for one repetition of its reference motion, or from a
   prescribed tempo where there is one.
+- **Says where its numbers came from.** The angles were read off the engine
+  running over each exercise's own reference motion; the sets, repetitions and
+  hold times were written by hand, and no clinical guideline supplies them —
+  dosage is individualised by design. Each exercise declares which is which, the
+  library screen says it, and the review screen says it until a professional has
+  signed the routine and taken the numbers as theirs.
 - **Remembers without watching.** Sessions store a 15 fps skeleton track you can
   replay and compare — around 2 kB per second, and no video anywhere.
 - **Reads your physio's sheet.** Photograph it and Kinetrace proposes a routine,

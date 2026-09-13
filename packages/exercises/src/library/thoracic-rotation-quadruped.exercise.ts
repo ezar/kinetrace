@@ -25,6 +25,8 @@ export const thoracicRotationQuadruped: ExerciseDefinition = {
   area: 'thoracic',
   position: 'quadruped',
   spinalLoad: 'rotation',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'front', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorFront',

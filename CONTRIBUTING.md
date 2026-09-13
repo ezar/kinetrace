@@ -40,6 +40,7 @@ area: 'lowerBack',                      // library filter
 position: 'supine',                     // library filter and camera guidance
 spinalLoad: 'neutral',                  // what the lumbar spine is asked to do
 equipment: 'none' | 'mat',
+provenance: { targets: 'derived', dose: 'authored' },
 ```
 
 Synonyms matter: they are what the sheet import matches a physiotherapist's wording
@@ -53,6 +54,14 @@ the movement**, in the same family as `area` and `position`. The library filters
 it and the review screen counts it, so a professional can see which way a routine
 leans; nothing in the app selects, warns or reorders by it, and it is not a
 recommendation.
+
+`provenance` says where your numbers came from, one value per family:
+`derived` if you read them off `pnpm replay` running the engine over your own
+reference motion, `authored` if you wrote them down. **Use `authored` for the
+dosage.** No clinical guideline gives sets or repetitions for low back pain —
+dosage is individualised by design — so `authored` is the accurate answer, not
+an admission. The review screen and the library screen both say it out loud, and
+a number that claims more than it has is worse than one that claims nothing.
 
 ### 2. How it is done
 

@@ -65,6 +65,42 @@ export type ExercisePosition = 'standing' | 'supine' | 'prone' | 'quadruped' | '
  */
 export type SpinalLoad = 'flexion' | 'extension' | 'rotation' | 'neutral' | 'mixed';
 
+/**
+ * Where a number in an exercise file came from.
+ *
+ * - `derived` — read off the replay tool running the engine over this
+ *   exercise's own reference motion. Internally consistent: the thresholds sit
+ *   where the movement actually crosses them.
+ * - `authored` — chosen by whoever wrote the exercise, with no source behind
+ *   it. Not a placeholder and not a mistake; just nobody's clinical judgement.
+ *
+ * There is deliberately no third value yet. A number taken from a clinical
+ * source needs to name that source, and adding the value without the citation
+ * alongside it is how `authored` numbers end up looking sourced.
+ */
+export type NumberSource = 'derived' | 'authored';
+
+/**
+ * Where this exercise's two families of numbers came from.
+ *
+ * The app shows angles and dosage side by side, in the same typeface, and until
+ * this field existed they looked equally well founded. They are not. The
+ * thresholds and bands were derived; the sets, repetitions, hold and rest were
+ * written down by hand, and no clinical guideline gives them — a 2024
+ * systematic review of low back pain guidelines is titled, in as many words,
+ * that the guidelines are silent on exercise dosage.
+ *
+ * So the honest thing is not to go looking for a citation these numbers can
+ * never have. It is to say which is which, and to make a professional's
+ * numbers the ones that count.
+ */
+export interface Provenance {
+  /** Phase thresholds, the target band and the safety stop. */
+  targets: NumberSource;
+  /** Sets, repetitions, hold seconds, rest seconds and any tempo. */
+  dose: NumberSource;
+}
+
 /** Where the phone or laptop should sit. */
 export type CameraHeight = 'floor' | 'chair' | 'standing';
 
@@ -120,6 +156,8 @@ export interface ExerciseDefinition {
   position: ExercisePosition;
   /** What the lumbar spine is asked to do while this happens. */
   spinalLoad: SpinalLoad;
+  /** Where the numbers in this file came from. */
+  provenance: Provenance;
   equipment: 'none' | 'mat';
   view: ExerciseView;
   /** Key into the camera tip dictionary, e.g. `tip.gluteBridge`. */

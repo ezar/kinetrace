@@ -115,6 +115,20 @@ export const es = {
   'library.filterPosition': 'Posición',
   'library.all': 'Todos',
   'library.defaultRangesNotice': 'Rangos por defecto, ajústalos con tu fisioterapeuta',
+  'review.source.derived.targets':
+    'Estos ángulos salen de ejecutar el motor sobre el movimiento de referencia de este ejercicio. Son coherentes con cómo cuenta la app, no con esta persona.',
+  'review.source.authored.targets':
+    'Estos ángulos los escribió quien hizo la biblioteca, sin ninguna fuente detrás.',
+  'review.source.derived.dose': 'Esta dosis sale del movimiento de referencia del ejercicio.',
+  'review.source.authored.dose':
+    'Esta dosis la escribió quien hizo la biblioteca, sin ninguna fuente detrás: las guías clínicas de dolor lumbar no prescriben series ni repeticiones. Hasta que la pongas tú, no es de nadie.',
+  'library.source': 'De dónde salen estos números',
+  'library.source.targets.derived':
+    'Ángulos: leídos ejecutando el motor sobre el movimiento de referencia de este ejercicio.',
+  'library.source.targets.authored': 'Ángulos: escritos a mano, sin fuente.',
+  'library.source.dose.derived': 'Dosis: leída del movimiento de referencia.',
+  'library.source.dose.authored':
+    'Dosis: escrita a mano, sin fuente. Las guías clínicas no prescriben series ni repeticiones; esta cifra la tiene que poner tu fisioterapeuta.',
   'library.howTo': 'Cómo se hace',
   'library.camera': 'Dónde poner la cámara',
   'library.tracked': 'Lo que se mide',

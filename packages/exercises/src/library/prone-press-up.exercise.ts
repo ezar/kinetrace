@@ -25,6 +25,8 @@ export const pronePressUp: ExerciseDefinition = {
   area: 'lowerBack',
   position: 'prone',
   spinalLoad: 'extension',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

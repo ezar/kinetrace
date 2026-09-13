@@ -7,7 +7,7 @@
 
 import { conditionMetrics, METRIC_IDS, type Condition } from '@kinetrace/engine';
 import { EXERCISE_TEXT } from './dictionary.js';
-import type { ExerciseDefinition, SpinalLoad } from './types.js';
+import type { ExerciseDefinition, NumberSource, SpinalLoad } from './types.js';
 
 export interface ValidationIssue {
   exerciseId: string;
@@ -19,6 +19,9 @@ export interface ValidationIssue {
 const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
 /** Every direction the library knows how to describe and the app can name. */
+/** Every origin a number in the library can honestly claim. */
+const NUMBER_SOURCES: readonly NumberSource[] = ['derived', 'authored'];
+
 const SPINAL_LOADS: readonly SpinalLoad[] = [
   'flexion',
   'extension',
@@ -40,6 +43,12 @@ export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[
 
   if (!SPINAL_LOADS.includes(exercise.spinalLoad)) {
     report('spinalLoad', `unknown spinal load "${exercise.spinalLoad}"`);
+  }
+
+  for (const family of ['targets', 'dose'] as const) {
+    if (!NUMBER_SOURCES.includes(exercise.provenance[family])) {
+      report(`provenance.${family}`, `unknown source "${exercise.provenance[family]}"`);
+    }
   }
 
   // An exercise nobody can explain has no business being prescribed. Two steps

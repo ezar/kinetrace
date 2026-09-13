@@ -235,6 +235,7 @@ export function ReviewScreen(): JSX.Element {
             key={`${entry.exerciseId}-${index}`}
             entry={entry}
             issues={issues[index] ?? []}
+            signed={routine.review !== undefined}
             onChange={(patch) => update(index, patch)}
           />
         ))}
@@ -276,10 +277,16 @@ export function ReviewScreen(): JSX.Element {
 interface ExerciseReviewProps {
   entry: RoutineExercise;
   issues: readonly PrescriptionIssue[];
+  /**
+   * Whether somebody has already signed this routine. Until they have, every
+   * number on the card is still the library's, and the card says where each
+   * one came from.
+   */
+  signed: boolean;
   onChange: (patch: Partial<RoutineExercise>) => void;
 }
 
-function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.Element {
+function ExerciseReview({ entry, issues, signed, onChange }: ExerciseReviewProps): JSX.Element {
   const { t, language } = useTranslation();
   const exercise = getExercise(entry.exerciseId);
   const [showCues, setShowCues] = useState(false);
@@ -336,6 +343,14 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
       </header>
 
       <div className="border-t border-line p-4">
+        {/* Angles and dosage sit in the same typeface and looked equally well
+            founded. One was read off the engine; the other was written down by
+            hand. Saying which is the point of this line. */}
+        {signed ? null : (
+          <p className="mb-3 text-[13px] leading-relaxed text-muted">
+            {t(`review.source.${exercise.provenance.targets}.targets`)}
+          </p>
+        )}
         <div className="flex items-start gap-4">
           <AngleGauge
             value={(band.min + band.max) / 2}
@@ -426,32 +441,39 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
         </div>
       ) : null}
 
-      <div className="grid grid-cols-3 gap-2 border-t border-line p-4">
-        <NumberField
-          label={t('common.sets')}
-          value={entry.sets}
-          onChange={(value) => onChange({ sets: value })}
-        />
-        {exercise.mode === 'hold' ? (
-          <NumberField
-            label={t('common.seconds')}
-            value={entry.holdSeconds ?? 0}
-            unit="s"
-            onChange={(value) => onChange({ holdSeconds: value })}
-          />
-        ) : (
-          <NumberField
-            label={t('common.reps')}
-            value={entry.reps ?? 0}
-            onChange={(value) => onChange({ reps: value })}
-          />
+      <div className="border-t border-line p-4">
+        {signed ? null : (
+          <p className="mb-3 text-[13px] leading-relaxed text-muted">
+            {t(`review.source.${exercise.provenance.dose}.dose`)}
+          </p>
         )}
-        <NumberField
-          label={t('common.rest')}
-          value={entry.restSeconds}
-          unit="s"
-          onChange={(value) => onChange({ restSeconds: value })}
-        />
+        <div className="grid grid-cols-3 gap-2">
+          <NumberField
+            label={t('common.sets')}
+            value={entry.sets}
+            onChange={(value) => onChange({ sets: value })}
+          />
+          {exercise.mode === 'hold' ? (
+            <NumberField
+              label={t('common.seconds')}
+              value={entry.holdSeconds ?? 0}
+              unit="s"
+              onChange={(value) => onChange({ holdSeconds: value })}
+            />
+          ) : (
+            <NumberField
+              label={t('common.reps')}
+              value={entry.reps ?? 0}
+              onChange={(value) => onChange({ reps: value })}
+            />
+          )}
+          <NumberField
+            label={t('common.rest')}
+            value={entry.restSeconds}
+            unit="s"
+            onChange={(value) => onChange({ restSeconds: value })}
+          />
+        </div>
       </div>
 
       {/* Pacing. Only for counted exercises: a hold has one resting phase and

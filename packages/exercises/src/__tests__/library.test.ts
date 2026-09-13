@@ -94,6 +94,24 @@ describe('validateExercise', () => {
     expect(issues.some((issue) => issue.path === 'rules[0].cueKey')).toBe(true);
   });
 
+  it('rejects a source it has no name for', () => {
+    // The value that does not exist yet is `clinical`, and it will not exist
+    // until a citation arrives with it.
+    const issues = validateExercise({
+      ...base,
+      provenance: { targets: 'derived', dose: 'clinical' as never },
+    });
+    expect(issues.some((issue) => issue.path === 'provenance.dose')).toBe(true);
+  });
+
+  it('checks both families of numbers, not just the first', () => {
+    const issues = validateExercise({
+      ...base,
+      provenance: { targets: 'guesswork' as never, dose: 'authored' },
+    });
+    expect(issues.some((issue) => issue.path === 'provenance.targets')).toBe(true);
+  });
+
   it('rejects an exercise with nothing but a name to go on', () => {
     // The whole point of the field being required: an exercise nobody can
     // explain has no business being prescribed.

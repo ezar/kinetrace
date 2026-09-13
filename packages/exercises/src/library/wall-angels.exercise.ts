@@ -25,6 +25,8 @@ export const wallAngels: ExerciseDefinition = {
   area: 'neckShoulders',
   position: 'standing',
   spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'none',
   view: { orientation: 'front', cameraHeight: 'chair', distanceMetres: 3 },
   cameraTipKey: 'tip.chairFront',

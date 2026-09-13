@@ -54,6 +54,15 @@ export function ExerciseDetailScreen(): JSX.Element {
         </ol>
       </section>
 
+      {/* The library is never signed by anybody, so it always says this. */}
+      <section className="card p-4">
+        <h2 className="font-medium">{t('library.source')}</h2>
+        <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-muted">
+          <li>{t(`library.source.targets.${exercise.provenance.targets}`)}</li>
+          <li>{t(`library.source.dose.${exercise.provenance.dose}`)}</li>
+        </ul>
+      </section>
+
       <section className="card p-4">
         <h2 className="font-medium">{t('library.camera')}</h2>
         <p className="mt-1 text-muted">{t(exercise.cameraTipKey)}</p>
