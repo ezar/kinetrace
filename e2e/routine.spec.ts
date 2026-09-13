@@ -127,6 +127,8 @@ test('the setup assistant blocks the session when it cannot see a body', async (
     .getByRole('link', { name: /empezar|start/i })
     .first()
     .click();
+  // A first session shows what each exercise looks like; step past it.
+  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
   await page.getByRole('button', { name: /empezar|start/i }).click();
 
   // The checks appear and the counter never does.
@@ -469,6 +471,39 @@ test('lets the professional prescribe a side, and counts both when they do not',
  * and ends it. What it asserts is the part that matters: the order it says
  * things in, and that the set it writes claims to have measured nothing.
  */
+test('shows what each exercise looks like before somebody has done it', async ({ page }) => {
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  // Starting a routine for the first time goes through the demonstration.
+  await page
+    .getByRole('link', { name: /^empezar$|^start$/i })
+    .first()
+    .click();
+  await expect(page.getByText(/así es el ejercicio|this is the exercise/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
+  // The five exercises of the starter routine, each once however many sets.
+  await expect(page.getByText('1 / 5')).toBeVisible();
+  // Built from the exercise's own reference motion, like every other demo.
+  await expect(page.locator('svg')).toBeVisible();
+  await expect(page.getByText(/2 series de 10|2 sets of 10/i)).toBeVisible();
+
+  await page.getByRole('button', { name: /^continuar$|^continue$/i }).click();
+  await expect(page.getByText('2 / 5')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /puente|bridge/i })).toBeVisible();
+
+  // And it can always be walked out of.
+  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
+  await expect(page).toHaveURL(/\/session\//);
+});
+
 test('runs a routine by voice alone, and records that it measured nothing', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -498,11 +533,18 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   await expect(page.getByText('Ana')).toBeVisible();
 
   await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
+  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
   await expect(page.getByText(/no mide nada|measures nothing/i)).toBeVisible();
   await page.getByRole('button', { name: /sin cámara|without the camera/i }).click();
 
-  // It announces the exercise, doses it, counts in, and starts.
-  await expect(page.getByText(/^empieza$|^begin$/i)).toBeVisible({ timeout: 15_000 });
+  // It announces the exercise, doses it, counts in, and starts. Asserted on
+  // what was said rather than on what is on screen: the caption now follows the
+  // movement cues, so "begin" is replaced the moment the work starts.
+  await page.waitForFunction(
+    () => (window as unknown as { __spoken: string[] }).__spoken.length >= 7,
+    undefined,
+    { timeout: 15_000 },
+  );
   const spoken = await page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
   expect(spoken.slice(0, 3)).toEqual([
     expect.stringMatching(/gato y camello|cat camel/i),
@@ -511,6 +553,26 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   ]);
   // Counted in from three, which is the last thing before the work.
   expect(spoken.slice(3, 6)).toEqual(['3', '2', '1']);
+
+  // It calls the movement too, not only the number. A cat and camel rounds,
+  // returns, arches and returns before the first repetition is counted, and
+  // none of those four is a number.
+  await page.waitForFunction(
+    () => {
+      // The count-in also says "1", so wait for the one that comes after the
+      // work has begun — the first repetition, not the last second before it.
+      const lines = (window as unknown as { __spoken: string[] }).__spoken;
+      const begun = lines.findIndex((line) => /^empieza$|^begin$/i.test(line));
+      return begun >= 0 && lines.indexOf('1', begun) > begun;
+    },
+    undefined,
+    { timeout: 20_000 },
+  );
+  const said = await page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
+  const begun = said.findIndex((line) => /^empieza$|^begin$/i.test(line));
+  const cues = said.slice(begun + 1, said.indexOf('1', begun));
+  expect(cues).toHaveLength(4);
+  for (const cue of cues) expect(cue).not.toMatch(/^\d+$/);
 
   // The tally is repetitions, never seconds: one number, and the right one.
   await expect(page.getByText(/de 10 repeticiones|of 10 repetitions/i)).toBeVisible();

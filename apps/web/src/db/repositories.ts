@@ -244,6 +244,38 @@ export interface SessionSummary {
   sets: SetRecord[];
 }
 
+/** What this profile has done before, for deciding what still needs showing. */
+export interface ExerciseExperience {
+  /** Sessions that recorded at least one set. */
+  sessions: number;
+  /** Exercise ids with at least one recorded set. */
+  done: ReadonlySet<string>;
+}
+
+/**
+ * Which exercises this profile has done, and how many sessions it has behind
+ * it.
+ *
+ * A set guided by voice counts here, which is the one place it counts for as
+ * much as a measured one: this question is whether somebody knows the movement,
+ * not whether the camera saw it.
+ */
+export async function exerciseExperience(profileId: number): Promise<ExerciseExperience> {
+  const sessionIds = (await db.sessions.where('profileId').equals(profileId).primaryKeys()).filter(
+    (id): id is number => typeof id === 'number',
+  );
+  if (sessionIds.length === 0) return { sessions: 0, done: new Set() };
+
+  const sets = await db.sets.where('sessionId').anyOf(sessionIds).toArray();
+  const done = new Set<string>();
+  const withSets = new Set<number>();
+  for (const set of sets) {
+    done.add(set.exerciseId);
+    withSets.add(set.sessionId);
+  }
+  return { sessions: withSets.size, done };
+}
+
 export async function sessionsForProfile(profileId: number): Promise<SessionSummary[]> {
   const sessions = await db.sessions
     .where('profileId')

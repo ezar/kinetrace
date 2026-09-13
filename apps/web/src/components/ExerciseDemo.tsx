@@ -26,6 +26,16 @@ export interface ExerciseDemoProps {
   className?: string;
   /** Freeze on the most expressive frame instead of animating. */
   still?: boolean;
+  /**
+   * Drive the animation from somebody else's clock instead of its own.
+   *
+   * A guided session paces the voice against a wall clock, and the figure has
+   * to move to the same one or it is showing a different exercise from the one
+   * being called. `startedAt` is a `Date.now()` stamp of the first repetition
+   * and `cycleMs` how long one takes, which is the prescribed tempo where there
+   * is one and the reference cycle otherwise.
+   */
+  clock?: { startedAt: number; cycleMs: number };
   /** Far mode uses heavier strokes. */
   far?: boolean;
   /** Draw the ground line under the figure. */
@@ -52,6 +62,7 @@ export function ExerciseDemo({
   view = 'side',
   className,
   still = false,
+  clock,
   far = false,
   ground = true,
   stroke,
@@ -71,16 +82,25 @@ export function ExerciseDemo({
       setLandmarks(landmarksAt(reference, 0.5));
       return;
     }
-    const durationMs = reference.cycleSeconds * 1000;
-    const started = performance.now();
-    const step = (now: number): void => {
-      const phase = ((now - started) % durationMs) / durationMs;
+    const durationMs = clock?.cycleMs ?? reference.cycleSeconds * 1000;
+    if (durationMs <= 0) return;
+    // A borrowed clock is a wall clock, because that is what the session's own
+    // timers run on; its own is the monotonic one, which cannot jump.
+    const elapsed = clock
+      ? (): number => Date.now() - clock.startedAt
+      : (
+          (started) => (): number =>
+            performance.now() - started
+        )(performance.now());
+    const step = (): void => {
+      const since = elapsed();
+      const phase = since <= 0 ? 0 : (since % durationMs) / durationMs;
       setLandmarks(landmarksAt(reference, phase));
       frameRef.current = requestAnimationFrame(step);
     };
     frameRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [reference, frozen]);
+  }, [reference, frozen, clock]);
 
   return (
     <StickFigure

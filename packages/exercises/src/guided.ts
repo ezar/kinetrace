@@ -17,8 +17,16 @@
  * The pace is not invented. Every exercise in the library declares the duration
  * of one repetition of its reference motion — the pace its animated demo moves
  * at — and a physiotherapist's tempo replaces it where one is prescribed.
+ *
+ * Neither is the movement. Counting alone tells you how many are left but not
+ * what to do, so each repetition also calls its own phases — "up", "and down" —
+ * at the moment the reference motion starts them. That timing is derived from
+ * the same keyframes the figure on screen animates to, so the voice and the
+ * figure cannot drift apart.
  */
 
+import { phaseCueKey } from './dictionary.js';
+import { phaseMarks } from './phases.js';
 import type { ExerciseDefinition } from './types.js';
 
 /** A line to speak: a key into the dictionary, and what to fill it with. */
@@ -66,6 +74,19 @@ const TEN_TO_GO_FROM_SECONDS = 15;
 const HALFWAY_FROM_SECONDS = 40;
 /** Seconds counted down before the work starts. */
 const LEAD_IN_SECONDS = 3;
+/**
+ * Room between two spoken beats.
+ *
+ * Speaking a line cancels whatever is still being said, so beats that land too
+ * close swallow each other. A cat and camel starts its next repetition on the
+ * same instant the last one is counted — both landed on the same millisecond
+ * and the count was lost.
+ *
+ * The count is the anchor: it lands on the repetition it closes, always. A
+ * movement cue gives way, nudged late enough to be heard, and dropped outright
+ * if that would push it into the next count.
+ */
+const BEAT_GAP_MS = 700;
 
 /**
  * Seconds one repetition should take.
@@ -142,10 +163,24 @@ export function guidedScript(input: GuidedInput): GuidedSet {
     }
   } else {
     // Each number lands on a repetition that is finished, which is what a coach
-    // counts and what somebody on a mat wants to hear: how many are done.
+    // counts and what somebody on a mat wants to hear: how many are done. In
+    // between go the movements themselves — "up", "and down" — placed where the
+    // exercise's own reference motion starts them.
     const stepMs = repSeconds(input) * 1000;
+    const marks = phaseMarks(input.exercise);
+    let lastAtMs = -Infinity;
     for (let rep = 1; rep <= reps; rep += 1) {
-      rhythm.push({ atMs: rep * stepMs, key: 'guided.rep', params: { n: rep } });
+      const countAtMs = rep * stepMs;
+      for (const mark of marks) {
+        const key = phaseCueKey(input.exercise.id, mark.phase);
+        if (!key) continue;
+        const atMs = Math.max((rep - 1) * stepMs + mark.at * stepMs, lastAtMs + BEAT_GAP_MS);
+        if (countAtMs - atMs < BEAT_GAP_MS) continue;
+        rhythm.push({ atMs, key });
+        lastAtMs = atMs;
+      }
+      rhythm.push({ atMs: countAtMs, key: 'guided.rep', params: { n: rep } });
+      lastAtMs = countAtMs;
     }
     workMs = reps * stepMs;
   }

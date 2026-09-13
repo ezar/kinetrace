@@ -128,7 +128,7 @@ export function HomeScreen(): JSX.Element {
           </div>
           <div className="flex gap-2">
             <Link
-              to={`/session/${unfinished.session.routineId}?resume=${unfinished.session.id}`}
+              to={`/prepare/${unfinished.session.routineId}?resume=${unfinished.session.id}`}
               className="btn-primary px-4 py-2 text-sm"
             >
               {t('home.unfinishedContinue')}
@@ -191,7 +191,7 @@ export function HomeScreen(): JSX.Element {
           {rest.map((routine) => (
             <Link
               key={routine.id}
-              to={`/session/${routine.id}`}
+              to={`/prepare/${routine.id}`}
               className="flex items-center justify-between border-b border-line py-3.5"
             >
               <span className="text-[16px]">{routine.name}</span>
@@ -281,7 +281,7 @@ function TodayCard({
       </div>
 
       <Link
-        to={`/session/${routine.id}`}
+        to={`/prepare/${routine.id}`}
         className="btn-primary mt-5 h-[60px] w-full text-[19px] font-semibold"
       >
         <PlayIcon size={22} />
@@ -289,7 +289,10 @@ function TodayCard({
       </Link>
       {/* The second way in, on purpose: measured is the default and guided is
           there for the nights when the camera is not an option. */}
-      <Link to={`/guided/${routine.id}`} className="btn-secondary mt-2 h-12 w-full text-[15px]">
+      <Link
+        to={`/prepare/${routine.id}?mode=guided`}
+        className="btn-secondary mt-2 h-12 w-full text-[15px]"
+      >
         <MicIcon size={18} />
         {t('guided.start')}
       </Link>

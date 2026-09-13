@@ -12,6 +12,8 @@ export * from './prescription.js';
 export { describeCondition } from './explain.js';
 export * from './runner.js';
 export * from './guided.js';
+export { phaseTimeline, phaseMarks } from './phases.js';
+export type { PhaseMark } from './phases.js';
 export {
   METRIC_LABELS,
   PHASE_LABELS,
@@ -21,6 +23,8 @@ export {
   metricDescription,
   ENGINE_CUES,
   RULE_CUES,
+  PHASE_CUES,
+  phaseCueKey,
   SETUP_TIPS,
   CAMERA_TIPS,
   EXERCISE_TEXT,

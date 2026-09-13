@@ -53,6 +53,14 @@ export interface GuidedSessionState {
   repsDone: number;
   /** Whether the big number is repetitions done or seconds left. */
   counting: GuidedCount;
+  /**
+   * The clock the figure on screen animates to, while there is one.
+   *
+   * Absent during the count-in, a rest or a pause, when the figure should be
+   * holding the starting position rather than moving through a repetition
+   * nobody is doing.
+   */
+  motion: { startedAt: number; cycleMs: number } | undefined;
   sessionId: number | undefined;
   begin: () => void;
   togglePause: () => void;
@@ -75,6 +83,9 @@ const LINE_TIMEOUT_MS = 6000;
  */
 const EPILOGUE_GAP_MS = 1200;
 
+/** Beats the screen is already showing as its big number. */
+const NUMBER_BEATS = new Set(['guided.rep', 'guided.count', 'guided.remaining']);
+
 export function useGuidedSession(
   plan: PlanItem[],
   routineId: number,
@@ -87,6 +98,7 @@ export function useGuidedSession(
   const [spoken, setSpoken] = useState('');
   const [remaining, setRemaining] = useState(0);
   const [repsDone, setRepsDone] = useState(0);
+  const [motion, setMotion] = useState<{ startedAt: number; cycleMs: number } | undefined>();
   const [sessionId, setSessionId] = useState<number | undefined>();
   const [attempt, setAttempt] = useState(0);
 
@@ -230,18 +242,25 @@ export function useGuidedSession(
       const startedAt = Date.now();
       startedAtRef.current = startedAt;
       setRepsDone(0);
-      setCounting(script.rhythm.some((beat) => beat.key === 'guided.rep') ? 'reps' : 'seconds');
+      const reps = script.rhythm.filter((beat) => beat.key === 'guided.rep').length;
+      setCounting(reps > 0 ? 'reps' : 'seconds');
+      // The figure moves to the same clock the voice counts on, so what it
+      // shows is the repetition being called and not a loop of its own.
+      setMotion(reps > 0 ? { startedAt, cycleMs: script.workMs / reps } : undefined);
       const schedule = (beat: GuidedBeat): void => {
         timers.push(
           window.setTimeout(() => {
             if (abandoned) return;
-            // A counted repetition is the big number on screen; every other
-            // beat is a countdown the clock is already showing.
             if (beat.key === 'guided.rep') {
               const n = beat.params?.['n'];
               if (typeof n === 'number') setRepsDone(n);
             }
-            void say(beat, false);
+            // A number is already the big number on screen, and captioning it
+            // twice is noise. A movement — "round your back", "and down" — is
+            // the one thing somebody looking at the phone needs to read, and
+            // the caption used to sit on "begin" for the whole set.
+            const isNumber = NUMBER_BEATS.has(beat.key);
+            void say(beat, !isNumber);
           }, beat.atMs),
         );
       };
@@ -274,6 +293,7 @@ export function useGuidedSession(
       abandoned = true;
       for (const timer of timers) window.clearTimeout(timer);
       for (const interval of intervals) window.clearInterval(interval);
+      setMotion(undefined);
       speaker?.cancel();
     };
     // `completeSet` is stable: it only ever calls through its own ref.
@@ -442,6 +462,7 @@ export function useGuidedSession(
     remaining,
     repsDone,
     counting,
+    motion,
     sessionId,
     begin,
     togglePause,

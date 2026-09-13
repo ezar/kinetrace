@@ -6,14 +6,20 @@
  * on the sofa, and the session has to work either way.
  *
  * It looks deliberately unlike the measured session: no gauge, no skeleton, no
- * counter that claims to have seen anything. What it shows is the prescription
- * and a clock.
+ * counter that claims to have seen anything. What it shows is the prescription,
+ * a clock, and a figure doing the exercise.
+ *
+ * The figure is not decoration. Counting at somebody tells them how many are
+ * left, not what to do, and this is the mode with nothing watching to correct
+ * them — so it moves to the same clock the voice counts on, which makes it the
+ * only thing on screen that answers "am I doing this right?".
  */
 
 import type { JSX } from 'react';
 import { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { db } from '../db/schema.js';
 import { buildPlan } from '../session/plan.js';
 import { useGuidedSession } from '../session/useGuidedSession.js';
@@ -95,9 +101,9 @@ export function GuidedSessionScreen(): JSX.Element {
         </span>
       </header>
 
-      <div className="flex flex-1 flex-col justify-center gap-6">
+      <div className="flex flex-1 flex-col justify-center gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[30px] font-bold leading-tight tracking-tight text-balance">
+          <h1 className="text-[26px] font-bold leading-tight tracking-tight text-balance">
             {exercise ? exercise.names[language] : (item?.customNote ?? '')}
             {item?.side ? (
               <span className="font-normal text-muted"> · {t(`side.${item.side}`)}</span>
@@ -120,13 +126,25 @@ export function GuidedSessionScreen(): JSX.Element {
           ) : null}
         </div>
 
+        {/* What the exercise looks like, moving to the clock the voice counts
+            on. A hold has nowhere to move to, so it shows the position. */}
+        {exercise ? (
+          <ExerciseDemo
+            reference={exercise.reference}
+            view={exercise.view.orientation}
+            still={exercise.mode === 'hold'}
+            {...(session.motion ? { clock: session.motion } : {})}
+            className="mx-auto h-40 w-full max-w-xs rounded-2xl bg-surface text-ink"
+          />
+        ) : null}
+
         {/* One number, and it is the one that matters for this kind of set:
             which repetition you are on, or how long is left of the hold.
             Neither is a measurement — it is the prescription and a clock. */}
-        <div className="flex flex-col gap-1">
+        <div className="flex items-baseline gap-3">
           <div
             className="font-bold leading-none tracking-tight tabular-nums"
-            style={{ fontSize: 'clamp(4rem, 26vw, 7.5rem)' }}
+            style={{ fontSize: 'clamp(3.5rem, 20vw, 5.5rem)' }}
           >
             {counting ? session.repsDone : session.remaining}
           </div>

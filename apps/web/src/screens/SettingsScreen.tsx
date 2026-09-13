@@ -132,6 +132,25 @@ export function SettingsScreen(): JSX.Element {
       </section>
 
       <section className="card p-4">
+        <h2 className="mb-2 font-medium">{t('settings.showDemo')}</h2>
+        <div className="space-y-2">
+          {(['new', 'always', 'never'] as const).map((choice) => (
+            <label key={choice} className="flex items-center gap-3">
+              <input
+                type="radio"
+                name="showDemo"
+                className="flex-shrink-0"
+                checked={settings.showDemo === choice}
+                onChange={() => void settings.update({ showDemo: choice })}
+              />
+              <span>{t(`settings.showDemo.${choice}`)}</span>
+            </label>
+          ))}
+        </div>
+        <p className="mt-2 text-sm text-muted">{t('settings.showDemoHelp')}</p>
+      </section>
+
+      <section className="card p-4">
         <h2 className="mb-2 font-medium">{t('settings.poseModel')}</h2>
         <div className="space-y-2">
           {(Object.keys(POSE_MODELS) as PoseModelVariant[]).map((variant) => (

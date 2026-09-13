@@ -53,6 +53,59 @@ export function phaseLabel(id: string, language: 'es' | 'en'): string {
   return PHASE_LABELS[id]?.[language] ?? id;
 }
 
+/**
+ * What to say to send somebody into a phase, for a session run without a
+ * camera. The labels above name a phase for somebody reading a prescription;
+ * these are the other half — an instruction, spoken while there is still time
+ * to follow it.
+ *
+ * Keyed by phase id, because the ids are already specific: `top`, `hinged`,
+ * `cat`. Only `rest` means different things in different exercises — lowering
+ * the hips, releasing a knee, bringing a limb back — so the exercises that need
+ * it override it by id. `phaseCueKey` picks the specific entry over the general
+ * one.
+ *
+ * These are movement words, not clinical ones, and they follow the same rule as
+ * every other cue: imperative, under six words, what to do rather than what is
+ * wrong. A physiotherapist should still read them, as they should the cues.
+ */
+export const PHASE_CUES: Record<string, Localized> = {
+  'phaseCue.rest': { es: 'y vuelve', en: 'and back' },
+  'phaseCue.top': { es: 'sube', en: 'up' },
+  'phaseCue.bottom': { es: 'baja', en: 'down' },
+  'phaseCue.up': { es: 'sube', en: 'up' },
+  'phaseCue.down': { es: 'baja', en: 'down' },
+  'phaseCue.stand': { es: 'sube', en: 'up' },
+  'phaseCue.neutral': { es: 'al centro', en: 'back to the middle' },
+  'phaseCue.extended': { es: 'estira', en: 'reach out' },
+  'phaseCue.tilted': { es: 'bascula', en: 'tilt' },
+  'phaseCue.tabletop': { es: 'recoge', en: 'bring it back' },
+  'phaseCue.rotated': { es: 'gira', en: 'rotate' },
+  'phaseCue.hinged': { es: 'baja', en: 'hinge down' },
+  'phaseCue.cat': { es: 'redondea', en: 'round your back' },
+  'phaseCue.camel': { es: 'arquea', en: 'arch your back' },
+
+  // Where returning to rest is a different movement in each exercise.
+  'phaseCue.glute-bridge.rest': { es: 'baja', en: 'down' },
+  'phaseCue.mcgill-curl-up.rest': { es: 'baja', en: 'down' },
+  'phaseCue.prone-press-up.rest': { es: 'baja', en: 'down' },
+  'phaseCue.knee-to-chest.rest': { es: 'suelta', en: 'release' },
+  'phaseCue.pelvic-tilt.rest': { es: 'suelta', en: 'release' },
+  'phaseCue.bird-dog.rest': { es: 'recoge', en: 'bring it back' },
+};
+
+/**
+ * The key for what to say on entering a phase: the exercise's own wording where
+ * it has one, the shared word otherwise, and nothing at all for a phase nobody
+ * has written words for yet — better silent than reading an id aloud.
+ */
+export function phaseCueKey(exerciseId: string, phase: string): string | undefined {
+  const specific = `phaseCue.${exerciseId}.${phase}`;
+  if (PHASE_CUES[specific]) return specific;
+  const general = `phaseCue.${phase}`;
+  return PHASE_CUES[general] ? general : undefined;
+}
+
 /** Cues referenced by the form rules in the library. */
 export const RULE_CUES: Record<string, Localized> = {
   'cue.liftHips': { es: 'sube las caderas', en: 'lift your hips' },
@@ -200,6 +253,7 @@ export function metricLabel(id: MetricId, language: 'es' | 'en'): string {
 export const EXERCISE_TEXT: Record<string, Localized> = {
   ...ENGINE_CUES,
   ...RULE_CUES,
+  ...PHASE_CUES,
   ...SETUP_TIPS,
   ...CAMERA_TIPS,
 };

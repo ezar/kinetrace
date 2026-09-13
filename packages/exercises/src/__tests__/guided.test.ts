@@ -103,18 +103,66 @@ describe('guidedScript · repetitions', () => {
   });
 
   it('counts every repetition, at the prescribed pace', () => {
-    expect(script.rhythm).toHaveLength(12);
-    expect(script.rhythm[0]).toEqual({ atMs: 3500, key: 'guided.rep', params: { n: 1 } });
-    expect(script.rhythm[11]).toEqual({ atMs: 42_000, key: 'guided.rep', params: { n: 12 } });
+    const counts = script.rhythm.filter((beat) => beat.key === 'guided.rep');
+    expect(counts).toHaveLength(12);
+    expect(counts[0]).toEqual({ atMs: 3500, key: 'guided.rep', params: { n: 1 } });
+    expect(counts[11]).toEqual({ atMs: 42_000, key: 'guided.rep', params: { n: 12 } });
   });
 
   it('counts a repetition when it is finished, not when it starts', () => {
     // Which is what somebody on a mat wants to know: how many are done.
-    expect(script.rhythm[0]?.atMs).toBeGreaterThan(0);
+    expect(script.rhythm.find((beat) => beat.key === 'guided.rep')?.atMs).toBeGreaterThan(0);
+  });
+
+  it('calls the movement inside each repetition, not only the number', () => {
+    // A count says how many are left. It does not say what to do, and somebody
+    // who has not done a bridge before needs the other half.
+    expect(keys(script.rhythm).slice(0, 6)).toEqual([
+      'phaseCue.top',
+      'phaseCue.glute-bridge.rest',
+      'guided.rep',
+      'phaseCue.top',
+      'phaseCue.glute-bridge.rest',
+      'guided.rep',
+    ]);
+  });
+
+  it('paces the movement by the prescribed tempo, not the reference cycle', () => {
+    // The bridge's own cycle is four seconds; its tempo makes it three and a
+    // half, and every cue inside the repetition moves with it.
+    const [up, down] = script.rhythm;
+    expect(up?.atMs).toBeGreaterThan(0);
+    expect(up?.atMs).toBeLessThan(3500 * 0.25);
+    expect(down?.atMs).toBeGreaterThan(3500 * 0.5);
+    expect(down?.atMs).toBeLessThan(3500 * 0.85);
+  });
+
+  it('never lets two beats land close enough to swallow each other', () => {
+    // The bug this exists for: a repetition that begins on the instant the
+    // last one is counted put both on the same millisecond, and speaking the
+    // second cancelled the first — losing the count, which is the one number
+    // the person was waiting for.
+    const times = script.rhythm.map((beat) => beat.atMs);
+    for (const [index, at] of times.slice(1).entries()) {
+      expect(at - (times[index] ?? 0)).toBeGreaterThanOrEqual(700);
+    }
+  });
+
+  it('keeps every count on the repetition it closes, and moves the cue instead', () => {
+    const counts = script.rhythm.filter((beat) => beat.key === 'guided.rep');
+    for (const [index, count] of counts.entries()) {
+      expect(count.atMs).toBe((index + 1) * 3500);
+    }
+  });
+
+  it('says nothing about phases it has no words for', () => {
+    // Better silent than reading an internal id out loud.
+    for (const beat of script.rhythm) expect(beat.key).not.toMatch(/^phaseCue\.undefined/);
   });
 
   it('ends when the last repetition is counted', () => {
     expect(script.workMs).toBe(script.rhythm.at(-1)?.atMs);
+    expect(script.rhythm.at(-1)?.key).toBe('guided.rep');
     expect(keys(script.epilogue)).toEqual(['guided.setDone']);
   });
 
