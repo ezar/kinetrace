@@ -39,6 +39,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.noMic': 'Voice commands are off. You can drive it from the screen.',
   'guided.working': 'Working',
   'guided.resting': 'Resting',
+  'guided.noProfile': 'No active profile. Go back home and pick one.',
   'summary.guided': 'Voice guided: done, but not measured.',
   'guided.ofReps': 'of {total} repetitions',
   'guided.seconds': 'seconds',

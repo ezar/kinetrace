@@ -29,6 +29,17 @@ import type { PlanItem } from './plan.js';
 
 export type GuidedStage = 'ready' | 'working' | 'resting' | 'paused' | 'finished';
 
+/**
+ * What the big number on screen is counting.
+ *
+ * It comes from the hook rather than from the plan item so that the screen and
+ * the voice can never disagree — `guidedScript` decides a hold from
+ * `exercise.mode`, and a routine edited by hand can carry `holdSeconds` on a
+ * repetition exercise — and so that it survives a pause, which used to flip a
+ * rest clock into the previous set's repetition tally.
+ */
+export type GuidedCount = 'reps' | 'seconds';
+
 export interface GuidedSessionState {
   stage: GuidedStage;
   item: PlanItem | undefined;
@@ -40,6 +51,8 @@ export interface GuidedSessionState {
   remaining: number;
   /** Repetitions counted out so far in this set. */
   repsDone: number;
+  /** Whether the big number is repetitions done or seconds left. */
+  counting: GuidedCount;
   sessionId: number | undefined;
   begin: () => void;
   togglePause: () => void;
@@ -83,6 +96,10 @@ export function useGuidedSession(
   const startedAtRef = useRef(Date.now());
 
   const item = plan[index];
+  const [counting, setCounting] = useState<GuidedCount>('seconds');
+  /** What to go back to when the pause ends. Resuming used to always land in
+   *  the next set, which ate whatever was left of a rest. */
+  const [pausedFrom, setPausedFrom] = useState<'working' | 'resting'>('working');
 
   useEffect(() => {
     // Guided mode is a voice; cue speech being off would leave it mute, so it
@@ -94,10 +111,17 @@ export function useGuidedSession(
     wakeLockRef.current ??= new ScreenWakeLock(browserWakeLock());
   }, [language, settings.earcons]);
 
-  /** The phone is across the room here too, and nobody is going to touch it. */
+  /**
+   * The phone is across the room here too, and nobody is going to touch it.
+   *
+   * Keyed on one boolean rather than on the stage: stage flips between working
+   * and resting on every set, and releasing and re-requesting the lock twenty
+   * odd times a routine only creates chances for one refusal to lose it.
+   */
+  const running = stage !== 'finished' && stage !== 'ready';
   useEffect(() => {
     const lock = wakeLockRef.current;
-    if (!lock || stage === 'finished' || stage === 'ready') return;
+    if (!lock || !running) return;
     void lock.acquire();
     const onVisible = (): void => {
       if (document.visibilityState === 'visible') void lock.refresh();
@@ -107,7 +131,7 @@ export function useGuidedSession(
       document.removeEventListener('visibilitychange', onVisible);
       void lock.release();
     };
-  }, [stage]);
+  }, [running]);
 
   /** Resolve a scripted line into the sentence to say. */
   const render = useCallback(
@@ -134,9 +158,20 @@ export function useGuidedSession(
     setSpoken(text);
     setRemaining(0);
     setRepsDone(0);
-    const advance = window.setTimeout(() => completeSetRef.current(), text ? 6000 : 500);
-    if (text) speakerRef.current?.say(text);
-    return () => window.clearTimeout(advance);
+    let done = false;
+    const step = (): void => {
+      if (done) return;
+      done = true;
+      completeSetRef.current();
+    };
+    // The speaker says when it has finished; the timeout is only the guard
+    // against a browser that never fires it.
+    const guard = window.setTimeout(step, text ? LINE_TIMEOUT_MS : 500);
+    if (text) speakerRef.current?.say(text, step);
+    return () => {
+      done = true;
+      window.clearTimeout(guard);
+    };
   }, [stage, untracked, item, attempt]);
 
   const script = useMemo(() => {
@@ -195,6 +230,7 @@ export function useGuidedSession(
       const startedAt = Date.now();
       startedAtRef.current = startedAt;
       setRepsDone(0);
+      setCounting(script.rhythm.some((beat) => beat.key === 'guided.rep') ? 'reps' : 'seconds');
       const schedule = (beat: GuidedBeat): void => {
         timers.push(
           window.setTimeout(() => {
@@ -293,6 +329,7 @@ export function useGuidedSession(
   // The resting stage is a countdown with two things to say.
   useEffect(() => {
     if (stage !== 'resting') return;
+    setCounting('seconds');
     const seconds = plan[Math.max(0, index - 1)]?.restSeconds ?? 0;
     const { preamble, rhythm } = restScript(seconds);
     const timers: number[] = [];
@@ -310,17 +347,19 @@ export function useGuidedSession(
         }, beat.atMs),
       );
     }
+    // The end of the rest is decided from a clock rather than inside the
+    // `setRemaining` updater: an updater React re-invokes would bump `attempt`
+    // twice and restart the set it had just begun.
+    const endsAt = Date.now() + seconds * 1000;
     const interval = window.setInterval(() => {
-      setRemaining((left) => {
-        if (left <= 1) {
-          window.clearInterval(interval);
-          setStage('working');
-          setAttempt((value) => value + 1);
-          return 0;
-        }
-        return left - 1;
-      });
-    }, 1000);
+      const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+      setRemaining(left);
+      if (left === 0) {
+        window.clearInterval(interval);
+        setStage('working');
+        setAttempt((value) => value + 1);
+      }
+    }, 250);
     return () => {
       window.clearInterval(interval);
       for (const timer of timers) window.clearTimeout(timer);
@@ -328,24 +367,34 @@ export function useGuidedSession(
   }, [stage, index, plan, render]);
 
   const begin = useCallback(() => {
-    if (profileId === undefined) return;
+    if (profileId === undefined) {
+      // Reloading a deep link, or a profile deleted in another tab. The button
+      // used to do nothing at all, which reads as a broken app.
+      setSpoken(t('guided.noProfile'));
+      return;
+    }
+    // Browsers only start an AudioContext from a user gesture, and this is the
+    // only one the guided session gets. Without it the set-complete tone stays
+    // silent for the whole routine.
+    earconRef.current?.unlock();
     void startSession(profileId, routineId).then(setSessionId);
     setStage('working');
     setAttempt((value) => value + 1);
-  }, [profileId, routineId]);
+  }, [profileId, routineId, t]);
 
   const togglePause = useCallback(() => {
     earconRef.current?.play('pause');
-    setStage((current) => {
-      if (current === 'paused') return 'working';
-      if (current === 'working' || current === 'resting') {
-        speakerRef.current?.cancel();
-        return 'paused';
-      }
-      return current;
-    });
+    if (stage === 'paused') {
+      setStage(pausedFrom);
+      setAttempt((value) => value + 1);
+      return;
+    }
+    if (stage !== 'working' && stage !== 'resting') return;
+    speakerRef.current?.cancel();
+    setPausedFrom(stage);
+    setStage('paused');
     setAttempt((value) => value + 1);
-  }, []);
+  }, [stage, pausedFrom]);
 
   /**
    * Move on without recording anything: the set did not happen.
@@ -367,11 +416,17 @@ export function useGuidedSession(
     setAttempt((value) => value + 1);
   }, [index, plan.length]);
 
+  /**
+   * Do the set again. During a rest the index has already moved on, so this
+   * steps back to the set that was just finished — otherwise Repeat silently
+   * started the next one and ate the rest.
+   */
   const redo = useCallback(() => {
     speakerRef.current?.cancel();
+    if (stage === 'resting' && index > 0) setIndex(index - 1);
     setStage('working');
     setAttempt((value) => value + 1);
-  }, []);
+  }, [stage, index]);
 
   const finish = useCallback(() => {
     speakerRef.current?.cancel();
@@ -386,6 +441,7 @@ export function useGuidedSession(
     spoken,
     remaining,
     repsDone,
+    counting,
     sessionId,
     begin,
     togglePause,

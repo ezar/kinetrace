@@ -100,8 +100,14 @@ export function ProgressScreen(): JSX.Element {
         .sort((a, b) => b.startedAt - a.startedAt),
     [completed],
   );
+  // A guided set recorded no skeleton, so offering its date in the replay
+  // picker leads to an empty player.
   const setsForReplay = sets.filter(
-    (set) => subject && set.exerciseId === subject.exerciseId && set.side === subject.side,
+    (set) =>
+      subject &&
+      set.measured !== false &&
+      set.exerciseId === subject.exerciseId &&
+      set.side === subject.side,
   );
 
   return (

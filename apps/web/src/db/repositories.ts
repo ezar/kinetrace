@@ -169,16 +169,20 @@ export async function resumableSession(profileId: number): Promise<ResumableSess
       (session) =>
         session.endedAt === undefined && Date.now() - session.startedAt < RESUMABLE_WINDOW_MS,
     )
-    .sort((a, b) => b.startedAt - a.startedAt)[0];
-  if (!open) return undefined;
-  const sets = await db.sets.where('sessionId').equals(open.id).toArray();
-  if (sets.length === 0) return undefined;
-  // A voice guided session is not offered. Resuming goes to the measured
-  // session, which is the one mode the person could not use that day, and
-  // there is nothing to preserve anyway: a guided set holds no measurement,
-  // so starting again costs only the minutes.
-  if (sets.every((set) => set.measured === false)) return undefined;
-  return { session: open, nextIndex: Math.max(...sets.map((set) => set.index)) + 1 };
+    .sort((a, b) => b.startedAt - a.startedAt);
+
+  // Newest first, and a guided session is stepped over rather than ending the
+  // search: resuming goes to the measured session, which is the one mode the
+  // person could not use that day, and a guided set holds no measurement to
+  // preserve anyway. An older, genuinely resumable session behind it still
+  // deserves to be offered.
+  for (const session of open) {
+    const sets = await db.sets.where('sessionId').equals(session.id).toArray();
+    if (sets.length === 0) continue;
+    if (sets.every((set) => set.measured === false)) continue;
+    return { session, nextIndex: Math.max(...sets.map((set) => set.index)) + 1 };
+  }
+  return undefined;
 }
 
 /** Sets already recorded against a session, in plan order. */

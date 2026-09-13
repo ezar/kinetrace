@@ -37,6 +37,7 @@ export const es = {
   'guided.noMic': 'Los comandos de voz están apagados. Puedes manejarla desde la pantalla.',
   'guided.working': 'En marcha',
   'guided.resting': 'Descanso',
+  'guided.noProfile': 'No hay ningún perfil activo. Vuelve a inicio y elige uno.',
   'summary.guided': 'Guiado por voz: hecho, pero sin medir.',
   'guided.ofReps': 'de {total} repeticiones',
   'guided.seconds': 'segundos',

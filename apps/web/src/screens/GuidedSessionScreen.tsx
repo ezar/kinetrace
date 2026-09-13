@@ -80,8 +80,9 @@ export function GuidedSessionScreen(): JSX.Element {
   }
 
   const resting = session.stage === 'resting';
-  // A hold and a rest are both clocks; a set of repetitions is a tally.
-  const counting = !resting && item?.holdSeconds === undefined;
+  // What the number means comes from the hook, so the screen and the voice can
+  // never disagree and a pause cannot flip one into the other.
+  const counting = session.counting === 'reps';
 
   return (
     <div className="mx-auto flex min-h-full max-w-lg flex-col gap-5 px-5 pb-6 pt-5">
@@ -104,11 +105,11 @@ export function GuidedSessionScreen(): JSX.Element {
           </h1>
           {item ? (
             <p className="text-muted">
-              {item.holdSeconds !== undefined
+              {exercise?.mode === 'hold'
                 ? t('guided.doseHold', {
                     set: item.setNumber,
                     sets: item.totalSets,
-                    seconds: item.holdSeconds,
+                    seconds: item.holdSeconds ?? 0,
                   })
                 : t('guided.doseReps', {
                     set: item.setNumber,
