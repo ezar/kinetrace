@@ -24,6 +24,7 @@ export const pronePressUp: ExerciseDefinition = {
   },
   area: 'lowerBack',
   position: 'prone',
+  spinalLoad: 'extension',
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

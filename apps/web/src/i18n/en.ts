@@ -127,6 +127,14 @@ export const en: Record<TranslationKey, string> = {
   'library.tracking.low': 'Small movement, the measure is approximate',
   'library.empty': 'No exercise matches those filters',
 
+  'spinalLoad.flexion': 'Lumbar flexion',
+  'spinalLoad.extension': 'Lumbar extension',
+  'spinalLoad.rotation': 'Rotation',
+  'spinalLoad.neutral': 'Lumbar neutral',
+  'spinalLoad.mixed': 'Flexion and extension',
+  'library.filterLoad': 'Direction',
+  'library.load': 'What the lower back does',
+  'review.loadMix': 'Direction of load across this routine',
   'area.lowerBack': 'Lower back',
   'area.core': 'Core',
   'area.hips': 'Hips',
@@ -398,6 +406,14 @@ export const en: Record<TranslationKey, string> = {
   'help.voiceOn': 'Voice commands are on. You can turn them off in',
   'help.voiceOff': 'Voice commands are off. You can turn them on in',
 
+  'help.demo': 'Seeing the exercise first',
+  'help.demoHelp':
+    'Before an exercise you have not done, the app says how it is done a step at a time and a figure does it in front of you. It goes away on its own once you have done it, after your first sessions, or the moment you say you know it. Settings takes it back, or asks for it every time.',
+  'help.guided': 'A session with no camera',
+  'help.guidedHelp':
+    'When the phone cannot be propped up, the app counts the session out loud instead: the pace, the repetitions and the movements themselves ("up", "down", "round your back", "arch your back"), with the figure moving to the same clock. The pace is not invented: it comes from how long one repetition of each exercise\'s reference motion takes, or from a tempo you were prescribed.',
+  'help.guidedMeasures':
+    'It measures nothing, and says so: those sets are recorded as done but unmeasured — no percentage in the summary, out of the range in the report, and out of the progress chart entirely.',
   'help.camera': 'Where to put the camera',
   'help.cameraHelp':
     'Each exercise tells you before it starts, but these are every placement the library uses.',

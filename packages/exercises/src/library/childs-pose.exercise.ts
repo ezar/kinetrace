@@ -22,6 +22,7 @@ export const childsPose: ExerciseDefinition = {
   },
   area: 'lowerBack',
   position: 'quadruped',
+  spinalLoad: 'flexion',
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

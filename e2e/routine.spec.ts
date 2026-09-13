@@ -252,6 +252,17 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
  * checks the generated parts are there rather than the prose: the gestures
  * drawn, the real voice vocabulary, and the way back into the introduction.
  */
+test('the library can be browsed by which way an exercise loads the back', async ({ page }) => {
+  await page.goto('library');
+  await expect(page.getByRole('heading', { name: /ejercicios|exercises/i })).toBeVisible();
+
+  // Every exercise, then only the ones that increase the lumbar curve.
+  await expect(page.getByRole('link', { name: /gato y camello|cat and camel/i })).toBeVisible();
+  await page.getByRole('button', { name: /^extensión lumbar$|^lumbar extension$/i }).click();
+  await expect(page.getByRole('link', { name: /extensión en prono|prone press/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: /gato y camello|cat and camel/i })).toHaveCount(0);
+});
+
 test('has a help screen that can reopen the introduction', async ({ page }) => {
   await page.goto('help');
   await expect(page.getByRole('heading', { name: /^ayuda$|^help$/i })).toBeVisible();

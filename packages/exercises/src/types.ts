@@ -44,6 +44,27 @@ export type ExerciseArea = 'lowerBack' | 'core' | 'hips' | 'thoracic' | 'neckSho
 /** Starting position, used by the library filters and by the camera guidance. */
 export type ExercisePosition = 'standing' | 'supine' | 'prone' | 'quadruped' | 'sideLying';
 
+/**
+ * How the movement loads the lumbar spine.
+ *
+ * A mechanical description of the exercise, in the same family as `area` and
+ * `position`: what the lower back is asked to do while the exercise happens.
+ *
+ * - `flexion` — the lumbar curve is deliberately reduced or reversed.
+ * - `extension` — it is deliberately increased.
+ * - `rotation` — the trunk turns.
+ * - `neutral` — the lumbar spine is asked to hold still while something else
+ *   moves, which is the point of most of the stability work.
+ * - `mixed` — the repetition passes through more than one of these.
+ *
+ * It is here because a prescription for a lower back is partly a choice about
+ * direction, and until this field existed neither the library nor the review
+ * screen could say which way an exercise went. It describes the movement; it
+ * does not recommend one, and nothing in the app selects exercises by it.
+ * Like the cue dictionary and the how-to steps, it wants a professional's eye.
+ */
+export type SpinalLoad = 'flexion' | 'extension' | 'rotation' | 'neutral' | 'mixed';
+
 /** Where the phone or laptop should sit. */
 export type CameraHeight = 'floor' | 'chair' | 'standing';
 
@@ -97,6 +118,8 @@ export interface ExerciseDefinition {
   howTo: LocalizedSteps;
   area: ExerciseArea;
   position: ExercisePosition;
+  /** What the lumbar spine is asked to do while this happens. */
+  spinalLoad: SpinalLoad;
   equipment: 'none' | 'mat';
   view: ExerciseView;
   /** Key into the camera tip dictionary, e.g. `tip.gluteBridge`. */

@@ -25,6 +25,7 @@ import {
   canPrescribe,
   describeCondition,
   getExercise,
+  spinalLoadMix,
   metricDescription,
   metricLabel,
   metricRange,
@@ -89,6 +90,16 @@ export function ReviewScreen(): JSX.Element {
   const [by, setBy] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const loadMix = useMemo(
+    () =>
+      spinalLoadMix(
+        entries
+          .map((entry) => getExercise(entry.exerciseId))
+          .filter((exercise): exercise is NonNullable<typeof exercise> => exercise !== undefined),
+      ),
+    [entries],
+  );
 
   useEffect(() => {
     if (!routineId) return;
@@ -176,6 +187,22 @@ export function ReviewScreen(): JSX.Element {
           </p>
         ) : null}
       </section>
+
+      {loadMix.length > 0 ? (
+        <section className="card mt-4 p-4">
+          <h2 className="font-medium">{t('review.loadMix')}</h2>
+          {/* Counted, never judged. Which way a routine leans is a thing the
+              person reviewing it should be able to see at a glance; which way
+              it ought to lean is entirely theirs to decide. */}
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
+            {loadMix.map(([load, count]) => (
+              <li key={load}>
+                {t(`spinalLoad.${load}`)} · {count}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {felt.length > 0 ? (
         <section className="card mt-4 p-4">
@@ -299,7 +326,8 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
           <h2 className="font-semibold">{exercise.names[language]}</h2>
           <p className="text-sm text-muted">
             {metricLabel(metric?.id ?? 'hipFlexion', language)} ·{' '}
-            {t(`library.tracking.${exercise.trackingConfidence}`)}
+            {t(`library.tracking.${exercise.trackingConfidence}`)} ·{' '}
+            {t(`spinalLoad.${exercise.spinalLoad}`)}
           </p>
           <p className="mt-1 text-[13px] leading-relaxed text-muted">
             {metricDescription(metric?.id ?? 'hipFlexion', language)}

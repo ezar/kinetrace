@@ -27,6 +27,7 @@ export const gluteBridge: ExerciseDefinition = {
   },
   area: 'lowerBack',
   position: 'supine',
+  spinalLoad: 'neutral',
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

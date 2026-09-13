@@ -24,6 +24,7 @@ export const hipHinge: ExerciseDefinition = {
   },
   area: 'hips',
   position: 'standing',
+  spinalLoad: 'neutral',
   equipment: 'none',
   view: { orientation: 'side', cameraHeight: 'chair', distanceMetres: 3 },
   cameraTipKey: 'tip.chairSide',

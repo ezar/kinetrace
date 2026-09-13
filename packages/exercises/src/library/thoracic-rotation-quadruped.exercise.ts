@@ -24,6 +24,7 @@ export const thoracicRotationQuadruped: ExerciseDefinition = {
   },
   area: 'thoracic',
   position: 'quadruped',
+  spinalLoad: 'rotation',
   equipment: 'mat',
   view: { orientation: 'front', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorFront',

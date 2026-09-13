@@ -25,6 +25,7 @@ export const frontPlank: ExerciseDefinition = {
   },
   area: 'core',
   position: 'prone',
+  spinalLoad: 'neutral',
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

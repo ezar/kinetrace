@@ -25,6 +25,7 @@ export const sidePlankKnees: ExerciseDefinition = {
   },
   area: 'core',
   position: 'sideLying',
+  spinalLoad: 'neutral',
   equipment: 'mat',
   view: { orientation: 'front', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorFront',

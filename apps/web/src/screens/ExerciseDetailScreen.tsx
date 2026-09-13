@@ -25,7 +25,9 @@ export function ExerciseDetailScreen(): JSX.Element {
     <div className="space-y-5">
       <ScreenHeader
         title={exercise.names[language]}
-        subtitle={`${t(`area.${exercise.area}`)} · ${t(`position.${exercise.position}`)}`}
+        subtitle={`${t(`area.${exercise.area}`)} · ${t(`position.${exercise.position}`)} · ${t(
+          `spinalLoad.${exercise.spinalLoad}`,
+        )}`}
         back
       />
 

@@ -24,6 +24,7 @@ export const wallAngels: ExerciseDefinition = {
   },
   area: 'neckShoulders',
   position: 'standing',
+  spinalLoad: 'neutral',
   equipment: 'none',
   view: { orientation: 'front', cameraHeight: 'chair', distanceMetres: 3 },
   cameraTipKey: 'tip.chairFront',

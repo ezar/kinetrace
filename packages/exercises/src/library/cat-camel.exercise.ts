@@ -27,6 +27,7 @@ export const catCamel: ExerciseDefinition = {
   },
   area: 'lowerBack',
   position: 'quadruped',
+  spinalLoad: 'mixed',
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

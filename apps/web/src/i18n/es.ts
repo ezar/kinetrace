@@ -125,6 +125,14 @@ export const es = {
   'library.tracking.low': 'Movimiento pequeño, la medida es aproximada',
   'library.empty': 'Ningún ejercicio con esos filtros',
 
+  'spinalLoad.flexion': 'Flexión lumbar',
+  'spinalLoad.extension': 'Extensión lumbar',
+  'spinalLoad.rotation': 'Rotación',
+  'spinalLoad.neutral': 'Lumbar neutra',
+  'spinalLoad.mixed': 'Flexión y extensión',
+  'library.filterLoad': 'Dirección',
+  'library.load': 'Qué hace la zona lumbar',
+  'review.loadMix': 'Dirección de la carga en esta rutina',
   'area.lowerBack': 'Zona lumbar',
   'area.core': 'Core',
   'area.hips': 'Caderas',
@@ -397,6 +405,14 @@ export const es = {
   'help.voiceOn': 'Los comandos de voz están encendidos. Puedes apagarlos en',
   'help.voiceOff': 'Los comandos de voz están apagados. Puedes encenderlos en',
 
+  'help.demo': 'Ver el ejercicio antes',
+  'help.demoHelp':
+    'Antes de un ejercicio que no has hecho, la app te dice cómo se hace paso a paso y una figura lo hace delante de ti. Desaparece sola cuando ya lo has hecho, tras tus primeras sesiones, o en cuanto dices que te lo sabes. Desde Ajustes puedes recuperarlo o pedir que aparezca siempre.',
+  'help.guided': 'Sesión sin cámara',
+  'help.guidedHelp':
+    'Cuando no puedes colocar el móvil, la app te canta la sesión: el ritmo, las repeticiones y el propio movimiento («sube», «baja», «redondea», «arquea»), con la figura moviéndose al mismo compás. El ritmo no se lo inventa: sale de lo que dura una repetición del movimiento de referencia de cada ejercicio, o del tempo que te hayan prescrito.',
+  'help.guidedMeasures':
+    'No mide nada, y lo dice: esas series quedan registradas como hechas pero sin medir, sin porcentaje en el resumen, fuera del rango en el informe y fuera de la gráfica de progreso.',
   'help.camera': 'Dónde poner la cámara',
   'help.cameraHelp':
     'Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.',

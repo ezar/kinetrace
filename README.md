@@ -37,10 +37,23 @@ account.** What is stored is skeletons, angles and counts — never pixels.
   not the Web Speech Recognition API, which in most browsers does not run locally.
 - **Made for the person who prescribed it.** A physiotherapist can go through the
   routine exercise by exercise — what is measured and how reliably, the range to aim
-  for, the point at which the session stops, the dosage, and the exact words the app
-  will say — adjust it and sign. The numbers are checked as they are typed, including
+  for, the point at which the session stops, the dosage, which way each exercise
+  loads the lower back, and the exact words the app will say — adjust it and sign. The numbers are checked as they are typed, including
   against how the engine counts, so a target that has quietly stopped meaning anything
   is caught before it reaches anybody.
+- **Shows you the exercise first.** Before an exercise you have not done, the app
+  says how it is done a step at a time and animates a figure doing it, built from
+  the exercise's own reference motion. It gets out of the way: once you have done
+  it, after your first three sessions, or the moment you say you know it — and
+  settings takes that back.
+- **Works without the camera.** Sometimes the phone cannot be propped up. The
+  guided mode counts the session out loud instead — the pace, the repetitions, and
+  the movements themselves ("sube", "baja", "redondea", "arquea"), with the figure
+  moving to the same clock. It measures nothing, and every set it records says so:
+  no percentage in the summary, out of the range in the report, out of the progress
+  chart entirely. The pace is not invented either — it comes from the duration each
+  exercise declares for one repetition of its reference motion, or from a
+  prescribed tempo where there is one.
 - **Remembers without watching.** Sessions store a 15 fps skeleton track you can
   replay and compare — around 2 kB per second, and no video anywhere.
 - **Reads your physio's sheet.** Photograph it and Kinetrace proposes a routine,
@@ -83,7 +96,7 @@ in Node for the replay tool and the tests.
 | Package                                    | What lives there                                                                                                                                                            |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`packages/engine`](packages/engine)       | Filtering, metrics, repetition machine, hold timer, rules, cue scheduler, gestures, the voice grammar matcher, setup assistant, skeleton tracks. Framework-free TypeScript. |
-| [`packages/exercises`](packages/exercises) | The exercise DSL, its validator, the Spanish and English cue dictionary and voice vocabulary, and the starter library.                                                      |
+| [`packages/exercises`](packages/exercises) | The exercise DSL, its validator, the Spanish and English cue dictionary and voice vocabulary, the spoken script for a session with no camera, and the starter library.      |
 | [`packages/import`](packages/import)       | The sheet import pipeline, with OCR and language models behind swappable interfaces.                                                                                        |
 | [`apps/web`](apps/web)                     | The PWA: profiles, library, routine builder, session, progress, settings.                                                                                                   |
 | [`scripts/replay`](scripts/replay)         | Run the engine over a fixture and print the trace, with no camera.                                                                                                          |
@@ -105,6 +118,11 @@ export const gluteBridge: ExerciseDefinition = {
   ],
   targets: { direction: 'increase', band: { min: 165, max: 185 } },
   rules: [/* conditions over metrics, with a cue key and a cooldown */],
+  // How it is done, for the person about to do it. Required, and checked:
+  // an exercise nobody can explain has no business being prescribed.
+  howTo: { es: ['Túmbate boca arriba…'], en: ['Lie on your back…'] },
+  // What the lumbar spine is asked to do while this happens.
+  spinalLoad: 'neutral',
   // …
 };
 ```

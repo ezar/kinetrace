@@ -116,6 +116,20 @@ export function HelpScreen(): JSX.Element {
         )}
       </section>
 
+      {/* The two things the app does that are not the camera, and the one
+          thing it is important nobody misreads: a guided set is a
+          prescription carried out, not a measurement taken. */}
+      <section className="card space-y-2 p-4">
+        <h2 className="font-medium">{t('help.demo')}</h2>
+        <p className="text-sm leading-relaxed text-muted">{t('help.demoHelp')}</p>
+      </section>
+
+      <section className="card space-y-2 p-4">
+        <h2 className="font-medium">{t('help.guided')}</h2>
+        <p className="text-sm leading-relaxed text-muted">{t('help.guidedHelp')}</p>
+        <p className="text-sm leading-relaxed text-muted">{t('help.guidedMeasures')}</p>
+      </section>
+
       <section className="card space-y-2 p-4">
         <h2 className="font-medium">{t('help.camera')}</h2>
         <p className="text-sm leading-relaxed text-muted">{t('help.cameraHelp')}</p>

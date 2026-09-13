@@ -7,7 +7,7 @@
 
 import { conditionMetrics, METRIC_IDS, type Condition } from '@kinetrace/engine';
 import { EXERCISE_TEXT } from './dictionary.js';
-import type { ExerciseDefinition } from './types.js';
+import type { ExerciseDefinition, SpinalLoad } from './types.js';
 
 export interface ValidationIssue {
   exerciseId: string;
@@ -18,6 +18,15 @@ export interface ValidationIssue {
 
 const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
+/** Every direction the library knows how to describe and the app can name. */
+const SPINAL_LOADS: readonly SpinalLoad[] = [
+  'flexion',
+  'extension',
+  'rotation',
+  'neutral',
+  'mixed',
+];
+
 export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const report = (path: string, message: string): void => {
@@ -27,6 +36,10 @@ export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[
   if (!ID_PATTERN.test(exercise.id)) report('id', 'must be kebab-case');
   if (!exercise.names.es.trim() || !exercise.names.en.trim()) {
     report('names', 'both Spanish and English names are required');
+  }
+
+  if (!SPINAL_LOADS.includes(exercise.spinalLoad)) {
+    report('spinalLoad', `unknown spinal load "${exercise.spinalLoad}"`);
   }
 
   // An exercise nobody can explain has no business being prescribed. Two steps

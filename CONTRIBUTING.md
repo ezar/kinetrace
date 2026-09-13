@@ -38,13 +38,42 @@ names: { es: 'Puente de glúteos', en: 'Glute bridge' },
 synonyms: { es: ['puente', 'puente de cadera'], en: ['bridge', 'hip raise'] },
 area: 'lowerBack',                      // library filter
 position: 'supine',                     // library filter and camera guidance
+spinalLoad: 'neutral',                  // what the lumbar spine is asked to do
 equipment: 'none' | 'mat',
 ```
 
 Synonyms matter: they are what the sheet import matches a physiotherapist's wording
 against, in both languages.
 
-### 2. The view
+`spinalLoad` is `flexion` (the lumbar curve is deliberately reduced or reversed),
+`extension` (deliberately increased), `rotation`, `neutral` (the lower back holds
+still while something else moves, which is most of the stability work) or `mixed`
+(the repetition passes through more than one). It is a **mechanical description of
+the movement**, in the same family as `area` and `position`. The library filters on
+it and the review screen counts it, so a professional can see which way a routine
+leans; nothing in the app selects, warns or reorders by it, and it is not a
+recommendation.
+
+### 2. How it is done
+
+```ts
+howTo: {
+  es: ['Túmbate boca arriba con las rodillas dobladas…', '…'],
+  en: ['Lie on your back with your knees bent…', '…'],
+},
+```
+
+Required, in both languages, and the validator refuses fewer than two steps, a blank
+one, or two languages of different lengths. These are shown before an exercise
+somebody has not done and on the library screen.
+
+Describe the movement the rest of the file already encodes — the starting position,
+the phases, what moves and what does not — in the words a person needs rather than
+the numbers the engine needs. **No dosage and no clinical advice**: a
+physiotherapist's instructions replace them, and `physioNote` on the routine is
+where those go. Like the cues, they want a professional's eye before they ship.
+
+### 3. The view
 
 ```ts
 view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
@@ -54,7 +83,7 @@ cameraTipKey: 'tip.floorSide',
 The setup assistant blocks the session until the camera actually shows what the
 metrics need, so declare the view the exercise is really measured from.
 
-### 3. Metrics
+### 4. Metrics
 
 Metric slots are names your phases and rules refer to:
 
@@ -74,7 +103,7 @@ segments are in line — a straight knee, an extended hip — and the angle decr
 with flexion. Run `pnpm replay <fixture> --metrics` to see the range a movement
 actually produces before you pick thresholds.
 
-### 4. Phases and targets
+### 5. Phases and targets
 
 Phases form a cycle. The machine only advances to the next phase, and only once its
 condition has held for `minDwellMs`, which is what keeps jitter from counting.
@@ -96,7 +125,7 @@ Put the phase threshold clearly **below** the target band (or above it, for
 reported as a partial with the value it reached; one that never crosses the phase
 threshold is not seen at all.
 
-### 5. Rules
+### 6. Rules
 
 A rule is a condition over metrics that must hold for `sustainMs` before it proposes
 a cue, and that cannot fire again for `cooldownMs`:
@@ -121,7 +150,7 @@ Cue keys must exist in `packages/exercises/src/dictionary.ts`, in both languages
 Cue writing rules: under six words, imperative, and always what to do rather than
 what is wrong. "Lift your hips", never "your hips are low".
 
-### 6. The reference motion
+### 7. The reference motion
 
 A handful of keyframes of joint angles. The library animates it, the fixture builder
 turns it into landmarks, and the tests run the engine over it:
@@ -145,7 +174,7 @@ the sagittal plane, `trunkLateral` bends it sideways, `trunkRotation` and
 `pelvisRotation` turn the shoulder and hip lines, `hipAbduction` and `kneeSplay`
 move limbs out of the sagittal plane.
 
-### 7. A fixture, and the numbers behind it
+### 8. A fixture, and the numbers behind it
 
 Add a good variant and at least one variant that should trip each rule, in
 `scripts/fixtures/variants.ts`. A good variant is generated for every exercise
