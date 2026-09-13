@@ -22,11 +22,15 @@ function item(exerciseId: string, setNumber = 1): PlanItem {
 }
 
 const plan = [item('cat-camel', 1), item('cat-camel', 2), item('glute-bridge', 1)];
-const veteran = { sessions: 20, done: new Set(['cat-camel', 'glute-bridge']) };
+const veteran = {
+  sessions: 20,
+  done: new Set(['cat-camel', 'glute-bridge']),
+  dismissed: new Set<string>(),
+};
 
 describe('primerFor', () => {
   it('shows each exercise once, however many sets it has', () => {
-    expect(primerFor(plan, { sessions: 0, done: new Set() }, 'new')).toEqual([
+    expect(primerFor(plan, { sessions: 0, done: new Set(), dismissed: new Set() }, 'new')).toEqual([
       'cat-camel',
       'glute-bridge',
     ]);
@@ -37,23 +41,46 @@ describe('primerFor', () => {
   });
 
   it('shows only the exercise that is new', () => {
-    const experience = { sessions: 20, done: new Set(['cat-camel']) };
+    const experience = { sessions: 20, done: new Set(['cat-camel']), dismissed: new Set<string>() };
     expect(primerFor(plan, experience, 'new')).toEqual(['glute-bridge']);
   });
 
   it('shows everything while the first sessions are still settling in', () => {
     // Even an exercise already done: at session two nothing is a habit yet.
-    const experience = { sessions: SETTLING_IN_SESSIONS - 1, done: new Set(['cat-camel']) };
+    const experience = {
+      sessions: SETTLING_IN_SESSIONS - 1,
+      done: new Set(['cat-camel']),
+      dismissed: new Set<string>(),
+    };
     expect(primerFor(plan, experience, 'new')).toEqual(['cat-camel', 'glute-bridge']);
   });
 
   it('stops on the session that ends the settling in', () => {
-    const experience = { sessions: SETTLING_IN_SESSIONS, done: new Set(['cat-camel']) };
+    const experience = {
+      sessions: SETTLING_IN_SESSIONS,
+      done: new Set(['cat-camel']),
+      dismissed: new Set<string>(),
+    };
     expect(primerFor(plan, experience, 'new')).toEqual(['glute-bridge']);
   });
 
+  it('stops showing an exercise somebody has said they already know', () => {
+    // From the next session, not this one: the button also moves on.
+    const experience = { sessions: 0, done: new Set<string>(), dismissed: new Set(['cat-camel']) };
+    expect(primerFor(plan, experience, 'new')).toEqual(['glute-bridge']);
+  });
+
+  it('takes being told to stop over being told to always show', () => {
+    // "I know this one" is the more specific thing somebody said, and settings
+    // can take it back for everything at once.
+    const experience = { sessions: 0, done: new Set<string>(), dismissed: new Set(['cat-camel']) };
+    expect(primerFor(plan, experience, 'always')).toEqual(['glute-bridge']);
+  });
+
   it('shows nothing at all when that is what was asked for', () => {
-    expect(primerFor(plan, { sessions: 0, done: new Set() }, 'never')).toEqual([]);
+    expect(
+      primerFor(plan, { sessions: 0, done: new Set(), dismissed: new Set() }, 'never'),
+    ).toEqual([]);
   });
 
   it('shows everything when that is what was asked for', () => {
@@ -62,6 +89,8 @@ describe('primerFor', () => {
 
   it('has nothing to show for a line the library cannot track', () => {
     const untracked = [{ ...item('cat-camel'), exercise: undefined, tracked: false } as PlanItem];
-    expect(primerFor(untracked, { sessions: 0, done: new Set() }, 'always')).toEqual([]);
+    expect(
+      primerFor(untracked, { sessions: 0, done: new Set(), dismissed: new Set() }, 'always'),
+    ).toEqual([]);
   });
 });

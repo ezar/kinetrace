@@ -11,6 +11,20 @@ export const catCamel: ExerciseDefinition = {
     es: ['gato camello', 'gato-vaca', 'movilidad de columna en cuadrupedia'],
     en: ['cat camel', 'cat cow', 'cat-cow'],
   },
+  howTo: {
+    es: [
+      'Ponte a cuatro patas, con las manos bajo los hombros y las rodillas bajo las caderas.',
+      'Redondea la espalda hacia arriba metiendo la barbilla, vértebra a vértebra.',
+      'Vuelve al centro y luego hunde la espalda llevando el pecho y la mirada hacia delante.',
+      'Los brazos no se doblan: el movimiento es de la columna.',
+    ],
+    en: [
+      'Get on all fours, hands under your shoulders and knees under your hips.',
+      'Round your back up towards the ceiling and tuck your chin, one vertebra at a time.',
+      'Come back to the middle, then let your back dip and look forward.',
+      'Your arms stay straight: the movement belongs to your spine.',
+    ],
+  },
   area: 'lowerBack',
   position: 'quadruped',
   equipment: 'mat',

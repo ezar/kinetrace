@@ -38,6 +38,20 @@ export function ExerciseDetailScreen(): JSX.Element {
         />
       </div>
 
+      {/* The same steps the session shows before this exercise: written once,
+          in the library, where the rest of its text already lives. */}
+      <section className="card p-4">
+        <h2 className="font-medium">{t('library.howTo')}</h2>
+        <ol className="mt-2 flex flex-col gap-2">
+          {exercise.howTo[language].map((instruction, index) => (
+            <li key={instruction} className="flex gap-3 leading-relaxed">
+              <span className="w-5 shrink-0 text-right tabular-nums text-muted">{index + 1}</span>
+              <span>{instruction}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="card p-4">
         <h2 className="font-medium">{t('library.camera')}</h2>
         <p className="mt-1 text-muted">{t(exercise.cameraTipKey)}</p>

@@ -8,6 +8,20 @@ export const wallAngels: ExerciseDefinition = {
     es: ['ángeles de pared', 'wall angels', 'deslizamiento en pared'],
     en: ['wall angels', 'wall slides', 'wall angel'],
   },
+  howTo: {
+    es: [
+      'De espaldas a la pared, con los pies algo separados de ella y la espalda apoyada.',
+      'Apoya también los brazos en la pared, con los codos doblados a la altura de los hombros.',
+      'Sube los brazos por la pared hasta donde llegues sin despegarlos.',
+      'Bájalos despacio. La zona lumbar y las muñecas no se separan de la pared.',
+    ],
+    en: [
+      'Stand with your back to the wall, feet a little away from it and your back resting against it.',
+      'Rest your arms on the wall too, elbows bent at shoulder height.',
+      'Slide your arms up the wall as far as you can without lifting them off.',
+      'Slide them down slowly. Your lower back and wrists stay on the wall.',
+    ],
+  },
   area: 'neckShoulders',
   position: 'standing',
   equipment: 'none',

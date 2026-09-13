@@ -25,6 +25,19 @@ export interface Localized {
   en: string;
 }
 
+/**
+ * Ordered instructions, in both languages.
+ *
+ * Carried by the exercise rather than the app dictionary, like its name, and
+ * required rather than optional: an exercise nobody can explain has no business
+ * being prescribed, and making the field optional is how a library ends up with
+ * half of them blank.
+ */
+export interface LocalizedSteps {
+  es: string[];
+  en: string[];
+}
+
 /** Body area the exercise targets, used by the library filters. */
 export type ExerciseArea = 'lowerBack' | 'core' | 'hips' | 'thoracic' | 'neckShoulders';
 
@@ -72,6 +85,16 @@ export interface ExerciseDefinition {
   names: Localized;
   /** Alternative names used to match a physiotherapist's sheet during import. */
   synonyms: { es: string[]; en: string[] };
+  /**
+   * How to do it, a step at a time, for somebody who has never seen it.
+   *
+   * These describe the movement the rest of this object already encodes — the
+   * starting position, the phases, what moves and what does not — in the words
+   * a person needs rather than the numbers an engine needs. They are not
+   * clinical advice and they carry no dosage: a physiotherapist's instructions
+   * replace them, and `physioNote` is where those go.
+   */
+  howTo: LocalizedSteps;
   area: ExerciseArea;
   position: ExercisePosition;
   equipment: 'none' | 'mat';

@@ -29,6 +29,21 @@ export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[
     report('names', 'both Spanish and English names are required');
   }
 
+  // An exercise nobody can explain has no business being prescribed. Two steps
+  // is the floor because one is a description, not instructions.
+  for (const language of ['es', 'en'] as const) {
+    const steps = exercise.howTo[language];
+    if (steps.length < 2) {
+      report(`howTo.${language}`, 'at least two steps are required');
+    }
+    if (steps.some((step) => !step.trim())) {
+      report(`howTo.${language}`, 'steps must not be blank');
+    }
+  }
+  if (exercise.howTo.es.length !== exercise.howTo.en.length) {
+    report('howTo', 'both languages must describe the same steps');
+  }
+
   const metricNames = Object.keys(exercise.metrics);
   if (metricNames.length === 0) report('metrics', 'at least one metric slot is required');
   for (const [name, metric] of Object.entries(exercise.metrics)) {

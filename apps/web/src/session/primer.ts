@@ -6,11 +6,15 @@
  * exercise looks like — the same animated figure the library shows, built from
  * the exercise's own reference motion.
  *
- * It does not do this forever. Once somebody has done an exercise a few times
- * the demonstration is in the way, and an app that will not get out of the way
- * is an app people stop opening. The default is therefore to show an exercise
- * that is new to this profile, and to show everything for the first few
- * sessions, when nothing is familiar yet and the habit is not formed.
+ * It does not do this forever, and there are three ways out. It stops on its
+ * own once somebody has done the exercise; it stops for everything after the
+ * first few sessions; and "I know this one" stops it for that exercise from the
+ * next session onwards. An app that will not get out of the way is an app
+ * people stop opening.
+ *
+ * Being told to stop wins over every other rule, including `always` — it is the
+ * most specific thing anybody has said — and settings can take it all back at
+ * once, because nobody should have to live with a button they meant to miss.
  */
 
 import type { ExerciseExperience } from '../db/repositories.js';
@@ -44,6 +48,7 @@ export function primerFor(
   for (const item of plan) {
     if (!item.exercise) continue;
     if (ids.includes(item.exerciseId)) continue;
+    if (experience.dismissed.has(item.exerciseId)) continue;
     if (setting === 'new' && !settlingIn && experience.done.has(item.exerciseId)) continue;
     ids.push(item.exerciseId);
   }

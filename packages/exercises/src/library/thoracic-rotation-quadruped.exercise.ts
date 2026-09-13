@@ -8,6 +8,20 @@ export const thoracicRotationQuadruped: ExerciseDefinition = {
     es: ['rotación torácica', 'apertura torácica', 'thread the needle', 'rotación dorsal'],
     en: ['thoracic rotation', 'open book', 'thread the needle', 'quadruped rotation'],
   },
+  howTo: {
+    es: [
+      'Ponte a cuatro patas y lleva una mano detrás de la cabeza.',
+      'Gira el tronco abriendo ese codo hacia el techo, siguiéndolo con la mirada.',
+      'Vuelve despacio al centro.',
+      'Las caderas no giran: el movimiento es de la parte alta de la espalda.',
+    ],
+    en: [
+      'Get on all fours and put one hand behind your head.',
+      'Turn your trunk and open that elbow towards the ceiling, following it with your eyes.',
+      'Come back slowly to the middle.',
+      'Your hips do not turn: the movement belongs to your upper back.',
+    ],
+  },
   area: 'thoracic',
   position: 'quadruped',
   equipment: 'mat',

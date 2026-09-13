@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 /**
  * The path a new user actually walks: the first run, out of it with a profile
@@ -86,6 +86,24 @@ test.describe('first run', () => {
  * body and the assistant must never let the session start. Stubbing keeps the
  * test independent of whether the machine running it owns a camera.
  */
+/**
+ * Walk out of the demonstration a first session shows, one card at a time.
+ *
+ * Each click is preceded by an assertion that the expected card is on screen,
+ * rather than polling the button: the last click navigates, and a poll that
+ * catches the button mid-navigation never settles.
+ */
+async function stepPastPrimer(page: Page, cards: number): Promise<void> {
+  await expect(page.getByText(/así es el ejercicio|this is the exercise/i)).toBeVisible();
+  for (let card = 1; card <= cards; card += 1) {
+    if (cards > 1) await expect(page.getByText(`${card} / ${cards}`)).toBeVisible();
+    await page
+      .getByRole('button', { name: /^continuar$|^continue$|^empezar$|^start$/i })
+      .first()
+      .click();
+  }
+}
+
 test('the setup assistant blocks the session when it cannot see a body', async ({ page }) => {
   // The pose model is fetched from a path built against the app's base, which
   // is what breaks first when the app moves into a subdirectory.
@@ -127,8 +145,8 @@ test('the setup assistant blocks the session when it cannot see a body', async (
     .getByRole('link', { name: /empezar|start/i })
     .first()
     .click();
-  // A first session shows what each exercise looks like; step past it.
-  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
+  // A first session shows how each exercise is done; step past all five.
+  await stepPastPrimer(page, 5);
   await page.getByRole('button', { name: /empezar|start/i }).click();
 
   // The checks appear and the counter never does.
@@ -494,14 +512,44 @@ test('shows what each exercise looks like before somebody has done it', async ({
   // Built from the exercise's own reference motion, like every other demo.
   await expect(page.locator('svg')).toBeVisible();
   await expect(page.getByText(/2 series de 10|2 sets of 10/i)).toBeVisible();
+  // And how it is done, in words, which is the half you can read at your pace.
+  await expect(page.getByText(/ponte a cuatro patas|get on all fours/i)).toBeVisible();
 
   await page.getByRole('button', { name: /^continuar$|^continue$/i }).click();
   await expect(page.getByText('2 / 5')).toBeVisible();
   await expect(page.getByRole('heading', { name: /puente|bridge/i })).toBeVisible();
 
-  // And it can always be walked out of.
-  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
+  // "I know this one" is remembered. Said about the four that are left, only
+  // the cat and camel — which Continue was pressed on — comes back next time.
+  const known = page.getByRole('button', { name: /ya me lo sé|i know this one/i });
+  for (let card = 2; card <= 5; card += 1) {
+    await expect(page.getByText(`${card} / 5`)).toBeVisible();
+    await known.click();
+  }
   await expect(page).toHaveURL(/\/session\//);
+
+  await page.goto('./');
+  await page
+    .getByRole('link', { name: /^empezar$|^start$/i })
+    .first()
+    .click();
+  await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
+  // One card left, so no counter at all.
+  await expect(page.getByText('1 / 5')).toHaveCount(0);
+
+  // And settings takes every one of them back.
+  await page.goto('settings');
+  const restore = page.getByRole('button', { name: /volver a ver|show the/i });
+  await restore.click();
+  // It goes away when there is nothing left to restore, which is also how we
+  // know the write landed before this reloads the page out from under it.
+  await expect(restore).toHaveCount(0);
+  await page.goto('./');
+  await page
+    .getByRole('link', { name: /^empezar$|^start$/i })
+    .first()
+    .click();
+  await expect(page.getByText('1 / 5')).toBeVisible();
 });
 
 test('runs a routine by voice alone, and records that it measured nothing', async ({ page }) => {
@@ -533,7 +581,7 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   await expect(page.getByText('Ana')).toBeVisible();
 
   await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
-  await page.getByRole('button', { name: /ya me los sé|i know these/i }).click();
+  await stepPastPrimer(page, 5);
   await expect(page.getByText(/no mide nada|measures nothing/i)).toBeVisible();
   await page.getByRole('button', { name: /sin cámara|without the camera/i }).click();
 

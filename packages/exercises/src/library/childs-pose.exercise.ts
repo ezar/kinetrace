@@ -8,6 +8,18 @@ export const childsPose: ExerciseDefinition = {
     es: ['postura del niño', 'plegaria mahometana', 'estiramiento del niño'],
     en: ["child's pose", 'childs pose', 'prayer stretch'],
   },
+  howTo: {
+    es: [
+      'Desde cuatro patas, siéntate hacia atrás llevando las caderas hacia los talones.',
+      'Estira los brazos por delante y deja la frente apoyada.',
+      'Mantén la posición respirando despacio, sin forzar.',
+    ],
+    en: [
+      'From all fours, sit back and take your hips towards your heels.',
+      'Reach your arms forward and rest your forehead down.',
+      'Hold there and breathe slowly, without forcing it.',
+    ],
+  },
   area: 'lowerBack',
   position: 'quadruped',
   equipment: 'mat',

@@ -1,25 +1,28 @@
 /**
- * What the exercise looks like, before doing it.
+ * How the exercise is done, before doing it.
  *
- * Between the routine and the session there is a question neither of them
- * answers: what *is* a bird dog? The library screen answers it, but nobody
- * browses the library on the way to the mat. So the exercises that are still
- * unfamiliar get shown here — the same animated figure the library uses, built
- * from the exercise's own reference motion, moving at the pace the session will
- * ask for.
+ * Between the routine and the mat there is a question neither of them answers:
+ * what *is* a bird dog? The library screen answers it, but nobody browses the
+ * library on the way to the mat. So the exercises that are still unfamiliar get
+ * shown here — the steps the library carries, and the same animated figure,
+ * built from the exercise's own reference motion.
  *
- * It is a step, not a wall. `primerFor` decides who sees it, the answer is
- * normally nobody after the first few sessions, and "I know this one" leaves
- * for the session immediately.
+ * It is a step, not a wall. `primerFor` decides who sees it; it stops on its
+ * own once an exercise has been done and once the first sessions are behind
+ * somebody; and "I know this one" stops it for good, undoably, from settings.
+ *
+ * The list of exercises to show is taken once, when the data first arrives, and
+ * then left alone. Dismissing one rewrites what `primerFor` would answer, and
+ * walking a list that reshuffles underneath you skips the next card.
  */
 
 import type { JSX } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { db } from '../db/schema.js';
-import { exerciseExperience } from '../db/repositories.js';
+import { dismissDemo, exerciseExperience } from '../db/repositories.js';
 import { buildPlan } from '../session/plan.js';
 import { primerFor } from '../session/primer.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
@@ -54,33 +57,35 @@ export function PrepareScreen(): JSX.Element {
     [profileId],
   );
   const plan = useMemo(() => (routine ? buildPlan(routine) : []), [routine]);
+
+  const [ids, setIds] = useState<string[] | undefined>();
   const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (ids !== undefined || !settingsLoaded || !routine || !experience) return;
+    setIds(primerFor(plan, experience, showDemo));
+  }, [ids, settingsLoaded, routine, experience, plan, showDemo]);
 
   // The session this is on the way to. Everything here either shows it first or
   // gets out of the way.
-  const session = `${guided ? '/guided' : '/session'}/${routineId}${search.get('resume') ? `?resume=${search.get('resume')}` : ''}`;
+  const resume = search.get('resume');
+  const session = `${guided ? '/guided' : '/session'}/${routineId}${resume ? `?resume=${resume}` : ''}`;
 
-  const ids = useMemo(
-    () => (routine && experience ? primerFor(plan, experience, showDemo) : []),
-    [routine, experience, plan, showDemo],
-  );
-
-  // Nothing is known yet, so nothing is decided yet: an empty frame rather than
-  // a flash of a demonstration that is about to be skipped.
-  if (!settingsLoaded || !routine || !experience) {
-    return <div className="min-h-full bg-canvas" />;
-  }
+  if (!routine || ids === undefined) return <div className="min-h-full bg-canvas" />;
   if (ids.length === 0) return <Navigate to={session} replace />;
 
   const exerciseId = ids[Math.min(step, ids.length - 1)];
   const item = plan.find((candidate) => candidate.exerciseId === exerciseId);
   const exercise = item?.exercise;
-  if (!exercise) return <Navigate to={session} replace />;
+  if (!exercise || exerciseId === undefined) return <Navigate to={session} replace />;
 
   const last = step >= ids.length - 1;
-  const next = (): void => {
+  const advance = (): void => {
     if (last) navigate(session, { replace: true });
     else setStep(step + 1);
+  };
+  const known = (): void => {
+    if (profileId !== undefined) void dismissDemo(profileId, exerciseId);
+    advance();
   };
 
   return (
@@ -94,7 +99,7 @@ export function PrepareScreen(): JSX.Element {
         ) : null}
       </header>
 
-      <div className="flex flex-1 flex-col justify-center gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-[28px] font-bold leading-tight tracking-tight text-balance">
             {exercise.names[language]}
@@ -107,31 +112,36 @@ export function PrepareScreen(): JSX.Element {
         <ExerciseDemo
           reference={exercise.reference}
           view={exercise.view.orientation}
-          className="mx-auto h-52 w-full rounded-2xl bg-surface text-ink"
+          className="mx-auto h-44 w-full rounded-2xl bg-surface text-ink"
         />
 
-        <p className="leading-relaxed">
+        {/* The steps, which are the half of this that can be read at your own
+            pace. The figure shows the shape; these say what to do with it. */}
+        <ol className="flex flex-col gap-2">
+          {exercise.howTo[language].map((instruction, index) => (
+            <li key={instruction} className="flex gap-3 leading-relaxed">
+              <span className="w-5 shrink-0 text-right tabular-nums text-muted">{index + 1}</span>
+              <span>{instruction}</span>
+            </li>
+          ))}
+        </ol>
+
+        <p className="text-muted">
           {exercise.mode === 'hold'
-            ? t('prepare.dosageHold', {
-                sets: item.totalSets,
-                seconds: item.holdSeconds ?? 0,
-              })
+            ? t('prepare.dosageHold', { sets: item.totalSets, seconds: item.holdSeconds ?? 0 })
             : t('prepare.dosageReps', { sets: item.totalSets, reps: item.reps ?? 0 })}
         </p>
 
         {/* Where to put the phone only matters when the phone is going to look. */}
-        {guided ? null : <p className="text-muted">{t(exercise.cameraTipKey)}</p>}
+        {guided ? null : <p className="text-sm text-muted">{t(exercise.cameraTipKey)}</p>}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <button className="btn-primary h-14 w-full text-[17px] font-semibold" onClick={next}>
+      <div className="mt-auto flex flex-col gap-2 pt-4">
+        <button className="btn-primary h-14 w-full text-[17px] font-semibold" onClick={advance}>
           {last ? t('prepare.start') : t('common.continue')}
         </button>
-        <button
-          className="btn-ghost self-center px-4 py-2 text-sm"
-          onClick={() => navigate(session, { replace: true })}
-        >
-          {t('prepare.skip')}
+        <button className="btn-ghost self-center px-4 py-2 text-sm" onClick={known}>
+          {t('prepare.known')}
         </button>
       </div>
     </div>

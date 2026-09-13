@@ -12,6 +12,20 @@ export const pelvicTilt: ExerciseDefinition = {
     es: ['basculación pélvica', 'retroversión pélvica', 'inclinación pélvica'],
     en: ['pelvic tilt', 'posterior pelvic tilt', 'pelvic tilts'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca arriba con las rodillas dobladas y los pies apoyados.',
+      'Bascula la pelvis hacia atrás hasta pegar la zona lumbar al suelo.',
+      'Suelta y vuelve a la posición neutra.',
+      'Es un movimiento pequeño: las caderas no llegan a despegarse.',
+    ],
+    en: [
+      'Lie on your back with your knees bent and your feet flat.',
+      'Tilt your pelvis back until your lower back presses into the floor.',
+      'Release, and come back to neutral.',
+      'It is a small movement: your hips never leave the floor.',
+    ],
+  },
   area: 'lowerBack',
   position: 'supine',
   equipment: 'mat',

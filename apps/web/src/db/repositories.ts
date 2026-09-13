@@ -250,6 +250,8 @@ export interface ExerciseExperience {
   sessions: number;
   /** Exercise ids with at least one recorded set. */
   done: ReadonlySet<string>;
+  /** Exercise ids this person has said they already know. */
+  dismissed: ReadonlySet<string>;
 }
 
 /**
@@ -261,10 +263,11 @@ export interface ExerciseExperience {
  * not whether the camera saw it.
  */
 export async function exerciseExperience(profileId: number): Promise<ExerciseExperience> {
+  const dismissed = new Set((await db.profiles.get(profileId))?.demoDismissed ?? []);
   const sessionIds = (await db.sessions.where('profileId').equals(profileId).primaryKeys()).filter(
     (id): id is number => typeof id === 'number',
   );
-  if (sessionIds.length === 0) return { sessions: 0, done: new Set() };
+  if (sessionIds.length === 0) return { sessions: 0, done: new Set(), dismissed };
 
   const sets = await db.sets.where('sessionId').anyOf(sessionIds).toArray();
   const done = new Set<string>();
@@ -273,7 +276,31 @@ export async function exerciseExperience(profileId: number): Promise<ExerciseExp
     done.add(set.exerciseId);
     withSets.add(set.sessionId);
   }
-  return { sessions: withSets.size, done };
+  return { sessions: withSets.size, done, dismissed };
+}
+
+/**
+ * Stop showing this exercise's demonstration before a session.
+ *
+ * In a transaction because it reads before it writes, and the button that calls
+ * it sits on every card of the demonstration — four of them in the starter
+ * routine, one tap apart. At that cadence each write lands long before the next
+ * read, so this is not a bug being fixed; it is the shape of the operation
+ * being made honest.
+ */
+export async function dismissDemo(profileId: number, exerciseId: string): Promise<void> {
+  await db.transaction('rw', db.profiles, async () => {
+    const profile = await db.profiles.get(profileId);
+    if (!profile) return;
+    const dismissed = new Set(profile.demoDismissed ?? []);
+    dismissed.add(exerciseId);
+    await db.profiles.update(profileId, { demoDismissed: [...dismissed] });
+  });
+}
+
+/** Show them all again. The one button that undoes every "I know this one". */
+export async function restoreDemos(profileId: number): Promise<void> {
+  await db.profiles.update(profileId, { demoDismissed: [] });
 }
 
 export async function sessionsForProfile(profileId: number): Promise<SessionSummary[]> {

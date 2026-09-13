@@ -8,6 +8,20 @@ export const hipHinge: ExerciseDefinition = {
     es: ['bisagra de cadera con pica', 'hip hinge', 'peso muerto sin carga', 'bisagra'],
     en: ['hip hinge', 'dowel hip hinge', 'hinge with stick', 'good morning'],
   },
+  howTo: {
+    es: [
+      'De pie, con los pies a la anchura de las caderas y las rodillas algo dobladas.',
+      'Lleva las caderas hacia atrás y deja que el tronco baje, manteniendo la espalda recta.',
+      'Sube empujando las caderas hacia delante hasta quedar erguido.',
+      'El movimiento es de la cadera, no de la espalda: la espalda no se redondea.',
+    ],
+    en: [
+      'Stand with your feet hip width apart and your knees slightly bent.',
+      'Send your hips back and let your trunk tip forward, keeping your back straight.',
+      'Come up by driving your hips forward until you are upright.',
+      'The movement is at the hip, not the back: your back does not round.',
+    ],
+  },
   area: 'hips',
   position: 'standing',
   equipment: 'none',

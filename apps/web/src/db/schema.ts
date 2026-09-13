@@ -27,6 +27,12 @@ export interface Profile {
   heightCm?: number;
   /** Free text the user copied from their physiotherapist. Never interpreted. */
   physioNotes: string;
+  /**
+   * Exercises this person has said they already know, so the demonstration
+   * before a session stops offering them. Undoable from settings, all at once:
+   * it is a convenience, not a decision anybody should have to live with.
+   */
+  demoDismissed?: string[];
   createdAt: number;
 }
 

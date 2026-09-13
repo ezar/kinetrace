@@ -8,6 +8,20 @@ export const splitSquat: ExerciseDefinition = {
     es: ['zancada estática', 'split squat', 'sentadilla dividida', 'lunge estático'],
     en: ['split squat', 'static lunge', 'stationary lunge'],
   },
+  howTo: {
+    es: [
+      'De pie, da un paso largo adelante y deja el otro pie atrás, apoyado en la punta.',
+      'Baja doblando las dos rodillas, llevando la de atrás hacia el suelo.',
+      'Sube empujando con la pierna de delante.',
+      'El tronco se queda erguido y la rodilla de delante sigue la línea del pie.',
+    ],
+    en: [
+      'Stand and take a long step forward, leaving the back foot on its toes.',
+      'Lower by bending both knees, taking the back one towards the floor.',
+      'Push back up through the front leg.',
+      'Your trunk stays upright and your front knee tracks over your foot.',
+    ],
+  },
   area: 'hips',
   position: 'standing',
   equipment: 'none',

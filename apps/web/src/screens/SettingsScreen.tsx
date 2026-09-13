@@ -11,8 +11,11 @@ import {
   deleteEverything,
   exportProfile,
   importProfile,
+  restoreDemos,
   type ProfileExport,
 } from '../db/repositories.js';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../db/schema.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { LANGUAGES, LANGUAGE_NAMES, type Language } from '../i18n/index.js';
@@ -24,6 +27,13 @@ export function SettingsScreen(): JSX.Element {
   const settings = useSettingsStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const voiceSupported = voiceCommandsSupported();
+  const dismissed = useLiveQuery(
+    async () =>
+      settings.activeProfileId === undefined
+        ? []
+        : ((await db.profiles.get(settings.activeProfileId))?.demoDismissed ?? []),
+    [settings.activeProfileId],
+  );
   const examples = VOICE_COMMANDS.map((command) => `«${VOICE_EXAMPLES[command][language]}»`).join(
     ', ',
   );
@@ -148,6 +158,19 @@ export function SettingsScreen(): JSX.Element {
           ))}
         </div>
         <p className="mt-2 text-sm text-muted">{t('settings.showDemoHelp')}</p>
+        {/* The way back from "I know this one", which is the whole reason that
+            button is safe to press. */}
+        {dismissed && dismissed.length > 0 ? (
+          <button
+            className="btn-secondary mt-3 h-11 w-full text-sm"
+            onClick={() => {
+              if (settings.activeProfileId !== undefined)
+                void restoreDemos(settings.activeProfileId);
+            }}
+          >
+            {t('settings.restoreDemos', { count: dismissed.length })}
+          </button>
+        ) : null}
       </section>
 
       <section className="card p-4">

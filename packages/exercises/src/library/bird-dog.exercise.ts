@@ -8,6 +8,20 @@ export const birdDog: ExerciseDefinition = {
     es: ['bird dog', 'perro pájaro', 'cuadrupedia brazo y pierna'],
     en: ['bird dog', 'birddog', 'quadruped arm and leg raise'],
   },
+  howTo: {
+    es: [
+      'Ponte a cuatro patas, con las manos bajo los hombros y las rodillas bajo las caderas.',
+      'Estira a la vez un brazo hacia delante y la pierna contraria hacia atrás, hasta dejarlos a la altura del tronco.',
+      'Vuelve despacio al punto de partida y cambia de lado.',
+      'El tronco no gira: las caderas y los hombros siguen mirando al suelo.',
+    ],
+    en: [
+      'Get on all fours, hands under your shoulders and knees under your hips.',
+      'Reach one arm forward and the opposite leg back at the same time, until both are level with your trunk.',
+      'Come back slowly to the start, then change sides.',
+      'The trunk does not turn: hips and shoulders keep facing the floor.',
+    ],
+  },
   area: 'lowerBack',
   position: 'quadruped',
   equipment: 'mat',
