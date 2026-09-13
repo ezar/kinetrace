@@ -155,6 +155,7 @@ export const en: Record<TranslationKey, string> = {
   'area.thoracic': 'Thoracic',
   'area.neckShoulders': 'Neck and shoulders',
   'position.standing': 'Standing',
+  'position.kneeling': 'Kneeling',
   'position.supine': 'On your back',
   'position.prone': 'Face down',
   'position.quadruped': 'On all fours',

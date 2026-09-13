@@ -41,8 +41,17 @@ export interface LocalizedSteps {
 /** Body area the exercise targets, used by the library filters. */
 export type ExerciseArea = 'lowerBack' | 'core' | 'hips' | 'thoracic' | 'neckShoulders';
 
-/** Starting position, used by the library filters and by the camera guidance. */
-export type ExercisePosition = 'standing' | 'supine' | 'prone' | 'quadruped' | 'sideLying';
+/**
+ * Starting position, used by the library filters and by the camera guidance.
+ *
+ * `kneeling` covers half kneeling as well: what it says is that a knee is on
+ * the floor and the trunk is upright, which is what somebody needs to know
+ * before they start and what the filter is for. It is not the same thing as the
+ * reference motion's `posture`, which is the body's orientation in the world —
+ * a half kneeling person is upright, so their posture is `standing`.
+ */
+export type ExercisePosition =
+  'standing' | 'kneeling' | 'supine' | 'prone' | 'quadruped' | 'sideLying';
 
 /**
  * How the movement loads the lumbar spine.

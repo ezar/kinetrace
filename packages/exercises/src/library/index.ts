@@ -15,6 +15,7 @@ import { deadBug } from './dead-bug.exercise.js';
 import { doubleKneeToChest } from './double-knee-to-chest.exercise.js';
 import { frontPlank } from './front-plank.exercise.js';
 import { gluteBridge } from './glute-bridge.exercise.js';
+import { halfKneelingHipFlexor } from './half-kneeling-hip-flexor.exercise.js';
 import { hipHinge } from './hip-hinge.exercise.js';
 import { kneeToChest } from './knee-to-chest.exercise.js';
 import { mcgillCurlUp } from './mcgill-curl-up.exercise.js';
@@ -47,6 +48,7 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   bodyweightSquat,
   splitSquat,
   supineHamstringStretch,
+  halfKneelingHipFlexor,
 ];
 
 export {
@@ -58,6 +60,7 @@ export {
   doubleKneeToChest,
   frontPlank,
   gluteBridge,
+  halfKneelingHipFlexor,
   hipHinge,
   kneeToChest,
   mcgillCurlUp,

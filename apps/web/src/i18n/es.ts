@@ -153,6 +153,7 @@ export const es = {
   'area.thoracic': 'Dorsal',
   'area.neckShoulders': 'Cuello y hombros',
   'position.standing': 'De pie',
+  'position.kneeling': 'De rodillas',
   'position.supine': 'Boca arriba',
   'position.prone': 'Boca abajo',
   'position.quadruped': 'A cuatro patas',

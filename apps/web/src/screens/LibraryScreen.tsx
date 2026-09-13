@@ -15,7 +15,14 @@ import { ScreenHeader } from '../components/ScreenHeader.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 
 const AREAS: ExerciseArea[] = ['lowerBack', 'core', 'hips', 'thoracic', 'neckShoulders'];
-const POSITIONS: ExercisePosition[] = ['standing', 'supine', 'prone', 'quadruped', 'sideLying'];
+const POSITIONS: ExercisePosition[] = [
+  'standing',
+  'kneeling',
+  'supine',
+  'prone',
+  'quadruped',
+  'sideLying',
+];
 const LOADS: SpinalLoad[] = ['neutral', 'flexion', 'extension', 'rotation', 'mixed'];
 
 export function LibraryScreen(): JSX.Element {

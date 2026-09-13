@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "half-kneeling-hip-flexor",
+  "variant": "good",
+  "description": "Half kneeling hip flexor stretch performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1019,
+  "holdSeconds": 34,
+  "holdAtPhase": 0,
+  "expect": {
+    "heldMs": {
+      "atLeast": 30000
+    },
+    "silent": [
+      "leaning",
+      "settle"
+    ]
+  }
+}
