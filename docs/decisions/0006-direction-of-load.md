@@ -13,7 +13,7 @@ library contains both and they sit next to each other in the same filter.
 That gap shows up in three places:
 
 - **The library** cannot be browsed by it, so somebody assembling a routine sees
-  seventeen exercises with no way to tell the directions apart.
+  the whole library with no way to tell the directions apart.
 - **The review screen** shows a professional every number of every exercise, one
   exercise at a time, and says nothing about the routine as a whole. A routine
   whose exercises all pull the same way does not announce itself as a group.
@@ -47,7 +47,7 @@ A required field, and nothing that acts on it.
 
 ## Consequences
 
-- Seventeen exercises now carry a judgement about their mechanics, made by reading
+- Every exercise now carries a judgement about its mechanics, made by reading
   the movement each one already describes. They are as provisional as the target
   bands and the cue dictionary, and belong on the same list of things a
   physiotherapist has yet to go through.

@@ -477,7 +477,7 @@ function ExerciseReview({ entry, issues, signed, onChange }: ExerciseReviewProps
       </div>
 
       {/* Pacing. Only for counted exercises: a hold has one resting phase and
-          nothing to pace. Off unless somebody sets it, and the sixteen library
+          nothing to pace. Off unless somebody sets it, and the library
           exercises that declare no tempo stay exactly as they are. */}
       {exercise.mode === 'reps' ? (
         <div className="space-y-2 border-t border-line p-4">

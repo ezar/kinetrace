@@ -1,12 +1,12 @@
 {
   "kind": "synthetic",
-  "exerciseId": "childs-pose",
+  "exerciseId": "supine-hamstring-stretch",
   "variant": "good",
-  "description": "Child's pose performed as the reference motion describes it.",
+  "description": "Supine hamstring stretch performed as the reference motion describes it.",
   "view": "side",
   "fps": 30,
   "noiseMetres": 0.004,
-  "seed": 1011,
+  "seed": 1018,
   "holdSeconds": 34,
   "holdAtPhase": 0,
   "expect": {
@@ -14,6 +14,7 @@
       "atLeast": 30000
     },
     "silent": [
+      "bentKnee",
       "settle"
     ]
   }

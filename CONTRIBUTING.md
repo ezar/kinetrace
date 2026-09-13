@@ -92,6 +92,15 @@ cameraTipKey: 'tip.floorSide',
 The setup assistant blocks the session until the camera actually shows what the
 metrics need, so declare the view the exercise is really measured from.
 
+**A lying exercise can only be drawn from the side.** The animated figure
+projects onto the sagittal plane for `side` and the frontal plane for `front`,
+and for a supine or prone posture the frontal plane looks _down the length of
+the body_: the trunk collapses to a point and the figure is unreadable. Every
+lying exercise in the library is therefore `side`. If yours needs a metric that
+only works from the front — `thoracicRotation` and `hipLevelDifference` both do —
+the figure has to learn a top-down projection first. A supine lumbar rotation is
+the exercise this is currently blocking.
+
 ### 4. Metrics
 
 Metric slots are names your phases and rules refer to:

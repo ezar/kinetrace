@@ -1,12 +1,12 @@
 {
   "kind": "synthetic",
-  "exerciseId": "childs-pose",
+  "exerciseId": "double-knee-to-chest",
   "variant": "good",
-  "description": "Child's pose performed as the reference motion describes it.",
+  "description": "Double knee to chest hold performed as the reference motion describes it.",
   "view": "side",
   "fps": 30,
   "noiseMetres": 0.004,
-  "seed": 1011,
+  "seed": 1010,
   "holdSeconds": 34,
   "holdAtPhase": 0,
   "expect": {

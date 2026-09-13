@@ -38,7 +38,7 @@ Exercises declare where their numbers came from, and the app says so.
 - `provenance: { targets, dose }` on the exercise definition, each `derived`
   (read off the engine running over the reference motion) or `authored`
   (written by hand, with no source). Required, and the validator rejects a value
-  it has no name for. All seventeen are `{ targets: 'derived', dose: 'authored' }`
+  it has no name for. Every exercise is `{ targets: 'derived', dose: 'authored' }`
   today, which is the truth.
 - **There is deliberately no `clinical` value yet.** A number taken from a
   clinical source has to name it, and adding the value before there is a
