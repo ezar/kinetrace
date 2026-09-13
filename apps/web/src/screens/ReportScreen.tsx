@@ -178,10 +178,21 @@ export function ReportScreen(): JSX.Element {
                           {t('report.partials', { count: row.partials })}
                         </span>
                       ) : null}
+                      {row.guidedSets > 0 ? (
+                        <span className="block text-xs text-muted">
+                          {t('report.guided', { count: row.guidedSets })}
+                        </span>
+                      ) : null}
                     </td>
                     <td className="py-2 pr-3">
+                      {/* `0° / 0°` on a row nobody measured reads as a
+                          measurement of nothing rather than the absence of
+                          one — the same mistake the hold column already made
+                          once. */}
                       {row.isHold ? (
                         <span className="text-muted">{t('report.noRange')}</span>
+                      ) : row.sets - row.guidedSets === 0 ? (
+                        <span className="text-muted">{t('report.noneMeasured')}</span>
                       ) : (
                         <>
                           {row.best}° / {row.mean}°

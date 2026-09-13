@@ -173,6 +173,11 @@ export async function resumableSession(profileId: number): Promise<ResumableSess
   if (!open) return undefined;
   const sets = await db.sets.where('sessionId').equals(open.id).toArray();
   if (sets.length === 0) return undefined;
+  // A voice guided session is not offered. Resuming goes to the measured
+  // session, which is the one mode the person could not use that day, and
+  // there is nothing to preserve anyway: a guided set holds no measurement,
+  // so starting again costs only the minutes.
+  if (sets.every((set) => set.measured === false)) return undefined;
   return { session: open, nextIndex: Math.max(...sets.map((set) => set.index)) + 1 };
 }
 

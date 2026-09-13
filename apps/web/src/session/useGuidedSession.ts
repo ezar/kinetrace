@@ -4,8 +4,13 @@
  * Everything the measured session does with landmarks, this does with a clock.
  * The script comes from the library — `guidedScript` decides what to say and
  * when — and this hook is the part that owns time: it speaks the preamble line
- * by line, runs the rhythm against a clock that pause actually stops, and
- * writes the set.
+ * by line, runs the rhythm against a clock, and writes the set.
+ *
+ * Pausing abandons the set and resuming starts it again from the top, count-in
+ * and all. That is a choice, not an oversight: there is no camera here, so the
+ * app cannot know what was done before the interruption, and carrying on at
+ * repetition eight would be counting repetitions nobody can vouch for. The
+ * screen says so, and Repeat does the same thing deliberately.
  *
  * Every set it writes carries `measured: false`. That flag is the whole reason
  * this mode is allowed to exist: it records that somebody turned up and did the
@@ -47,6 +52,15 @@ export interface GuidedSessionState {
  *  cannot tell us it has finished. Speech synthesis fires `end` on every real
  *  browser; this is the fallback so a missing event cannot stall the session. */
 const LINE_TIMEOUT_MS = 6000;
+
+/**
+ * Breath between the last beat of a set and "set done".
+ *
+ * Speaking a line cancels whatever is still being said, so without this the
+ * closing line cut off the final repetition count — the one number the person
+ * was waiting to hear.
+ */
+const EPILOGUE_GAP_MS = 1200;
 
 export function useGuidedSession(
   plan: PlanItem[],
@@ -105,6 +119,26 @@ export function useGuidedSession(
     [t],
   );
 
+  /**
+   * A routine can carry text from an imported sheet that matched no exercise.
+   * There is nothing to pace and nothing to record, but it is still part of
+   * what the physiotherapist wrote, so it is read out and then stepped past —
+   * rather than leaving the session sitting on it in silence, which is what a
+   * null script used to do.
+   */
+  const untracked = item !== undefined && item.exercise === undefined;
+
+  useEffect(() => {
+    if (stage !== 'working' || !untracked) return;
+    const text = item?.customNote?.trim() ?? '';
+    setSpoken(text);
+    setRemaining(0);
+    setRepsDone(0);
+    const advance = window.setTimeout(() => completeSetRef.current(), text ? 6000 : 500);
+    if (text) speakerRef.current?.say(text);
+    return () => window.clearTimeout(advance);
+  }, [stage, untracked, item, attempt]);
+
   const script = useMemo(() => {
     if (!item?.exercise) return null;
     return guidedScript({
@@ -132,6 +166,7 @@ export function useGuidedSession(
     if (!script) return () => undefined;
     let abandoned = false;
     const timers: number[] = [];
+    const intervals: number[] = [];
     const speaker = speakerRef.current;
 
     const say = (line: GuidedLine, caption = true): Promise<void> =>
@@ -180,7 +215,7 @@ export function useGuidedSession(
         const left = Math.ceil((script.workMs - (Date.now() - startedAt)) / 1000);
         setRemaining(Math.max(0, left));
       }, 250);
-      timers.push(tick as unknown as number);
+      intervals.push(tick);
 
       timers.push(
         window.setTimeout(() => {
@@ -194,7 +229,7 @@ export function useGuidedSession(
             }
             if (!abandoned) void completeSet();
           })();
-        }, script.workMs),
+        }, script.workMs + EPILOGUE_GAP_MS),
       );
     };
 
@@ -202,6 +237,7 @@ export function useGuidedSession(
     return () => {
       abandoned = true;
       for (const timer of timers) window.clearTimeout(timer);
+      for (const interval of intervals) window.clearInterval(interval);
       speaker?.cancel();
     };
     // `completeSet` is stable: it only ever calls through its own ref.
@@ -311,20 +347,25 @@ export function useGuidedSession(
     setAttempt((value) => value + 1);
   }, []);
 
-  /** Move on without recording anything: the set did not happen. */
+  /**
+   * Move on without recording anything: the set did not happen.
+   *
+   * The decision is taken here rather than inside the `setIndex` updater — a
+   * state updater that also sets other state runs twice under StrictMode, and
+   * the stage it chose used to be overwritten by the one set after it, so
+   * skipping the last set replayed it instead of ending the session.
+   */
   const skip = useCallback(() => {
     speakerRef.current?.cancel();
-    setIndex((current) => {
-      const next = current + 1;
-      if (next >= plan.length) {
-        setStage('finished');
-        return current;
-      }
-      return next;
-    });
+    const next = index + 1;
+    if (next >= plan.length) {
+      setStage('finished');
+      return;
+    }
+    setIndex(next);
     setStage('working');
     setAttempt((value) => value + 1);
-  }, [plan.length]);
+  }, [index, plan.length]);
 
   const redo = useCallback(() => {
     speakerRef.current?.cancel();

@@ -189,3 +189,17 @@ describe('reportRows · sets nobody measured', () => {
     expect(result[0]).toMatchObject({ guidedSets: 0, goodPct: 88 });
   });
 });
+
+describe('the report says a row was not measured rather than measuring nothing', () => {
+  it('reports no range for a row whose sets were all guided', () => {
+    // `0° / 0°` reads as a measurement of nothing rather than the absence of
+    // one — the mistake the hold column already made once.
+    const result = rows([
+      set({ exerciseId: 'glute-bridge', romMax: 0, romMean: 0, measured: false }),
+      set({ exerciseId: 'glute-bridge', romMax: 0, romMean: 0, measured: false }),
+    ]);
+    expect(result[0]).toMatchObject({ sets: 2, guidedSets: 2, best: 0, mean: 0, goodPct: null });
+    // The screen decides from these two numbers; this is the condition it uses.
+    expect((result[0]?.sets ?? 0) - (result[0]?.guidedSets ?? 0)).toBe(0);
+  });
+});

@@ -515,10 +515,28 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   // The tally is repetitions, never seconds: one number, and the right one.
   await expect(page.getByText(/de 10 repeticiones|of 10 repetitions/i)).toBeVisible();
 
-  // A set written here must say it measured nothing, or the report and the
-  // progress chart would read a prescription as an observation.
+  // Skipping records nothing at all — the set did not happen — and moves on.
   await page.getByRole('button', { name: /^saltar$|^skip$/i }).click();
-  await expect(page.getByText(/^2 \/ 14$|^2 \/ 14$/)).toBeVisible();
+  await expect(page.getByText('2 / 14')).toBeVisible();
+  const written = await page.evaluate(
+    () =>
+      new Promise<number>((resolve) => {
+        const open = indexedDB.open('kinetrace');
+        open.onsuccess = () => {
+          const request = open.result.transaction('sets').objectStore('sets').count();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => resolve(-1);
+        };
+        open.onerror = () => resolve(-1);
+      }),
+  );
+  expect(written).toBe(0);
+
+  // Ending the session leads to the summary, which must not claim a percentage
+  // for work nobody watched.
+  await page.getByRole('button', { name: /terminar sesión|end session/i }).click();
+  await page.getByRole('button', { name: /^continuar$|^continue$/i }).click();
+  await expect(page).toHaveURL(/summary|\/$/);
 
   expect(errors).toEqual([]);
 });
