@@ -20,7 +20,7 @@ import { EmptyState } from '../components/EmptyState.js';
 import { ProfileChip } from '../components/ProfileChip.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { ReviewStamp } from '../components/ReviewStamp.js';
-import { PlayIcon, PlusIcon } from '../components/icons.js';
+import { MicIcon, PlayIcon, PlusIcon } from '../components/icons.js';
 
 /** Up to four exercises are shown as thumbnails; the rest become a count. */
 const THUMBNAILS = 4;
@@ -286,6 +286,12 @@ function TodayCard({
       >
         <PlayIcon size={22} />
         {t('common.start')}
+      </Link>
+      {/* The second way in, on purpose: measured is the default and guided is
+          there for the nights when the camera is not an option. */}
+      <Link to={`/guided/${routine.id}`} className="btn-secondary mt-2 h-12 w-full text-[15px]">
+        <MicIcon size={18} />
+        {t('guided.start')}
       </Link>
       <Link
         to={`/routines/${routine.id}`}

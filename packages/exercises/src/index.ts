@@ -11,6 +11,7 @@ export * from './matcher.js';
 export * from './prescription.js';
 export { describeCondition } from './explain.js';
 export * from './runner.js';
+export * from './guided.js';
 export {
   METRIC_LABELS,
   PHASE_LABELS,

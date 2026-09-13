@@ -41,20 +41,33 @@ export function SummaryScreen(): JSX.Element {
 
       {[...byExercise.entries()].map(([exerciseId, exerciseSets]) => {
         const exercise = getExercise(exerciseId);
+        // A voice guided set measured nothing: its repetitions are what was
+        // asked for, not what was seen. Counting them as good would report a
+        // hundred per cent for a session nobody watched — which is the one
+        // thing this app is built not to do.
+        const measuredSets = exerciseSets.filter((set) => set.measured !== false);
+        const nothingMeasured = measuredSets.length === 0;
+        const measuredReps = measuredSets.reduce((total, set) => total + set.reps, 0);
         const reps = exerciseSets.reduce((total, set) => total + set.reps, 0);
         const partials = exerciseSets.reduce((total, set) => total + set.partials, 0);
+        const goodPct =
+          measuredReps + partials > 0
+            ? Math.round((measuredReps / (measuredReps + partials)) * 100)
+            : 100;
         const heldMs = exerciseSets.reduce((total, set) => total + set.holdMs, 0);
-        const romValues = exerciseSets.map((set) => set.romMax).filter((value) => value > 0);
+        const romValues = exerciseSets
+          .filter((set) => set.measured !== false)
+          .map((set) => set.romMax)
+          .filter((value) => value > 0);
         const decreasing = exercise?.targets.direction === 'decrease';
         const best = romValues.length
           ? decreasing
             ? Math.min(...romValues)
             : Math.max(...romValues)
           : undefined;
-        const mean = exerciseSets.length
-          ? exerciseSets.reduce((total, set) => total + set.romMean, 0) / exerciseSets.length
+        const mean = measuredSets.length
+          ? measuredSets.reduce((total, set) => total + set.romMean, 0) / measuredSets.length
           : 0;
-        const goodPct = reps + partials > 0 ? Math.round((reps / (reps + partials)) * 100) : 100;
 
         const issues = new Map<string, number>();
         for (const set of exerciseSets) {
@@ -67,12 +80,16 @@ export function SummaryScreen(): JSX.Element {
         return (
           <section key={exerciseId} className="card mb-3 p-4">
             <h2 className="font-medium">{exercise?.names[language] ?? exerciseId}</h2>
+            {nothingMeasured ? <p className="text-sm text-muted">{t('summary.guided')}</p> : null}
             <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
               {exercise?.mode === 'hold' ? (
                 <Stat label={t('summary.held')} value={`${Math.round(heldMs / 1000)} s`} />
               ) : (
                 <>
-                  <Stat label={t('summary.goodReps')} value={`${reps} (${goodPct}%)`} />
+                  <Stat
+                    label={t('summary.goodReps')}
+                    value={nothingMeasured ? `${reps}` : `${reps} (${goodPct}%)`}
+                  />
                   <Stat label={t('summary.partials')} value={String(partials)} />
                 </>
               )}

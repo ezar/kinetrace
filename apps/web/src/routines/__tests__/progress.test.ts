@@ -128,3 +128,26 @@ describe('dailySeries', () => {
     expect(points).toEqual([]);
   });
 });
+
+describe('guided sets stay off the chart', () => {
+  it('leaves a voice guided set out of the series', () => {
+    // Not a bad day — a day with no reading. Drawing it would invent a dip.
+    const points = dailySeries(
+      [
+        set({ exerciseId: 'glute-bridge', romMax: 172, startedAt: day(1) }),
+        set({ exerciseId: 'glute-bridge', romMax: 0, measured: false, startedAt: day(2) }),
+      ],
+      { exerciseId: 'glute-bridge' },
+      false,
+    );
+    expect(points.map((point) => point.day)).toEqual(['2026-09-01']);
+  });
+
+  it('does not offer an exercise that has only ever been guided', () => {
+    const subjects = subjectsIn([
+      set({ exerciseId: 'glute-bridge', measured: false }),
+      set({ exerciseId: 'front-plank' }),
+    ]);
+    expect(subjects.map((s) => s.exerciseId)).toEqual(['front-plank']);
+  });
+});

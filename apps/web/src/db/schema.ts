@@ -121,6 +121,18 @@ export interface SetRecord {
   peaks: number[];
   /** The limb this set was done on, for a unilateral exercise. */
   side?: PrescribedSide;
+  /**
+   * False for a set done without the camera, where the app called the pace and
+   * measured nothing. Absent means measured, which is what every set recorded
+   * before the guided mode existed was.
+   *
+   * The counts on an unmeasured set are the prescription, not an observation:
+   * the person was asked for twelve repetitions and said nothing to the
+   * contrary. They are worth keeping — turning up is the thing that decides
+   * whether rehabilitation works — but they are not evidence of anything, and
+   * nothing that reports a range may include them.
+   */
+  measured?: false;
   startedAt: number;
 }
 

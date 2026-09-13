@@ -14,6 +14,11 @@ import { RoutineBuilderScreen } from './screens/RoutineBuilderScreen.js';
 const SessionScreen = lazy(() =>
   import('./screens/SessionScreen.js').then((module) => ({ default: module.SessionScreen })),
 );
+const GuidedSessionScreen = lazy(() =>
+  import('./screens/GuidedSessionScreen.js').then((module) => ({
+    default: module.GuidedSessionScreen,
+  })),
+);
 const SummaryScreen = lazy(() =>
   import('./screens/SummaryScreen.js').then((module) => ({ default: module.SummaryScreen })),
 );
@@ -56,6 +61,7 @@ export function App(): JSX.Element {
           <Route path="/welcome" element={<WelcomeScreen />} />
           <Route path="/review/:routineId" element={<ReviewScreen />} />
           <Route path="/session/:routineId" element={<SessionScreen />} />
+          <Route path="/guided/:routineId" element={<GuidedSessionScreen />} />
           <Route path="/summary/:sessionId" element={<SummaryScreen />} />
           <Route element={<Layout />}>
             <Route path="/" element={<HomeScreen />} />

@@ -178,10 +178,21 @@ export function ReportScreen(): JSX.Element {
                           {t('report.partials', { count: row.partials })}
                         </span>
                       ) : null}
+                      {row.guidedSets > 0 ? (
+                        <span className="block text-xs text-muted">
+                          {t('report.guided', { count: row.guidedSets })}
+                        </span>
+                      ) : null}
                     </td>
                     <td className="py-2 pr-3">
+                      {/* `0° / 0°` on a row nobody measured reads as a
+                          measurement of nothing rather than the absence of
+                          one — the same mistake the hold column already made
+                          once. */}
                       {row.isHold ? (
                         <span className="text-muted">{t('report.noRange')}</span>
+                      ) : row.sets - row.guidedSets === 0 ? (
+                        <span className="text-muted">{t('report.noneMeasured')}</span>
                       ) : (
                         <>
                           {row.best}° / {row.mean}°
@@ -195,7 +206,16 @@ export function ReportScreen(): JSX.Element {
                         {row.targetBy ? ` · ${row.targetBy}` : ''}
                       </span>
                     </td>
-                    <td className="py-2">{row.goodPct}%</td>
+                    {/* A row with nothing measured has no percentage to give.
+                        A dash says that; a zero would say the person failed
+                        every repetition. */}
+                    <td className="py-2">
+                      {row.goodPct === null ? (
+                        <span className="text-muted">—</span>
+                      ) : (
+                        `${row.goodPct}%`
+                      )}
+                    </td>
                   </tr>
                 );
               })}

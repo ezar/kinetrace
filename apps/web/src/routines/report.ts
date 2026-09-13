@@ -27,9 +27,11 @@ export interface ExerciseRow {
   best: number;
   /** Mean of the per-set best peaks, in degrees. */
   mean: number;
-  goodPct: number;
+  goodPct: number | null;
   /** Holds have no range to report: the time is the measurement. */
   isHold: boolean;
+  /** Sets in this row that were guided by voice and measured nothing. */
+  guidedSets: number;
   target: { min: number; max: number };
   targetBy?: string;
   /** The three most frequent corrections, most frequent first. */
@@ -78,9 +80,14 @@ export function reportRows({ sets, routines, getExercise }: ReportInput): Exerci
 
     const target = prescribedTarget(routines, first.exerciseId, exercise);
     const decreasing = exercise.targets.direction === 'decrease';
+    // A set done without the camera measured nothing at all; its numbers are
+    // the prescription, not an observation. Everything that reports a range or
+    // a percentage is computed over the measured sets only.
+    const measured = records.filter((set) => set.measured !== false);
+    const guidedSets = records.length - measured.length;
     // A peak of zero is a set that never produced a measurement — tracking lost,
     // or a hold — and averaging it in would drag the range towards nothing.
-    const peaks = records.map((set) => set.romMax).filter((value) => value > 0);
+    const peaks = measured.map((set) => set.romMax).filter((value) => value > 0);
 
     const issues = new Map<string, number>();
     for (const set of records) {
@@ -94,13 +101,14 @@ export function reportRows({ sets, routines, getExercise }: ReportInput): Exerci
         exerciseId: first.exerciseId,
         ...(first.side ? { side: first.side } : {}),
         sets: records.length,
+        guidedSets,
         reps: records.reduce((total, set) => total + set.reps, 0),
         partials: records.reduce((total, set) => total + set.partials, 0),
         holdMinutes: Math.round(records.reduce((total, set) => total + set.holdMs, 0) / 60000),
         best:
           peaks.length === 0 ? 0 : Math.round(decreasing ? Math.min(...peaks) : Math.max(...peaks)),
         mean: mean(peaks),
-        goodPct: mean(records.map((set) => set.goodRepPct)),
+        goodPct: measured.length === 0 ? null : mean(measured.map((set) => set.goodRepPct)),
         isHold: exercise.mode === 'hold',
         target: target.band,
         ...(target.by ? { targetBy: target.by } : {}),
