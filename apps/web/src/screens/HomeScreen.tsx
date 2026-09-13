@@ -8,7 +8,7 @@ import { getExercise } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
 import {
   createStarterRoutine,
-  createStretchRoutine,
+  openStretchRoutine,
   deleteSession,
   resumableSession,
   streakFromDates,
@@ -88,7 +88,7 @@ export function HomeScreen(): JSX.Element {
    */
   const startStretchRoutine = async (): Promise<void> => {
     if (!profile) return;
-    navigate(`/routines/${await createStretchRoutine(profile.id, t('home.stretchRoutine'))}`);
+    navigate(`/routines/${await openStretchRoutine(profile.id, t('home.stretchRoutine'))}`);
   };
 
   if (loadedProfiles === undefined) return <div className="p-8 text-muted">…</div>;
@@ -200,16 +200,24 @@ export function HomeScreen(): JSX.Element {
       {rest.length > 0 ? (
         <section className="flex flex-col">
           {rest.map((routine) => (
-            <Link
-              key={routine.id}
-              to={`/prepare/${routine.id}`}
-              className="flex items-center justify-between border-b border-line py-3.5"
-            >
-              <span className="text-[16px]">{routine.name}</span>
-              <span className="text-[14px] text-muted">
-                {t('routine.estimated', { minutes: estimateMinutes(routine) })}
-              </span>
-            </Link>
+            <div key={routine.id} className="flex items-center gap-3 border-b border-line py-3.5">
+              <Link to={`/prepare/${routine.id}`} className="flex flex-1 items-center gap-3">
+                <span className="flex-1 text-[16px]">{routine.name}</span>
+                <span className="text-[14px] text-muted">
+                  {t('routine.estimated', { minutes: estimateMinutes(routine) })}
+                </span>
+              </Link>
+              {/* Without the camera, from here too. The today card had the only
+                  one in the app, so any routine that was not today's could be
+                  started by voice only by typing the address. */}
+              <Link
+                to={`/prepare/${routine.id}?mode=guided`}
+                aria-label={`${routine.name} · ${t('guided.start')}`}
+                className="p-1.5 text-muted"
+              >
+                <MicIcon size={18} />
+              </Link>
+            </div>
           ))}
         </section>
       ) : null}

@@ -643,23 +643,30 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   // Counted in from three — now on a clock of its own, a second a number.
   expect(spoken.slice(3, 6)).toEqual(['3', '2', '1']);
 
-  // It calls the movement too, not only the number. A cat and camel rounds,
-  // returns, arches and returns before the first repetition is counted, and
+  // And then the movement, with no "empieza" between: a cat and camel calls its
+  // first movement on the instant the work starts, and speaking a line cancels
+  // the one before it, so a start word there was said and cut off. The movement
+  // is the better word anyway — it says both that it has begun and what to do.
+  expect(spoken[6]).toMatch(/redondea|round/i);
+  expect(spoken).not.toContain('Empieza');
+
+  // It calls the movement every repetition, not only the number. A cat and
+  // camel rounds, returns, arches and returns before the first is counted, and
   // none of those four is a number.
   await page.waitForFunction(
     () => {
-      // The count-in also says "1", so wait for the one that comes after the
-      // work has begun — the first repetition, not the last second before it.
+      // The count-in also says "1", so wait for the one that closes the first
+      // repetition rather than the last second before the set.
       const lines = (window as unknown as { __spoken: string[] }).__spoken;
-      const begun = lines.findIndex((line) => /^empieza$|^begin$/i.test(line));
+      const begun = lines.findIndex((line, index) => index > 5 && /^\D/.test(line));
       return begun >= 0 && lines.indexOf('1', begun) > begun;
     },
     undefined,
     { timeout: 20_000 },
   );
   const lines = await said();
-  const begun = lines.findIndex((line) => /^empieza$|^begin$/i.test(line));
-  const cues = lines.slice(begun + 1, lines.indexOf('1', begun));
+  const begun = lines.findIndex((line, index) => index > 5 && /^\D/.test(line));
+  const cues = lines.slice(begun, lines.indexOf('1', begun));
   expect(cues).toHaveLength(4);
   for (const cue of cues) expect(cue).not.toMatch(/^\d+$/);
 

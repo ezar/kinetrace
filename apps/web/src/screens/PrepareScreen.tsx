@@ -126,10 +126,16 @@ export function PrepareScreen(): JSX.Element {
           ))}
         </ol>
 
+        {/* `totalSets` counts within a side, so for an exercise done one leg at
+            a time this card promised half the work: two sets, then four done.
+            The plan already knows — it holds one item per set per side. */}
         <p className="text-muted">
           {exercise.mode === 'hold'
             ? t('prepare.dosageHold', { sets: item.totalSets, seconds: item.holdSeconds ?? 0 })
             : t('prepare.dosageReps', { sets: item.totalSets, reps: item.reps ?? 0 })}
+          {plan.filter((candidate) => candidate.exerciseId === exerciseId).length > item.totalSets
+            ? ` · ${t('prepare.eachSide')}`
+            : null}
         </p>
 
         {/* Where to put the phone only matters when the phone is going to look. */}

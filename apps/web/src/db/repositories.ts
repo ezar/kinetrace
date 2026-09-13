@@ -132,6 +132,28 @@ export async function createStretchRoutine(profileId: number, name: string): Pro
   return createRoutineFrom(profileId, name, STRETCH_ROUTINE_IDS);
 }
 
+/**
+ * The stretches for this profile: the one that already exists, or a new one.
+ *
+ * The first run makes this routine, and the shortcut on the home screen is for
+ * everybody who is past their first run. Without the lookup that shortcut made
+ * a second identical routine on every tap, and the newest one becomes the card
+ * the home screen opens on — so tapping it twice buried the one with the
+ * history under a copy with none.
+ */
+export async function openStretchRoutine(profileId: number, name: string): Promise<number> {
+  const existing = await db.routines.where('profileId').equals(profileId).toArray();
+  const wanted = [...STRETCH_ROUTINE_IDS].sort().join('|');
+  const match = existing.find(
+    (routine) =>
+      routine.exercises
+        .map((entry) => entry.exerciseId)
+        .sort()
+        .join('|') === wanted,
+  );
+  return match?.id ?? createStretchRoutine(profileId, name);
+}
+
 /** Save the numbers a professional went through, and the signature under them. */
 export async function saveRoutineReview(
   id: number,

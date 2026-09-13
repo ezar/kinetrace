@@ -76,9 +76,11 @@ describe('summariseExercise', () => {
       bridge,
     );
     expect(summary.measured).toBe(true);
+    expect(summary.allMeasured).toBe(false);
     expect(summary.reps).toBe(18);
-    // Eight of the ten repetitions somebody watched were complete.
-    expect(summary.goodPct).toBe(80);
+    // Eight of the ten repetitions somebody watched were complete — which is
+    // not a fact about the eighteen it would be printed beside. No share.
+    expect(summary.goodPct).toBeNull();
   });
 
   it('takes no correction from a set nobody watched', () => {

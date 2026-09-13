@@ -180,7 +180,6 @@ export function guidedScript(input: GuidedInput): GuidedSet {
     leadIn.push({ atMs: (LEAD_IN_SECONDS - n) * 1000, key: 'guided.count', params: { n } });
   }
   const leadInMs = LEAD_IN_SECONDS * 1000;
-  leadIn.push({ atMs: leadInMs, key: isHold ? 'guided.hold' : 'guided.begin' });
 
   const rhythm: GuidedBeat[] = [];
   let workMs: number;
@@ -223,6 +222,20 @@ export function guidedScript(input: GuidedInput): GuidedSet {
       lastAtMs = countAtMs;
     }
     workMs = reps * stepMs;
+  }
+
+  // The word that means go, decided last, because whether it is needed depends
+  // on what the set opens with.
+  //
+  // A cat and camel's first movement cue lands on the very instant the work
+  // starts, and every other repetition exercise's inside half a second — and
+  // speaking a line cancels the one before it. So "empieza" was said and cut
+  // off a millisecond later, on every set of every repetition exercise. Where a
+  // movement is called that soon it is the better word anyway: "tres, dos, uno,
+  // redondea" says both that it has started and what to do.
+  const opener = rhythm[0];
+  if (isHold || opener === undefined || opener.atMs >= BEAT_GAP_MS) {
+    leadIn.push({ atMs: leadInMs, key: isHold ? 'guided.hold' : 'guided.begin' });
   }
 
   return { preamble, leadIn, leadInMs, rhythm, workMs, epilogue: [{ key: 'guided.setDone' }] };

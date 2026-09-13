@@ -32,6 +32,7 @@ export const es = {
   'prepare.title': 'Así es el ejercicio',
   'prepare.dosageReps': '{sets} series de {reps} repeticiones',
   'prepare.dosageHold': '{sets} series de {seconds} segundos',
+  'prepare.eachSide': 'con cada lado',
   'prepare.start': 'Empezar',
   'prepare.known': 'Ya me lo sé, no me lo enseñes más',
   'settings.showDemo': 'Ver el ejercicio antes',
@@ -59,6 +60,7 @@ export const es = {
   // follows it, but a word at the end of a sentence is not what somebody
   // lying on a mat with their eyes shut hears.
   'guided.switchSide': 'Cambia de lado',
+  'guided.pausedRestarts': 'Al seguir, la serie empieza de nuevo desde el principio.',
   'guided.exercise': '{name}',
   // Said aloud, so it has to agree: «lado derecha» is what the template used
   // to produce, and it is the one line somebody hears on every single set.
@@ -304,7 +306,8 @@ export const es = {
   'welcome.routine.title': '¿Qué vas a hacer?',
   'welcome.routine.body': 'Puedes cambiarlo todo después: ejercicios, series y rangos.',
   'welcome.routine.starter': 'Empezar con la rutina de ejemplo',
-  'welcome.routine.starterHelp': 'Cinco ejercicios de espalda, unos diez minutos.',
+  'welcome.routine.starterHelp':
+    'Cinco ejercicios de espalda, unos diez minutos. Y una rutina de estiramientos, que es la que te aparecerá primero.',
   'welcome.routine.import': 'Importar la hoja de mi fisio',
   'welcome.routine.importHelp':
     'Le haces una foto y Kinetrace propone la rutina. La revisas antes de guardar nada.',

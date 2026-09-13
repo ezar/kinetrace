@@ -129,13 +129,22 @@ export function GuidedSessionScreen(): JSX.Element {
         {/* What the exercise looks like, moving to the clock the voice counts
             on. A hold has nowhere to move to, so it shows the position — and
             when there is no clock, during the count in, a rest or a pause, it
-            waits at the start rather than carrying on without anybody. */}
+            waits at the start rather than carrying on without anybody.
+
+            A hold takes no `at`: `still` already pins it, to the position worth
+            showing rather than to the first keyframe. Every hold in the library
+            has only one keyframe so the two agree today, but a hold with two
+            would be drawn wrong for its whole length. */}
         {exercise ? (
           <ExerciseDemo
             reference={exercise.reference}
             view={exercise.view.orientation}
             still={exercise.mode === 'hold'}
-            {...(session.motion ? { clock: session.motion } : { at: 0 })}
+            {...(session.motion
+              ? { clock: session.motion }
+              : exercise.mode === 'hold'
+                ? {}
+                : { at: 0 })}
             className="mx-auto h-40 w-full max-w-xs rounded-2xl bg-surface text-ink"
           />
         ) : null}
@@ -158,6 +167,14 @@ export function GuidedSessionScreen(): JSX.Element {
         <p className="min-h-[2.5rem] text-[20px] font-medium leading-snug" aria-live="polite">
           {session.stage === 'paused' ? t('session.paused') : session.spoken}
         </p>
+        {/* Pausing a set abandons it: there is no way to pick a hold up
+            mid-count with nothing watching. The code has said so in a comment
+            since the mode was written and the screen never did, so a pause at
+            twenty-seven seconds of thirty read as a bug. A rest is different —
+            that one carries on. */}
+        {session.stage === 'paused' ? (
+          <p className="text-[15px] text-muted">{t('guided.pausedRestarts')}</p>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -178,6 +195,10 @@ export function GuidedSessionScreen(): JSX.Element {
             {t('session.end')}
           </button>
         </div>
+        {/* The first run promises you can drive a session from the mat. That is
+            the camera's gestures and the microphone, and this mode has neither,
+            so it says so rather than leaving somebody waving at a phone. */}
+        <p className="text-center text-[13px] text-muted">{t('guided.noMic')}</p>
       </div>
     </div>
   );

@@ -104,13 +104,38 @@ describe('guidedScript · repetitions', () => {
   it('counts in against a clock, a second a number', () => {
     // It used to live at the end of the preamble, which is spoken as fast as
     // the voice manages: "three, two, one" took about a second and a half.
+    //
+    // A bridge calls its first movement 379 ms in, so the count runs out and
+    // the movement is the next thing said. See the two tests below for why
+    // there is no "begin" between them.
     expect(script.leadIn).toEqual([
       { atMs: 0, key: 'guided.count', params: { n: 3 } },
       { atMs: 1000, key: 'guided.count', params: { n: 2 } },
       { atMs: 2000, key: 'guided.count', params: { n: 1 } },
-      { atMs: 3000, key: 'guided.begin' },
     ]);
     expect(script.leadInMs).toBe(3000);
+  });
+
+  it('lets the movement be the word that means go, when it comes soon enough', () => {
+    // Speaking a line cancels the one before it. "Empieza" landed on the
+    // instant the work began and the first movement cue landed a fraction of a
+    // second later, so the start word was cut off on every repetition set in
+    // the library. Where a movement is called that soon it says both.
+    expect(script.leadIn.some((beat) => beat.key === 'guided.begin')).toBe(false);
+    expect(script.rhythm[0]?.atMs).toBeLessThan(700);
+  });
+
+  it('still says go when nothing else does', () => {
+    // A hold has nothing to say for another ten seconds, so the word is the
+    // only thing marking the start.
+    const plank = guidedScript({
+      exercise: getExercise('front-plank')!,
+      name: 'Plancha',
+      setNumber: 1,
+      totalSets: 3,
+      holdSeconds: 30,
+    });
+    expect(plank.leadIn.at(-1)).toEqual({ atMs: 3000, key: 'guided.hold' });
   });
 
   it('counts every repetition, at the prescribed pace', () => {
@@ -347,7 +372,9 @@ describe('guidedScript · the whole library', () => {
       });
       expect(script.workMs, id).toBeGreaterThan(0);
       expect(script.preamble.length, id).toBeGreaterThanOrEqual(3);
-      expect(script.leadIn.length, id).toBeGreaterThan(3);
+      // Three counted seconds, and the word that means go where the set does
+      // not open with a movement cue of its own.
+      expect(script.leadIn.length, id).toBeGreaterThanOrEqual(3);
       expect(
         script.rhythm.every((beat) => beat.atMs <= script.workMs),
         id,

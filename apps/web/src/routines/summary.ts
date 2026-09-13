@@ -14,6 +14,12 @@ import type { SetRecord } from '../db/schema.js';
 export interface ExerciseSummary {
   /** True when at least one set of this exercise was watched by the camera. */
   measured: boolean;
+  /**
+   * True when *every* set was. A percentage over some of the sets does not
+   * describe the repetition count beside it, which is all of them — so where
+   * this is false there is no share to state.
+   */
+  allMeasured: boolean;
   sets: number;
   /**
    * Repetitions. Counted by the engine for a measured set, and the number that
@@ -43,6 +49,7 @@ export function summariseExercise(
 ): ExerciseSummary {
   const measuredSets = sets.filter((set) => set.measured !== false);
   const measured = measuredSets.length > 0;
+  const allMeasured = measured && measuredSets.length === sets.length;
 
   const reps = sets.reduce((total, set) => total + set.reps, 0);
   const measuredReps = measuredSets.reduce((total, set) => total + set.reps, 0);
@@ -64,11 +71,12 @@ export function summariseExercise(
 
   return {
     measured,
+    allMeasured,
     sets: sets.length,
     reps,
     partials,
     goodPct:
-      measured && measuredReps + partials > 0
+      allMeasured && measuredReps + partials > 0
         ? Math.round((measuredReps / (measuredReps + partials)) * 100)
         : null,
     heldMs,

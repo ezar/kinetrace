@@ -105,6 +105,9 @@ export function useGuidedSession(
   const speakerRef = useRef<Speaker | null>(null);
   const earconRef = useRef<EarconPlayer | null>(null);
   const wakeLockRef = useRef<ScreenWakeLock | null>(null);
+  /** Seconds left in the rest right now, and the number a resume starts from. */
+  const restLeftAtRef = useRef(0);
+  const restLeftRef = useRef<number | null>(null);
   const startedAtRef = useRef(Date.now());
 
   const item = plan[index];
@@ -327,6 +330,23 @@ export function useGuidedSession(
     // `completeSet` is stable: it only ever calls through its own ref.
   }, [script, render, completeSet]);
 
+  /**
+   * Stop here and mark the session done.
+   *
+   * Every way out of a session goes through this: running out of plan, ending
+   * early, skipping the last set. Ending early used to set the stage and
+   * nothing else, so somebody who did eight of twelve sets and closed the app
+   * had a session with no `endedAt` — invisible to the streak, to "last
+   * session" and to the progress screen, and not offered to resume either.
+   * They turned up and the app said they did not.
+   */
+  const endSession = useCallback(() => {
+    if (sessionId !== undefined) void finishSession(sessionId, {});
+    setSpoken(t('guided.finished'));
+    speakerRef.current?.say(t('guided.finished'));
+    setStage('finished');
+  }, [sessionId, t]);
+
   completeSetRef.current = () => {
     const current = plan[index];
     if (sessionId !== undefined && current?.tracked) {
@@ -351,15 +371,7 @@ export function useGuidedSession(
     }
     const next = index + 1;
     if (next >= plan.length) {
-      // Stamp it done here rather than leaving it to the summary screen. The
-      // measured session does the same, and without it somebody who finishes
-      // the work and puts the phone down has a session the streak, the progress
-      // chart and the report all step over: they turned up and the app says
-      // they did not.
-      if (sessionId !== undefined) void finishSession(sessionId, {});
-      setSpoken(t('guided.finished'));
-      speakerRef.current?.say(t('guided.finished'));
-      setStage('finished');
+      endSession();
       return;
     }
     setIndex(next);
@@ -384,13 +396,22 @@ export function useGuidedSession(
   useEffect(() => {
     if (stage !== 'resting') return;
     setCounting('seconds');
-    const seconds = plan[Math.max(0, index - 1)]?.restSeconds ?? 0;
+    // A rest picked up after a pause carries on from where it stopped. It used
+    // to start again from the top — eighteen seconds into a twenty second rest,
+    // pausing to move the mat bought you another twenty and a second
+    // announcement of a rest you were nearly through.
+    const resumed = restLeftRef.current;
+    restLeftRef.current = null;
+    const seconds = resumed ?? plan[Math.max(0, index - 1)]?.restSeconds ?? 0;
+    restLeftAtRef.current = seconds;
     const { preamble, rhythm } = restScript(seconds);
     const timers: number[] = [];
-    for (const line of preamble) {
-      const text = render(line);
-      setSpoken(text);
-      speakerRef.current?.say(text);
+    if (resumed === null) {
+      for (const line of preamble) {
+        const text = render(line);
+        setSpoken(text);
+        speakerRef.current?.say(text);
+      }
     }
     for (const beat of rhythm) {
       timers.push(
@@ -408,6 +429,7 @@ export function useGuidedSession(
     const interval = window.setInterval(() => {
       const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
       setRemaining(left);
+      restLeftAtRef.current = left;
       if (left === 0) {
         window.clearInterval(interval);
         setStage('working');
@@ -447,6 +469,7 @@ export function useGuidedSession(
     }
     if (stage !== 'working' && stage !== 'resting') return;
     speakerRef.current?.cancel();
+    if (stage === 'resting') restLeftRef.current = restLeftAtRef.current;
     setPausedFrom(stage);
     setStage('paused');
     setAttempt((value) => value + 1);
@@ -462,15 +485,24 @@ export function useGuidedSession(
    */
   const skip = useCallback(() => {
     speakerRef.current?.cancel();
+    // During a rest the index has already moved on — the same off-by-one Repeat
+    // was fixed for. Skipping a rest means starting the set it leads into, not
+    // the one after it, which used to drop a set nobody had done.
+    if (stage === 'resting') {
+      restLeftRef.current = null;
+      setStage('working');
+      setAttempt((value) => value + 1);
+      return;
+    }
     const next = index + 1;
     if (next >= plan.length) {
-      setStage('finished');
+      endSession();
       return;
     }
     setIndex(next);
     setStage('working');
     setAttempt((value) => value + 1);
-  }, [index, plan.length]);
+  }, [stage, index, plan.length, endSession]);
 
   /**
    * Do the set again. During a rest the index has already moved on, so this
@@ -479,15 +511,18 @@ export function useGuidedSession(
    */
   const redo = useCallback(() => {
     speakerRef.current?.cancel();
-    if (stage === 'resting' && index > 0) setIndex(index - 1);
+    if (stage === 'resting' && index > 0) {
+      restLeftRef.current = null;
+      setIndex(index - 1);
+    }
     setStage('working');
     setAttempt((value) => value + 1);
   }, [stage, index]);
 
   const finish = useCallback(() => {
     speakerRef.current?.cancel();
-    setStage('finished');
-  }, []);
+    endSession();
+  }, [endSession]);
 
   return {
     stage,

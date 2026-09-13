@@ -34,6 +34,7 @@ export const en: Record<TranslationKey, string> = {
   'prepare.title': 'This is the exercise',
   'prepare.dosageReps': '{sets} sets of {reps} repetitions',
   'prepare.dosageHold': '{sets} sets of {seconds} seconds',
+  'prepare.eachSide': 'on each side',
   'prepare.start': 'Start',
   'prepare.known': 'I know this one, stop showing it',
   'settings.showDemo': 'Show the exercise first',
@@ -58,6 +59,7 @@ export const en: Record<TranslationKey, string> = {
   'common.repeat': 'Repeat',
 
   'guided.switchSide': 'Change sides',
+  'guided.pausedRestarts': 'When you carry on, the set starts again from the top.',
   'guided.exercise': '{name}',
   'guided.exerciseSide': '{name}, {side} side',
   'guided.note': 'From your physio: {note}',
@@ -300,7 +302,8 @@ export const en: Record<TranslationKey, string> = {
   'welcome.routine.title': 'What are you going to do?',
   'welcome.routine.body': 'You can change all of it later: exercises, sets and ranges.',
   'welcome.routine.starter': 'Start with the example routine',
-  'welcome.routine.starterHelp': 'Five back exercises, about ten minutes.',
+  'welcome.routine.starterHelp':
+    'Five back exercises, about ten minutes. And a stretching routine, which is the one you will see first.',
   'welcome.routine.import': "Import my physio's sheet",
   'welcome.routine.importHelp':
     'Photograph it and Kinetrace proposes the routine. You review it before anything is saved.',

@@ -88,6 +88,11 @@ function spaFallback(): Plugin {
 }
 
 export default defineConfig({
+  // The page needs the same name the service worker's rule uses, so it can
+  // delete the one a previous version of the package left behind.
+  define: {
+    __MEDIAPIPE_CACHE__: JSON.stringify(`kinetrace-mediapipe-wasm-${mediapipeVersion}`),
+  },
   base,
   preview: { headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY } },
   plugins: [
@@ -132,19 +137,27 @@ export default defineConfig({
             urlPattern: /\/models\/.*\.task$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'kinetrace-pose-models-v1',
+              cacheName: 'kinetrace-pose-models',
               expiration: { maxEntries: 4, purgeOnQuotaError: true },
               cacheableResponse: { statuses: [200] },
             },
           },
           {
-            // MediaPipe's runtime, about eleven megabytes, picked at load time:
-            // the SIMD build or the one without, never both. The loader beside
-            // it is a few hundred kilobytes of JavaScript and is precached by
-            // the pattern above — so offline the loader would start, reach for
-            // this, and find nothing. Same bargain as the model: too big to
-            // hand everybody on their first visit, kept for good once somebody
-            // has actually turned the camera on.
+            // MediaPipe's runtime, close to twelve megabytes, picked at load
+            // time: the SIMD build or the one without, never both. The loader
+            // beside it is a few hundred kilobytes of JavaScript and is
+            // precached by the pattern above — so offline the loader would
+            // start, reach for this, and find nothing. Same bargain as the
+            // model: too big to hand everybody on their first visit, kept for
+            // good once somebody has actually turned the camera on.
+            //
+            // The name carries the version because the file name does not. A
+            // cache-first rule on a fixed name keeps the first copy it ever
+            // saw, so an upgrade would ship a new loader against a stale
+            // binary — which fails at instantiation, for exactly the people who
+            // had already used the camera. Workbox does not sweep runtime
+            // caches (`cleanupOutdatedCaches` only touches precaches), so the
+            // superseded one is deleted by `sweepStaleCaches` from the app.
             urlPattern: /\/mediapipe\/wasm\/.*\.wasm$/,
             handler: 'CacheFirst',
             options: {
