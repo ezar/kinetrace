@@ -157,3 +157,35 @@ describe('reportRows · sides that were never recorded', () => {
     expect(result[0]?.side).toBeUndefined();
   });
 });
+
+describe('reportRows · sets nobody measured', () => {
+  it('counts a guided set as done, and leaves it out of the range', () => {
+    // The numbers on a guided set are the prescription, not an observation.
+    const result = rows([
+      set({ exerciseId: 'glute-bridge', romMax: 176, goodRepPct: 92 }),
+      set({ exerciseId: 'glute-bridge', romMax: 0, goodRepPct: 0, measured: false }),
+    ]);
+    expect(result[0]).toMatchObject({ sets: 2, guidedSets: 1, best: 176, mean: 176, goodPct: 92 });
+  });
+
+  it('still counts the repetitions, because turning up is the point', () => {
+    const result = rows([
+      set({ exerciseId: 'glute-bridge', reps: 12 }),
+      set({ exerciseId: 'glute-bridge', reps: 12, measured: false }),
+    ]);
+    expect(result[0]?.reps).toBe(24);
+  });
+
+  it('gives no percentage at all when nothing in the row was measured', () => {
+    // Zero would read as "failed every repetition"; null is "no reading".
+    const result = rows([
+      set({ exerciseId: 'glute-bridge', romMax: 0, goodRepPct: 0, measured: false }),
+    ]);
+    expect(result[0]).toMatchObject({ sets: 1, guidedSets: 1, goodPct: null, best: 0 });
+  });
+
+  it('treats every set recorded before the flag existed as measured', () => {
+    const result = rows([set({ exerciseId: 'glute-bridge', goodRepPct: 88 })]);
+    expect(result[0]).toMatchObject({ guidedSets: 0, goodPct: 88 });
+  });
+});

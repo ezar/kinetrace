@@ -460,3 +460,65 @@ test('lets the professional prescribe a side, and counts both when they do not',
 
   expect(errors).toEqual([]);
 });
+
+/**
+ * The session with no camera.
+ *
+ * Headless Chromium has a speech synthesis that accepts an utterance and never
+ * finishes it, so the test replaces `speak` with one that records the sentence
+ * and ends it. What it asserts is the part that matters: the order it says
+ * things in, and that the set it writes claims to have measured nothing.
+ */
+test('runs a routine by voice alone, and records that it measured nothing', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+
+  await page.addInitScript(() => {
+    const spoken: string[] = [];
+    (window as unknown as { __spoken: string[] }).__spoken = spoken;
+    const proto = Object.getPrototypeOf(window.speechSynthesis) as {
+      speak: (utterance: SpeechSynthesisUtterance) => void;
+      cancel: () => void;
+    };
+    proto.speak = (utterance: SpeechSynthesisUtterance) => {
+      spoken.push(utterance.text);
+      setTimeout(() => utterance.dispatchEvent(new Event('end')), 10);
+    };
+    proto.cancel = () => undefined;
+  });
+
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
+  await expect(page.getByText(/no mide nada|measures nothing/i)).toBeVisible();
+  await page.getByRole('button', { name: /sin cámara|without the camera/i }).click();
+
+  // It announces the exercise, doses it, counts in, and starts.
+  await expect(page.getByText(/^empieza$|^begin$/i)).toBeVisible({ timeout: 15_000 });
+  const spoken = await page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
+  expect(spoken.slice(0, 3)).toEqual([
+    expect.stringMatching(/gato y camello|cat camel/i),
+    expect.stringMatching(/serie 1 de 2|set 1 of 2/i),
+    expect.stringMatching(/colócate|get into position/i),
+  ]);
+  // Counted in from three, which is the last thing before the work.
+  expect(spoken.slice(3, 6)).toEqual(['3', '2', '1']);
+
+  // The tally is repetitions, never seconds: one number, and the right one.
+  await expect(page.getByText(/de 10 repeticiones|of 10 repetitions/i)).toBeVisible();
+
+  // A set written here must say it measured nothing, or the report and the
+  // progress chart would read a prescription as an observation.
+  await page.getByRole('button', { name: /^saltar$|^skip$/i }).click();
+  await expect(page.getByText(/^2 \/ 14$|^2 \/ 14$/)).toBeVisible();
+
+  expect(errors).toEqual([]);
+});

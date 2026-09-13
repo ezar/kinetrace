@@ -37,6 +37,7 @@ export function subjectKey(subject: Subject): string {
 export function subjectsIn(sets: readonly SetRecord[]): Subject[] {
   const seen = new Map<string, Subject>();
   for (const set of sets) {
+    if (set.measured === false) continue;
     const subject: Subject = set.side
       ? { exerciseId: set.exerciseId, side: set.side }
       : { exerciseId: set.exerciseId };
@@ -64,6 +65,10 @@ export function dailySeries(
   const byDay = new Map<string, { rom: number[]; reps: number; good: number[]; setId: number }>();
   for (const set of sets) {
     if (!belongsTo(set, subject)) continue;
+    // A guided set measured nothing, so it has no place on a chart of range.
+    // It is not a bad day; it is a day with no reading, and drawing it would
+    // invent a dip that never happened.
+    if (set.measured === false) continue;
     const day = new Date(set.startedAt).toISOString().slice(0, 10);
     const bucket = byDay.get(day) ?? { rom: [], reps: 0, good: [], setId: set.id };
     // A peak of zero means the set produced no measurement; it is not a day at

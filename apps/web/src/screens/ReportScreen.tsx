@@ -195,7 +195,16 @@ export function ReportScreen(): JSX.Element {
                         {row.targetBy ? ` · ${row.targetBy}` : ''}
                       </span>
                     </td>
-                    <td className="py-2">{row.goodPct}%</td>
+                    {/* A row with nothing measured has no percentage to give.
+                        A dash says that; a zero would say the person failed
+                        every repetition. */}
+                    <td className="py-2">
+                      {row.goodPct === null ? (
+                        <span className="text-muted">—</span>
+                      ) : (
+                        `${row.goodPct}%`
+                      )}
+                    </td>
                   </tr>
                 );
               })}
