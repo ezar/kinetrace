@@ -94,6 +94,30 @@ describe('validateExercise', () => {
     expect(issues.some((issue) => issue.path === 'rules[0].cueKey')).toBe(true);
   });
 
+  it('rejects an exercise with nothing but a name to go on', () => {
+    // The whole point of the field being required: an exercise nobody can
+    // explain has no business being prescribed.
+    const issues = validateExercise({ ...base, howTo: { es: ['Uno.'], en: ['One.'] } });
+    expect(issues.some((issue) => issue.path === 'howTo.es')).toBe(true);
+    expect(issues.some((issue) => issue.path === 'howTo.en')).toBe(true);
+  });
+
+  it('rejects a blank step', () => {
+    const issues = validateExercise({
+      ...base,
+      howTo: { es: ['Uno.', '  '], en: ['One.', 'Two.'] },
+    });
+    expect(issues.some((issue) => issue.path === 'howTo.es')).toBe(true);
+  });
+
+  it('rejects two languages that do not describe the same steps', () => {
+    const issues = validateExercise({
+      ...base,
+      howTo: { es: ['Uno.', 'Dos.', 'Tres.'], en: ['One.', 'Two.'] },
+    });
+    expect(issues.some((issue) => issue.path === 'howTo')).toBe(true);
+  });
+
   it('rejects a safety range that does not contain the target band', () => {
     const issues = validateExercise({
       ...base,

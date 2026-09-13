@@ -514,6 +514,22 @@ test('shows what each exercise looks like before somebody has done it', async ({
   await expect(page.getByText(/2 series de 10|2 sets of 10/i)).toBeVisible();
   // And how it is done, in words, which is the half you can read at your pace.
   await expect(page.getByText(/ponte a cuatro patas|get on all fours/i)).toBeVisible();
+  // On the way to a measured session, where to put the phone matters.
+  const cameraTip = page.getByText(/móvil en el suelo|phone on the floor/i);
+  await expect(cameraTip).toBeVisible();
+
+  // On the way to a session with no camera, it does not.
+  await page.goto('./');
+  await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
+  await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
+  await expect(cameraTip).toHaveCount(0);
+
+  await page.goto('./');
+  await page
+    .getByRole('link', { name: /^empezar$|^start$/i })
+    .first()
+    .click();
+  await expect(page.getByText('1 / 5')).toBeVisible();
 
   await page.getByRole('button', { name: /^continuar$|^continue$/i }).click();
   await expect(page.getByText('2 / 5')).toBeVisible();
