@@ -27,6 +27,14 @@ export interface ExerciseDemoProps {
   /** Freeze on the most expressive frame instead of animating. */
   still?: boolean;
   /**
+   * Freeze at one position in the cycle, in `[0, 1]`.
+   *
+   * `still` picks the most expressive frame, which is the right answer for a
+   * thumbnail and the wrong one for somebody waiting to start: `at={0}` holds
+   * the position the repetition begins from.
+   */
+  at?: number;
+  /**
    * Drive the animation from somebody else's clock instead of its own.
    *
    * A guided session paces the voice against a wall clock, and the figure has
@@ -62,6 +70,7 @@ export function ExerciseDemo({
   view = 'side',
   className,
   still = false,
+  at,
   clock,
   far = false,
   ground = true,
@@ -71,15 +80,16 @@ export function ExerciseDemo({
 }: ExerciseDemoProps): JSX.Element {
   const prefersReducedMotion =
     typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const frozen = still || prefersReducedMotion;
+  const pinned = at !== undefined;
+  const frozen = still || pinned || prefersReducedMotion;
   const [landmarks, setLandmarks] = useState<Landmark[]>(() =>
-    landmarksAt(reference, frozen ? 0.5 : 0),
+    landmarksAt(reference, pinned ? at : frozen ? 0.5 : 0),
   );
   const frameRef = useRef(0);
 
   useEffect(() => {
     if (frozen) {
-      setLandmarks(landmarksAt(reference, 0.5));
+      setLandmarks(landmarksAt(reference, pinned ? at : 0.5));
       return;
     }
     const durationMs = clock?.cycleMs ?? reference.cycleSeconds * 1000;
@@ -100,7 +110,7 @@ export function ExerciseDemo({
     };
     frameRef.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [reference, frozen, clock]);
+  }, [reference, frozen, pinned, at, clock]);
 
   return (
     <StickFigure

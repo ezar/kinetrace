@@ -42,6 +42,17 @@ export interface GuidedBeat extends GuidedLine {
 
 export interface GuidedSet {
   preamble: GuidedLine[];
+  /**
+   * The count in, against a clock, from the moment the preamble finishes.
+   *
+   * It used to sit at the end of the preamble, which is spoken back to back as
+   * fast as the voice manages — so "three, two, one" took about a second and a
+   * half and the work started while somebody was still lowering themselves onto
+   * a mat. Three seconds means three seconds.
+   */
+  leadIn: GuidedBeat[];
+  /** How long the count in lasts, in milliseconds. */
+  leadInMs: number;
   /** Spoken against a clock. Empty for a set nobody can pace. */
   rhythm: GuidedBeat[];
   /** How long the work lasts, in milliseconds. */
@@ -70,8 +81,15 @@ export interface GuidedInput {
 const FINAL_COUNTDOWN_SECONDS = 5;
 /** A hold long enough to be worth a warning before the final count. */
 const TEN_TO_GO_FROM_SECONDS = 15;
-/** A hold long enough that the midpoint is a landmark rather than noise. */
-const HALFWAY_FROM_SECONDS = 40;
+/**
+ * A hold long enough that the midpoint is a landmark rather than noise.
+ *
+ * It was forty, and nothing in the library holds for forty seconds — so the
+ * mark could never fire and the longest hold anybody actually does, thirty
+ * seconds, ran twenty seconds without a word. Twenty-five is the shortest hold
+ * whose midpoint is not already the "ten to go" mark.
+ */
+const HALFWAY_FROM_SECONDS = 25;
 /** Seconds counted down before the work starts. */
 const LEAD_IN_SECONDS = 3;
 /**
@@ -144,10 +162,15 @@ export function guidedScript(input: GuidedInput): GuidedSet {
         },
   );
   preamble.push({ key: 'guided.getReady' });
+
+  // Counted against a clock, not at talking speed: the last second of the count
+  // in is the second somebody uses to settle into the position.
+  const leadIn: GuidedBeat[] = [];
   for (let n = LEAD_IN_SECONDS; n >= 1; n -= 1) {
-    preamble.push({ key: 'guided.count', params: { n } });
+    leadIn.push({ atMs: (LEAD_IN_SECONDS - n) * 1000, key: 'guided.count', params: { n } });
   }
-  preamble.push({ key: isHold ? 'guided.hold' : 'guided.begin' });
+  const leadInMs = LEAD_IN_SECONDS * 1000;
+  leadIn.push({ atMs: leadInMs, key: isHold ? 'guided.hold' : 'guided.begin' });
 
   const rhythm: GuidedBeat[] = [];
   let workMs: number;
@@ -155,12 +178,19 @@ export function guidedScript(input: GuidedInput): GuidedSet {
   if (isHold) {
     workMs = Math.max(0, holdSeconds) * 1000;
     for (const mark of holdMarks(holdSeconds)) {
+      // A mark out in the body of the hold says how much is left; the last few
+      // are a countdown, where the number alone is the whole message.
+      const isCountdown = mark <= FINAL_COUNTDOWN_SECONDS;
       rhythm.push({
         atMs: (holdSeconds - mark) * 1000,
-        key: mark === 10 ? 'guided.remaining' : 'guided.count',
-        params: mark === 10 ? { seconds: mark } : { n: mark },
+        key: isCountdown ? 'guided.count' : 'guided.remaining',
+        params: isCountdown ? { n: mark } : { seconds: mark },
       });
     }
+    // And a word on the instant it ends. Without it the last thing anybody
+    // hears is "one", a second before the hold is actually over, so a thirty
+    // second stretch gets held for twenty-nine.
+    if (workMs > 0) rhythm.push({ atMs: workMs, key: 'guided.release' });
   } else {
     // Each number lands on a repetition that is finished, which is what a coach
     // counts and what somebody on a mat wants to hear: how many are done. In
@@ -185,7 +215,7 @@ export function guidedScript(input: GuidedInput): GuidedSet {
     workMs = reps * stepMs;
   }
 
-  return { preamble, rhythm, workMs, epilogue: [{ key: 'guided.setDone' }] };
+  return { preamble, leadIn, leadInMs, rhythm, workMs, epilogue: [{ key: 'guided.setDone' }] };
 }
 
 /** What to say while resting, and when. `atMs` runs from the start of the rest. */

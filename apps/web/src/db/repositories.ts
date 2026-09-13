@@ -11,7 +11,7 @@ import {
   type RoutineReview,
   type SetRecord,
 } from './schema.js';
-import { DEFAULT_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
+import { DEFAULT_ROUTINE_IDS, STRETCH_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
 import type { SkeletonTrack } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 
@@ -95,8 +95,13 @@ export async function saveRoutine(
  * the first day. Used by the first run and by an empty home screen, which must
  * create the same thing.
  */
-export async function createStarterRoutine(profileId: number, name: string): Promise<number> {
-  const exercises = DEFAULT_ROUTINE_IDS.flatMap((id) => {
+/** Build a routine from a list of exercise ids, at the library's own doses. */
+async function createRoutineFrom(
+  profileId: number,
+  name: string,
+  ids: readonly string[],
+): Promise<number> {
+  const exercises = ids.flatMap((id) => {
     const exercise = getExercise(id);
     if (!exercise) return [];
     return [
@@ -110,6 +115,21 @@ export async function createStarterRoutine(profileId: number, name: string): Pro
     ];
   });
   return saveRoutine({ profileId, name, exercises });
+}
+
+export async function createStarterRoutine(profileId: number, name: string): Promise<number> {
+  return createRoutineFrom(profileId, name, DEFAULT_ROUTINE_IDS);
+}
+
+/**
+ * The stretches, as a routine somebody can start without building one first.
+ *
+ * The library gained sustained stretches and nothing pointed at them: the only
+ * way to do one was to assemble a routine by hand, which at seven in the
+ * morning is the difference between stretching and not.
+ */
+export async function createStretchRoutine(profileId: number, name: string): Promise<number> {
+  return createRoutineFrom(profileId, name, STRETCH_ROUTINE_IDS);
 }
 
 /** Save the numbers a professional went through, and the signature under them. */

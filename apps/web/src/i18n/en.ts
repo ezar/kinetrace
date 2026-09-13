@@ -47,7 +47,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.subtitle': 'No camera: it calls the pace, it does not measure it',
   'guided.start': 'Start without the camera',
   'guided.explain':
-    'Kinetrace calls out the exercise, the pace and the repetitions. It measures nothing: the set is recorded as done, with no range and no percentage.',
+    'Kinetrace calls out the exercise, the pace, and the repetitions or the seconds, whichever the set asks for. It measures nothing: the set is recorded as done, with no range and no percentage.',
   'guided.noMic': 'Voice commands are off. You can drive it from the screen.',
   'guided.working': 'Working',
   'guided.resting': 'Resting',
@@ -68,6 +68,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.hold': 'Hold',
   'guided.rep': '{n}',
   'guided.remaining': '{seconds} to go',
+  'guided.release': 'And release',
   'guided.setDone': 'Set done',
   'guided.rest': 'Rest {seconds} seconds',
   'guided.back': 'Here we go',
@@ -86,6 +87,7 @@ export const en: Record<TranslationKey, string> = {
 
   'home.greeting': 'Today',
   'home.today': "Today's routine",
+  'home.stretchRoutine': 'Stretches',
   'home.starterRoutine': 'My back routine',
   'home.noRoutine': 'You have no routine yet',
   'home.unfinished': 'You have a session half done',

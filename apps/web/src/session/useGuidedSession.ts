@@ -19,7 +19,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { guidedScript, restScript, type GuidedBeat, type GuidedLine } from '@kinetrace/exercises';
-import { saveSet, startSession } from '../db/repositories.js';
+import { finishSession, saveSet, startSession } from '../db/repositories.js';
 import { Speaker } from '../speech/speech.js';
 import { EarconPlayer } from '../speech/earcons.js';
 import { ScreenWakeLock, browserWakeLock } from './wakeLock.js';
@@ -233,17 +233,36 @@ export function useGuidedSession(
       });
 
     const run = async (): Promise<void> => {
+      // What the set is, before a word of it is spoken: the big number used to
+      // read a giant "0" through the whole announcement and count in.
+      const reps = script.rhythm.filter((beat) => beat.key === 'guided.rep').length;
+      setCounting(reps > 0 ? 'reps' : 'seconds');
+      setRepsDone(0);
+      setRemaining(reps > 0 ? 0 : Math.round(script.workMs / 1000));
+
       for (const line of script.preamble) {
         if (abandoned) return;
         await say(line);
       }
       if (abandoned) return;
 
+      // The count in, on a clock. Waiting for it is what makes three seconds
+      // three seconds rather than as long as the voice takes to say it.
+      await new Promise<void>((resolve) => {
+        for (const beat of script.leadIn) {
+          timers.push(
+            window.setTimeout(() => {
+              if (!abandoned) void say(beat);
+            }, beat.atMs),
+          );
+        }
+        timers.push(window.setTimeout(resolve, script.leadInMs));
+      });
+      if (abandoned) return;
+
       const startedAt = Date.now();
       startedAtRef.current = startedAt;
       setRepsDone(0);
-      const reps = script.rhythm.filter((beat) => beat.key === 'guided.rep').length;
-      setCounting(reps > 0 ? 'reps' : 'seconds');
       // The figure moves to the same clock the voice counts on, so what it
       // shows is the repetition being called and not a loop of its own.
       setMotion(reps > 0 ? { startedAt, cycleMs: script.workMs / reps } : undefined);
@@ -323,6 +342,12 @@ export function useGuidedSession(
     }
     const next = index + 1;
     if (next >= plan.length) {
+      // Stamp it done here rather than leaving it to the summary screen. The
+      // measured session does the same, and without it somebody who finishes
+      // the work and puts the phone down has a session the streak, the progress
+      // chart and the report all step over: they turned up and the app says
+      // they did not.
+      if (sessionId !== undefined) void finishSession(sessionId, {});
       setSpoken(t('guided.finished'));
       speakerRef.current?.say(t('guided.finished'));
       setStage('finished');
@@ -395,8 +420,10 @@ export function useGuidedSession(
     }
     // Browsers only start an AudioContext from a user gesture, and this is the
     // only one the guided session gets. Without it the set-complete tone stays
-    // silent for the whole routine.
+    // silent for the whole routine — and on iOS the voice never starts either,
+    // which in this mode is the whole session.
     earconRef.current?.unlock();
+    speakerRef.current?.unlock();
     void startSession(profileId, routineId).then(setSessionId);
     setStage('working');
     setAttempt((value) => value + 1);

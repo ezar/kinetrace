@@ -33,6 +33,7 @@ export function ProfilesScreen(): JSX.Element {
   const profiles = useLiveQuery(() => db.profiles.toArray(), [], []);
   const activeProfileId = useSettingsStore((state) => state.activeProfileId);
   const setActiveProfile = useSettingsStore((state) => state.setActiveProfile);
+  const refresh = useSettingsStore((state) => state.refresh);
   const [draft, setDraft] = useState<DraftProfile | null>(null);
 
   // The first person to open the app lands straight in the form: an empty list
@@ -51,8 +52,16 @@ export function ProfilesScreen(): JSX.Element {
       heightCm: draft.heightCm ? Number(draft.heightCm) : undefined,
       physioNotes: draft.physioNotes,
     };
-    if (draft.id === undefined) await createProfile(fields);
-    else await updateProfile(draft.id, fields);
+    if (draft.id === undefined) {
+      await createProfile(fields);
+      // The first profile makes itself active, in the database. Without this
+      // the store does not find out until the next full load, and every screen
+      // that reads the active profile from it — the routine builder's Save
+      // among them — behaves as though nobody is signed in.
+      await refresh();
+    } else {
+      await updateProfile(draft.id, fields);
+    }
     setDraft(null);
   };
 

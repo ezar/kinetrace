@@ -82,6 +82,28 @@ export class Speaker {
     this.lastSpokenAt = Date.now();
   }
 
+  /**
+   * Wake the voice from inside a user gesture.
+   *
+   * Safari on iOS only lets speech synthesis start from a real tap, and the
+   * guided session's first sentence is spoken from an effect a tick later —
+   * outside the gesture, which on a phone can leave the whole session mute. A
+   * silent utterance spoken from the button handler opens the channel; every
+   * line after it inherits the permission.
+   *
+   * Harmless where it is not needed: a space is not read aloud.
+   */
+  unlock(): void {
+    if (!this.enabled || !this.isAvailable) return;
+    try {
+      const primer = new SpeechSynthesisUtterance(' ');
+      primer.volume = 0;
+      speechSynthesis.speak(primer);
+    } catch {
+      // A browser that refuses this is a browser that was never going to speak.
+    }
+  }
+
   get busySince(): number {
     return this.lastSpokenAt;
   }

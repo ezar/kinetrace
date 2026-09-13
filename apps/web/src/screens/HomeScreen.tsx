@@ -8,6 +8,7 @@ import { getExercise } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
 import {
   createStarterRoutine,
+  createStretchRoutine,
   deleteSession,
   resumableSession,
   streakFromDates,
@@ -78,6 +79,16 @@ export function HomeScreen(): JSX.Element {
   const startStarterRoutine = async (): Promise<void> => {
     if (!profile) return;
     navigate(`/routines/${await createStarterRoutine(profile.id, t('home.starterRoutine'))}`);
+  };
+
+  /**
+   * The stretches, in one tap, for somebody who was already using the app
+   * before the library had any. The first run makes this routine now; this is
+   * the way in for everybody who is past their first run.
+   */
+  const startStretchRoutine = async (): Promise<void> => {
+    if (!profile) return;
+    navigate(`/routines/${await createStretchRoutine(profile.id, t('home.stretchRoutine'))}`);
   };
 
   if (loadedProfiles === undefined) return <div className="p-8 text-muted">…</div>;
@@ -208,6 +219,13 @@ export function HomeScreen(): JSX.Element {
           <PlusIcon size={19} />
           {t('routine.new')}
         </Link>
+        <button
+          onClick={() => void startStretchRoutine()}
+          className="flex items-center gap-2 py-2 text-[16px]"
+        >
+          <PlusIcon size={19} />
+          {t('home.stretchRoutine')}
+        </button>
         <Link to="/import" className="py-2 text-[15px] underline underline-offset-4">
           {t('home.importSheet')}
         </Link>

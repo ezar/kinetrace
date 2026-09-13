@@ -87,6 +87,13 @@ test.describe('first run', () => {
  * test independent of whether the machine running it owns a camera.
  */
 /**
+ * The first run creates two routines: the back one first, then the stretches.
+ * The home screen shows the most recently updated as today's, so "today" is the
+ * stretches — these tests are about the back routine and open it by its id.
+ */
+const BACK_ROUTINE = '1';
+
+/**
  * Walk out of the demonstration a first session shows, one card at a time.
  *
  * Each click is preceded by an assertion that the expected card is on screen,
@@ -211,7 +218,7 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
   await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
   await expect(page.getByText('Ana')).toBeVisible();
 
-  await page.getByRole('link', { name: /editar|edit/i }).click();
+  await page.goto(`routines/${BACK_ROUTINE}`);
   await expect(page.getByText(/rangos por defecto|default ranges/i)).toBeVisible();
   await page.getByRole('button', { name: /revisar los ejercicios|review the exercises/i }).click();
 
@@ -458,7 +465,7 @@ test('lets the professional prescribe a side, and counts both when they do not',
   await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
   await expect(page.getByText('Ana')).toBeVisible();
 
-  await page.getByRole('link', { name: /editar|edit/i }).click();
+  await page.goto(`routines/${BACK_ROUTINE}`);
   const beforeAdding = await page.getByText(/unos \d+ min|about \d+ min/i).innerText();
 
   await page.getByRole('button', { name: /añadir ejercicio|add exercise/i }).click();
@@ -527,10 +534,7 @@ test('shows what each exercise looks like before somebody has done it', async ({
   await expect(page.getByText('Ana')).toBeVisible();
 
   // Starting a routine for the first time goes through the demonstration.
-  await page
-    .getByRole('link', { name: /^empezar$|^start$/i })
-    .first()
-    .click();
+  await page.goto(`prepare/${BACK_ROUTINE}`);
   await expect(page.getByText(/así es el ejercicio|this is the exercise/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
   // The five exercises of the starter routine, each once however many sets.
@@ -545,16 +549,11 @@ test('shows what each exercise looks like before somebody has done it', async ({
   await expect(cameraTip).toBeVisible();
 
   // On the way to a session with no camera, it does not.
-  await page.goto('./');
-  await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
+  await page.goto(`prepare/${BACK_ROUTINE}?mode=guided`);
   await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
   await expect(cameraTip).toHaveCount(0);
 
-  await page.goto('./');
-  await page
-    .getByRole('link', { name: /^empezar$|^start$/i })
-    .first()
-    .click();
+  await page.goto(`prepare/${BACK_ROUTINE}`);
   await expect(page.getByText('1 / 5')).toBeVisible();
 
   await page.getByRole('button', { name: /^continuar$|^continue$/i }).click();
@@ -570,11 +569,7 @@ test('shows what each exercise looks like before somebody has done it', async ({
   }
   await expect(page).toHaveURL(/\/session\//);
 
-  await page.goto('./');
-  await page
-    .getByRole('link', { name: /^empezar$|^start$/i })
-    .first()
-    .click();
+  await page.goto(`prepare/${BACK_ROUTINE}`);
   await expect(page.getByRole('heading', { name: /gato y camello|cat and camel/i })).toBeVisible();
   // One card left, so no counter at all.
   await expect(page.getByText('1 / 5')).toHaveCount(0);
@@ -586,11 +581,7 @@ test('shows what each exercise looks like before somebody has done it', async ({
   // It goes away when there is nothing left to restore, which is also how we
   // know the write landed before this reloads the page out from under it.
   await expect(restore).toHaveCount(0);
-  await page.goto('./');
-  await page
-    .getByRole('link', { name: /^empezar$|^start$/i })
-    .first()
-    .click();
+  await page.goto(`prepare/${BACK_ROUTINE}`);
   await expect(page.getByText('1 / 5')).toBeVisible();
 });
 
@@ -622,7 +613,7 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
   await expect(page.getByText('Ana')).toBeVisible();
 
-  await page.getByRole('link', { name: /sin cámara|without the camera/i }).click();
+  await page.goto(`prepare/${BACK_ROUTINE}?mode=guided`);
   await stepPastPrimer(page, 5);
   await expect(page.getByText(/no mide nada|measures nothing/i)).toBeVisible();
   await page.getByRole('button', { name: /sin cámara|without the camera/i }).click();
@@ -630,18 +621,26 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
   // It announces the exercise, doses it, counts in, and starts. Asserted on
   // what was said rather than on what is on screen: the caption now follows the
   // movement cues, so "begin" is replaced the moment the work starts.
+  const said = (): Promise<string[]> =>
+    page.evaluate(() =>
+      (window as unknown as { __spoken: string[] }).__spoken
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0),
+    );
   await page.waitForFunction(
-    () => (window as unknown as { __spoken: string[] }).__spoken.length >= 7,
+    () =>
+      (window as unknown as { __spoken: string[] }).__spoken.filter((line) => line.trim()).length >=
+      7,
     undefined,
     { timeout: 15_000 },
   );
-  const spoken = await page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
+  const spoken = await said();
   expect(spoken.slice(0, 3)).toEqual([
     expect.stringMatching(/gato y camello|cat camel/i),
     expect.stringMatching(/serie 1 de 2|set 1 of 2/i),
     expect.stringMatching(/colócate|get into position/i),
   ]);
-  // Counted in from three, which is the last thing before the work.
+  // Counted in from three — now on a clock of its own, a second a number.
   expect(spoken.slice(3, 6)).toEqual(['3', '2', '1']);
 
   // It calls the movement too, not only the number. A cat and camel rounds,
@@ -658,9 +657,9 @@ test('runs a routine by voice alone, and records that it measured nothing', asyn
     undefined,
     { timeout: 20_000 },
   );
-  const said = await page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
-  const begun = said.findIndex((line) => /^empieza$|^begin$/i.test(line));
-  const cues = said.slice(begun + 1, said.indexOf('1', begun));
+  const lines = await said();
+  const begun = lines.findIndex((line) => /^empieza$|^begin$/i.test(line));
+  const cues = lines.slice(begun + 1, lines.indexOf('1', begun));
   expect(cues).toHaveLength(4);
   for (const cue of cues) expect(cue).not.toMatch(/^\d+$/);
 

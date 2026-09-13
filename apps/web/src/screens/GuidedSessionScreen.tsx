@@ -127,13 +127,15 @@ export function GuidedSessionScreen(): JSX.Element {
         </div>
 
         {/* What the exercise looks like, moving to the clock the voice counts
-            on. A hold has nowhere to move to, so it shows the position. */}
+            on. A hold has nowhere to move to, so it shows the position — and
+            when there is no clock, during the count in, a rest or a pause, it
+            waits at the start rather than carrying on without anybody. */}
         {exercise ? (
           <ExerciseDemo
             reference={exercise.reference}
             view={exercise.view.orientation}
             still={exercise.mode === 'hold'}
-            {...(session.motion ? { clock: session.motion } : {})}
+            {...(session.motion ? { clock: session.motion } : { at: 0 })}
             className="mx-auto h-40 w-full max-w-xs rounded-2xl bg-surface text-ink"
           />
         ) : null}

@@ -45,7 +45,7 @@ export const es = {
   'guided.subtitle': 'Sin cámara: te la canto, pero no la mido',
   'guided.start': 'Empezar sin cámara',
   'guided.explain':
-    'Kinetrace te va diciendo el ejercicio, el ritmo y las repeticiones. No mide nada: la serie queda registrada como hecha, sin rango ni porcentaje.',
+    'Kinetrace te va diciendo el ejercicio, el ritmo, y las repeticiones o los segundos que toque. No mide nada: la serie queda registrada como hecha, sin rango ni porcentaje.',
   'guided.noMic': 'Los comandos de voz están apagados. Puedes manejarla desde la pantalla.',
   'guided.working': 'En marcha',
   'guided.resting': 'Descanso',
@@ -68,6 +68,7 @@ export const es = {
   'guided.hold': 'Aguanta',
   'guided.rep': '{n}',
   'guided.remaining': 'Quedan {seconds}',
+  'guided.release': 'Y suelta',
   'guided.setDone': 'Serie hecha',
   'guided.rest': 'Descansa {seconds} segundos',
   'guided.back': 'Volvemos',
@@ -86,6 +87,7 @@ export const es = {
 
   'home.greeting': 'Hoy',
   'home.today': 'Rutina de hoy',
+  'home.stretchRoutine': 'Estiramientos',
   'home.starterRoutine': 'Mi rutina de espalda',
   'home.noRoutine': 'Todavía no tienes ninguna rutina',
   'home.unfinished': 'Tienes una sesión a medias',
