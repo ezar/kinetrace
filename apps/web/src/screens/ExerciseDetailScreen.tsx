@@ -25,7 +25,9 @@ export function ExerciseDetailScreen(): JSX.Element {
     <div className="space-y-5">
       <ScreenHeader
         title={exercise.names[language]}
-        subtitle={`${t(`area.${exercise.area}`)} · ${t(`position.${exercise.position}`)}`}
+        subtitle={`${t(`area.${exercise.area}`)} · ${t(`position.${exercise.position}`)} · ${t(
+          `spinalLoad.${exercise.spinalLoad}`,
+        )}`}
         back
       />
 
@@ -37,6 +39,29 @@ export function ExerciseDetailScreen(): JSX.Element {
           className="mx-auto h-40 w-full rounded-2xl bg-canvas text-ink"
         />
       </div>
+
+      {/* The same steps the session shows before this exercise: written once,
+          in the library, where the rest of its text already lives. */}
+      <section className="card p-4">
+        <h2 className="font-medium">{t('library.howTo')}</h2>
+        <ol className="mt-2 flex flex-col gap-2">
+          {exercise.howTo[language].map((instruction, index) => (
+            <li key={instruction} className="flex gap-3 leading-relaxed">
+              <span className="w-5 shrink-0 text-right tabular-nums text-muted">{index + 1}</span>
+              <span>{instruction}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* The library is never signed by anybody, so it always says this. */}
+      <section className="card p-4">
+        <h2 className="font-medium">{t('library.source')}</h2>
+        <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-muted">
+          <li>{t(`library.source.targets.${exercise.provenance.targets}`)}</li>
+          <li>{t(`library.source.dose.${exercise.provenance.dose}`)}</li>
+        </ul>
+      </section>
 
       <section className="card p-4">
         <h2 className="font-medium">{t('library.camera')}</h2>

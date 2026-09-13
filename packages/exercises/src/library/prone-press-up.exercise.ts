@@ -8,8 +8,25 @@ export const pronePressUp: ExerciseDefinition = {
     es: ['extensión lumbar en prono', 'cobra', 'press up prono', 'extensión en decúbito prono'],
     en: ['prone press up', 'press up', 'cobra', 'extension in lying'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca abajo con las manos apoyadas a la altura de los hombros.',
+      'Estira los brazos para levantar el pecho, dejando las caderas apoyadas.',
+      'Baja despacio hasta volver a apoyar el pecho.',
+      'Los glúteos van sueltos y el cuello sigue la línea de la espalda.',
+    ],
+    en: [
+      'Lie face down with your hands flat under your shoulders.',
+      'Straighten your arms to lift your chest, keeping your hips on the floor.',
+      'Lower slowly until your chest is resting again.',
+      'Let your glutes relax, and keep your neck in line with your back.',
+    ],
+  },
   area: 'lowerBack',
   position: 'prone',
+  spinalLoad: 'extension',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

@@ -11,8 +11,23 @@ export const frontPlank: ExerciseDefinition = {
     es: ['plancha', 'plancha abdominal', 'plancha isométrica'],
     en: ['plank', 'forearm plank', 'front hold'],
   },
+  howTo: {
+    es: [
+      'Apóyate en los antebrazos y en las puntas de los pies, con los codos bajo los hombros.',
+      'Sube las caderas hasta que la cabeza, la espalda y las piernas queden en línea.',
+      'Mantén esa línea, sin que las caderas suban ni se hundan.',
+    ],
+    en: [
+      'Rest on your forearms and your toes, elbows under your shoulders.',
+      'Lift your hips until your head, back and legs are in one line.',
+      'Hold that line, with your hips neither rising nor sagging.',
+    ],
+  },
   area: 'core',
   position: 'prone',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

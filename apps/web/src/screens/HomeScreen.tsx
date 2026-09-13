@@ -8,6 +8,7 @@ import { getExercise } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
 import {
   createStarterRoutine,
+  openStretchRoutine,
   deleteSession,
   resumableSession,
   streakFromDates,
@@ -80,6 +81,16 @@ export function HomeScreen(): JSX.Element {
     navigate(`/routines/${await createStarterRoutine(profile.id, t('home.starterRoutine'))}`);
   };
 
+  /**
+   * The stretches, in one tap, for somebody who was already using the app
+   * before the library had any. The first run makes this routine now; this is
+   * the way in for everybody who is past their first run.
+   */
+  const startStretchRoutine = async (): Promise<void> => {
+    if (!profile) return;
+    navigate(`/routines/${await openStretchRoutine(profile.id, t('home.stretchRoutine'))}`);
+  };
+
   if (loadedProfiles === undefined) return <div className="p-8 text-muted">…</div>;
 
   // Somebody who has never been here goes through the first run. Somebody who
@@ -128,7 +139,7 @@ export function HomeScreen(): JSX.Element {
           </div>
           <div className="flex gap-2">
             <Link
-              to={`/session/${unfinished.session.routineId}?resume=${unfinished.session.id}`}
+              to={`/prepare/${unfinished.session.routineId}?resume=${unfinished.session.id}`}
               className="btn-primary px-4 py-2 text-sm"
             >
               {t('home.unfinishedContinue')}
@@ -189,16 +200,24 @@ export function HomeScreen(): JSX.Element {
       {rest.length > 0 ? (
         <section className="flex flex-col">
           {rest.map((routine) => (
-            <Link
-              key={routine.id}
-              to={`/session/${routine.id}`}
-              className="flex items-center justify-between border-b border-line py-3.5"
-            >
-              <span className="text-[16px]">{routine.name}</span>
-              <span className="text-[14px] text-muted">
-                {t('routine.estimated', { minutes: estimateMinutes(routine) })}
-              </span>
-            </Link>
+            <div key={routine.id} className="flex items-center gap-3 border-b border-line py-3.5">
+              <Link to={`/prepare/${routine.id}`} className="flex flex-1 items-center gap-3">
+                <span className="flex-1 text-[16px]">{routine.name}</span>
+                <span className="text-[14px] text-muted">
+                  {t('routine.estimated', { minutes: estimateMinutes(routine) })}
+                </span>
+              </Link>
+              {/* Without the camera, from here too. The today card had the only
+                  one in the app, so any routine that was not today's could be
+                  started by voice only by typing the address. */}
+              <Link
+                to={`/prepare/${routine.id}?mode=guided`}
+                aria-label={`${routine.name} · ${t('guided.start')}`}
+                className="p-1.5 text-muted"
+              >
+                <MicIcon size={18} />
+              </Link>
+            </div>
           ))}
         </section>
       ) : null}
@@ -208,6 +227,13 @@ export function HomeScreen(): JSX.Element {
           <PlusIcon size={19} />
           {t('routine.new')}
         </Link>
+        <button
+          onClick={() => void startStretchRoutine()}
+          className="flex items-center gap-2 py-2 text-[16px]"
+        >
+          <PlusIcon size={19} />
+          {t('home.stretchRoutine')}
+        </button>
         <Link to="/import" className="py-2 text-[15px] underline underline-offset-4">
           {t('home.importSheet')}
         </Link>
@@ -281,7 +307,7 @@ function TodayCard({
       </div>
 
       <Link
-        to={`/session/${routine.id}`}
+        to={`/prepare/${routine.id}`}
         className="btn-primary mt-5 h-[60px] w-full text-[19px] font-semibold"
       >
         <PlayIcon size={22} />
@@ -289,7 +315,10 @@ function TodayCard({
       </Link>
       {/* The second way in, on purpose: measured is the default and guided is
           there for the nights when the camera is not an option. */}
-      <Link to={`/guided/${routine.id}`} className="btn-secondary mt-2 h-12 w-full text-[15px]">
+      <Link
+        to={`/prepare/${routine.id}?mode=guided`}
+        className="btn-secondary mt-2 h-12 w-full text-[15px]"
+      >
         <MicIcon size={18} />
         {t('guided.start')}
       </Link>

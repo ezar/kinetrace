@@ -1,5 +1,6 @@
-import { copyFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { copyFileSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -10,6 +11,44 @@ import { VitePWA } from 'vite-plugin-pwa';
  * Pages, so the base is a build input. It must start and end with a slash.
  */
 const base = process.env.BASE_PATH ?? '/';
+
+/**
+ * The version of MediaPipe whose runtime this build ships.
+ *
+ * The WebAssembly binary has a fixed file name, and a cache-first rule on a
+ * fixed name keeps the first copy it ever saw. Upgrading the dependency then
+ * ships a new loader against a stale binary, which fails at instantiation —
+ * camera mode stops working for exactly the people who already used it. Naming
+ * the cache after the version means an upgrade writes to a different cache
+ * instead, and the old one is dropped. Nobody has to remember.
+ */
+const mediapipeVersion = ((): string => {
+  try {
+    // The package does not export its own manifest, so walk up from the entry
+    // point it does export until the manifest that describes it turns up.
+    const require = createRequire(import.meta.url);
+    let dir = dirname(require.resolve('@mediapipe/tasks-vision'));
+    for (;;) {
+      try {
+        const read = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as {
+          name?: string;
+          version?: string;
+        };
+        if (read.name === '@mediapipe/tasks-vision' && read.version) return read.version;
+      } catch {
+        // Not this directory. Keep going.
+      }
+      const up = dirname(dir);
+      if (up === dir) break;
+      dir = up;
+    }
+    return 'unknown';
+  } catch {
+    // A build that cannot read it still works; it just loses the automatic
+    // invalidation, which is no worse than a hand-written name.
+    return 'unknown';
+  }
+})();
 
 /**
  * Static hosts without rewrites — GitHub Pages among them — serve `404.html`
@@ -49,6 +88,11 @@ function spaFallback(): Plugin {
 }
 
 export default defineConfig({
+  // The page needs the same name the service worker's rule uses, so it can
+  // delete the one a previous version of the package left behind.
+  define: {
+    __MEDIAPIPE_CACHE__: JSON.stringify(`kinetrace-mediapipe-wasm-${mediapipeVersion}`),
+  },
   base,
   preview: { headers: { 'Content-Security-Policy': CONTENT_SECURITY_POLICY } },
   plugins: [
@@ -94,7 +138,32 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'kinetrace-pose-models',
-              expiration: { maxEntries: 4 },
+              expiration: { maxEntries: 4, purgeOnQuotaError: true },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
+            // MediaPipe's runtime, close to twelve megabytes, picked at load
+            // time: the SIMD build or the one without, never both. The loader
+            // beside it is a few hundred kilobytes of JavaScript and is
+            // precached by the pattern above — so offline the loader would
+            // start, reach for this, and find nothing. Same bargain as the
+            // model: too big to hand everybody on their first visit, kept for
+            // good once somebody has actually turned the camera on.
+            //
+            // The name carries the version because the file name does not. A
+            // cache-first rule on a fixed name keeps the first copy it ever
+            // saw, so an upgrade would ship a new loader against a stale
+            // binary — which fails at instantiation, for exactly the people who
+            // had already used the camera. Workbox does not sweep runtime
+            // caches (`cleanupOutdatedCaches` only touches precaches), so the
+            // superseded one is deleted by `sweepStaleCaches` from the app.
+            urlPattern: /\/mediapipe\/wasm\/.*\.wasm$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: `kinetrace-mediapipe-wasm-${mediapipeVersion}`,
+              expiration: { maxEntries: 2, purgeOnQuotaError: true },
+              cacheableResponse: { statuses: [200] },
             },
           },
         ],

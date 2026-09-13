@@ -25,6 +25,7 @@ import {
   canPrescribe,
   describeCondition,
   getExercise,
+  spinalLoadMix,
   metricDescription,
   metricLabel,
   metricRange,
@@ -89,6 +90,16 @@ export function ReviewScreen(): JSX.Element {
   const [by, setBy] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const loadMix = useMemo(
+    () =>
+      spinalLoadMix(
+        entries
+          .map((entry) => getExercise(entry.exerciseId))
+          .filter((exercise): exercise is NonNullable<typeof exercise> => exercise !== undefined),
+      ),
+    [entries],
+  );
 
   useEffect(() => {
     if (!routineId) return;
@@ -177,6 +188,22 @@ export function ReviewScreen(): JSX.Element {
         ) : null}
       </section>
 
+      {loadMix.length > 0 ? (
+        <section className="card mt-4 p-4">
+          <h2 className="font-medium">{t('review.loadMix')}</h2>
+          {/* Counted, never judged. Which way a routine leans is a thing the
+              person reviewing it should be able to see at a glance; which way
+              it ought to lean is entirely theirs to decide. */}
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
+            {loadMix.map(([load, count]) => (
+              <li key={load}>
+                {t(`spinalLoad.${load}`)} · {count}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {felt.length > 0 ? (
         <section className="card mt-4 p-4">
           <h2 className="font-medium">{t('review.howTheyFelt')}</h2>
@@ -208,6 +235,7 @@ export function ReviewScreen(): JSX.Element {
             key={`${entry.exerciseId}-${index}`}
             entry={entry}
             issues={issues[index] ?? []}
+            signed={routine.review !== undefined}
             onChange={(patch) => update(index, patch)}
           />
         ))}
@@ -249,10 +277,16 @@ export function ReviewScreen(): JSX.Element {
 interface ExerciseReviewProps {
   entry: RoutineExercise;
   issues: readonly PrescriptionIssue[];
+  /**
+   * Whether somebody has already signed this routine. Until they have, every
+   * number on the card is still the library's, and the card says where each
+   * one came from.
+   */
+  signed: boolean;
   onChange: (patch: Partial<RoutineExercise>) => void;
 }
 
-function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.Element {
+function ExerciseReview({ entry, issues, signed, onChange }: ExerciseReviewProps): JSX.Element {
   const { t, language } = useTranslation();
   const exercise = getExercise(entry.exerciseId);
   const [showCues, setShowCues] = useState(false);
@@ -299,7 +333,8 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
           <h2 className="font-semibold">{exercise.names[language]}</h2>
           <p className="text-sm text-muted">
             {metricLabel(metric?.id ?? 'hipFlexion', language)} ·{' '}
-            {t(`library.tracking.${exercise.trackingConfidence}`)}
+            {t(`library.tracking.${exercise.trackingConfidence}`)} ·{' '}
+            {t(`spinalLoad.${exercise.spinalLoad}`)}
           </p>
           <p className="mt-1 text-[13px] leading-relaxed text-muted">
             {metricDescription(metric?.id ?? 'hipFlexion', language)}
@@ -308,6 +343,14 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
       </header>
 
       <div className="border-t border-line p-4">
+        {/* Angles and dosage sit in the same typeface and looked equally well
+            founded. One was read off the engine; the other was written down by
+            hand. Saying which is the point of this line. */}
+        {signed ? null : (
+          <p className="mb-3 text-[13px] leading-relaxed text-muted">
+            {t(`review.source.${exercise.provenance.targets}.targets`)}
+          </p>
+        )}
         <div className="flex items-start gap-4">
           <AngleGauge
             value={(band.min + band.max) / 2}
@@ -398,36 +441,43 @@ function ExerciseReview({ entry, issues, onChange }: ExerciseReviewProps): JSX.E
         </div>
       ) : null}
 
-      <div className="grid grid-cols-3 gap-2 border-t border-line p-4">
-        <NumberField
-          label={t('common.sets')}
-          value={entry.sets}
-          onChange={(value) => onChange({ sets: value })}
-        />
-        {exercise.mode === 'hold' ? (
-          <NumberField
-            label={t('common.seconds')}
-            value={entry.holdSeconds ?? 0}
-            unit="s"
-            onChange={(value) => onChange({ holdSeconds: value })}
-          />
-        ) : (
-          <NumberField
-            label={t('common.reps')}
-            value={entry.reps ?? 0}
-            onChange={(value) => onChange({ reps: value })}
-          />
+      <div className="border-t border-line p-4">
+        {signed ? null : (
+          <p className="mb-3 text-[13px] leading-relaxed text-muted">
+            {t(`review.source.${exercise.provenance.dose}.dose`)}
+          </p>
         )}
-        <NumberField
-          label={t('common.rest')}
-          value={entry.restSeconds}
-          unit="s"
-          onChange={(value) => onChange({ restSeconds: value })}
-        />
+        <div className="grid grid-cols-3 gap-2">
+          <NumberField
+            label={t('common.sets')}
+            value={entry.sets}
+            onChange={(value) => onChange({ sets: value })}
+          />
+          {exercise.mode === 'hold' ? (
+            <NumberField
+              label={t('common.seconds')}
+              value={entry.holdSeconds ?? 0}
+              unit="s"
+              onChange={(value) => onChange({ holdSeconds: value })}
+            />
+          ) : (
+            <NumberField
+              label={t('common.reps')}
+              value={entry.reps ?? 0}
+              onChange={(value) => onChange({ reps: value })}
+            />
+          )}
+          <NumberField
+            label={t('common.rest')}
+            value={entry.restSeconds}
+            unit="s"
+            onChange={(value) => onChange({ restSeconds: value })}
+          />
+        </div>
       </div>
 
       {/* Pacing. Only for counted exercises: a hold has one resting phase and
-          nothing to pace. Off unless somebody sets it, and the sixteen library
+          nothing to pace. Off unless somebody sets it, and the library
           exercises that declare no tempo stay exactly as they are. */}
       {exercise.mode === 'reps' ? (
         <div className="space-y-2 border-t border-line p-4">

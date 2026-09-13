@@ -8,8 +8,25 @@ export const mcgillCurlUp: ExerciseDefinition = {
     es: ['curl up', 'encogimiento de McGill', 'abdominal de McGill'],
     en: ['mcgill curl up', 'curl up', 'modified curl up'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca arriba con una rodilla doblada y la otra pierna estirada.',
+      'Pon las manos bajo la zona lumbar, para que no pierda su curva.',
+      'Despega la cabeza y los hombros unos centímetros, sin doblar el cuello.',
+      'Baja despacio. La zona lumbar no llega a aplanarse contra el suelo.',
+    ],
+    en: [
+      'Lie on your back with one knee bent and the other leg straight.',
+      'Put your hands under your lower back, so it keeps its curve.',
+      'Lift your head and shoulders a few centimetres, without bending your neck.',
+      'Lower slowly. Your lower back never flattens against the floor.',
+    ],
+  },
   area: 'core',
   position: 'supine',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

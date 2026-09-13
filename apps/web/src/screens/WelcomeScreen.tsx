@@ -23,7 +23,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { metricLandmarkIndices } from '@kinetrace/engine';
 import { getExercise } from '@kinetrace/exercises';
 import { db, PROFILE_COLORS } from '../db/schema.js';
-import { createProfile, createStarterRoutine } from '../db/repositories.js';
+import { createProfile, createStarterRoutine, createStretchRoutine } from '../db/repositories.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { LANGUAGES, LANGUAGE_NAMES, type Language } from '../i18n/index.js';
@@ -99,6 +99,10 @@ export function WelcomeScreen(): JSX.Element {
       }
       if (current === 'routine' && choice === 'starter' && profileId !== undefined) {
         await createStarterRoutine(profileId, t('home.starterRoutine'));
+        // And the stretches, because the library has them and nothing else
+        // points at them: without this the only way to stretch is to build a
+        // routine by hand first.
+        await createStretchRoutine(profileId, t('home.stretchRoutine'));
       }
       if (isLast) {
         await leave(choice === 'import' ? '/import' : '/');

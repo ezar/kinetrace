@@ -29,11 +29,24 @@ export const es = {
   'common.seconds': 'segundos',
   'common.reps': 'repeticiones',
   'common.sets': 'series',
+  'prepare.title': 'Así es el ejercicio',
+  'prepare.dosageReps': '{sets} series de {reps} repeticiones',
+  'prepare.dosageHold': '{sets} series de {seconds} segundos',
+  'prepare.eachSide': 'con cada lado',
+  'prepare.start': 'Empezar',
+  'prepare.known': 'Ya me lo sé, no me lo enseñes más',
+  'settings.showDemo': 'Ver el ejercicio antes',
+  'settings.showDemo.new': 'Cuando sea nuevo',
+  'settings.showDemo.always': 'Siempre',
+  'settings.showDemo.never': 'Nunca',
+  'settings.restoreDemos': 'Volver a ver los {count} ejercicios que oculté',
+  'settings.showDemoHelp':
+    'Antes de empezar verás cómo se hace y la figura haciéndolo. Con «cuando sea nuevo» aparece solo si no lo has hecho antes, y durante tus primeras sesiones. «Ya me lo sé» lo quita a partir de la sesión siguiente.',
   'guided.title': 'Sesión guiada por voz',
   'guided.subtitle': 'Sin cámara: te la canto, pero no la mido',
   'guided.start': 'Empezar sin cámara',
   'guided.explain':
-    'Kinetrace te va diciendo el ejercicio, el ritmo y las repeticiones. No mide nada: la serie queda registrada como hecha, sin rango ni porcentaje.',
+    'Kinetrace te va diciendo el ejercicio, el ritmo, y las repeticiones o los segundos que toque. No mide nada: la serie queda registrada como hecha, sin rango ni porcentaje.',
   'guided.noMic': 'Los comandos de voz están apagados. Puedes manejarla desde la pantalla.',
   'guided.working': 'En marcha',
   'guided.resting': 'Descanso',
@@ -43,8 +56,15 @@ export const es = {
   'guided.seconds': 'segundos',
   'common.repeat': 'Repetir',
 
+  // The change of leg goes first and alone. The side is in every line that
+  // follows it, but a word at the end of a sentence is not what somebody
+  // lying on a mat with their eyes shut hears.
+  'guided.switchSide': 'Cambia de lado',
+  'guided.pausedRestarts': 'Al seguir, la serie empieza de nuevo desde el principio.',
   'guided.exercise': '{name}',
-  'guided.exerciseSide': '{name}, lado {side}',
+  // Said aloud, so it has to agree: «lado derecha» is what the template used
+  // to produce, and it is the one line somebody hears on every single set.
+  'guided.exerciseSide': '{name}, {side}',
   'guided.note': 'Dice tu fisio: {note}',
   'guided.doseReps': 'Serie {set} de {sets}, {reps} repeticiones',
   'guided.doseHold': 'Serie {set} de {sets}, {seconds} segundos',
@@ -54,6 +74,7 @@ export const es = {
   'guided.hold': 'Aguanta',
   'guided.rep': '{n}',
   'guided.remaining': 'Quedan {seconds}',
+  'guided.release': 'Y suelta',
   'guided.setDone': 'Serie hecha',
   'guided.rest': 'Descansa {seconds} segundos',
   'guided.back': 'Volvemos',
@@ -72,6 +93,7 @@ export const es = {
 
   'home.greeting': 'Hoy',
   'home.today': 'Rutina de hoy',
+  'home.stretchRoutine': 'Estiramientos',
   'home.starterRoutine': 'Mi rutina de espalda',
   'home.noRoutine': 'Todavía no tienes ninguna rutina',
   'home.unfinished': 'Tienes una sesión a medias',
@@ -103,6 +125,21 @@ export const es = {
   'library.filterPosition': 'Posición',
   'library.all': 'Todos',
   'library.defaultRangesNotice': 'Rangos por defecto, ajústalos con tu fisioterapeuta',
+  'review.source.derived.targets':
+    'Estos ángulos salen de ejecutar el motor sobre el movimiento de referencia de este ejercicio. Son coherentes con cómo cuenta la app, no con esta persona.',
+  'review.source.authored.targets':
+    'Estos ángulos los escribió quien hizo la biblioteca, sin ninguna fuente detrás.',
+  'review.source.derived.dose': 'Esta dosis sale del movimiento de referencia del ejercicio.',
+  'review.source.authored.dose':
+    'Esta dosis la escribió quien hizo la biblioteca, sin ninguna fuente detrás: las guías clínicas de dolor lumbar no prescriben series ni repeticiones. Hasta que la pongas tú, no es de nadie.',
+  'library.source': 'De dónde salen estos números',
+  'library.source.targets.derived':
+    'Ángulos: leídos ejecutando el motor sobre el movimiento de referencia de este ejercicio.',
+  'library.source.targets.authored': 'Ángulos: escritos a mano, sin fuente.',
+  'library.source.dose.derived': 'Dosis: leída del movimiento de referencia.',
+  'library.source.dose.authored':
+    'Dosis: escrita a mano, sin fuente. Las guías clínicas no prescriben series ni repeticiones; esta cifra la tiene que poner tu fisioterapeuta.',
+  'library.howTo': 'Cómo se hace',
   'library.camera': 'Dónde poner la cámara',
   'library.tracked': 'Lo que se mide',
   'library.targetRange': 'Rango objetivo',
@@ -112,12 +149,21 @@ export const es = {
   'library.tracking.low': 'Movimiento pequeño, la medida es aproximada',
   'library.empty': 'Ningún ejercicio con esos filtros',
 
+  'spinalLoad.flexion': 'Flexión lumbar',
+  'spinalLoad.extension': 'Extensión lumbar',
+  'spinalLoad.rotation': 'Rotación',
+  'spinalLoad.neutral': 'Lumbar neutra',
+  'spinalLoad.mixed': 'Flexión y extensión',
+  'library.filterLoad': 'Dirección',
+  'library.load': 'Qué hace la zona lumbar',
+  'review.loadMix': 'Dirección de la carga en esta rutina',
   'area.lowerBack': 'Zona lumbar',
   'area.core': 'Core',
   'area.hips': 'Caderas',
   'area.thoracic': 'Dorsal',
   'area.neckShoulders': 'Cuello y hombros',
   'position.standing': 'De pie',
+  'position.kneeling': 'De rodillas',
   'position.supine': 'Boca arriba',
   'position.prone': 'Boca abajo',
   'position.quadruped': 'A cuatro patas',
@@ -190,6 +236,10 @@ export const es = {
   'summary.romMean': 'Rango medio',
   'summary.issues': 'Lo que más se ha corregido',
   'summary.noIssues': 'Ninguna corrección. Muy bien.',
+  'summary.sets': 'Series',
+  'summary.repsGuided': 'Repeticiones hechas',
+  'summary.heldGuided': 'Tiempo de la serie',
+  'summary.guidedNoForm': 'Aquí irían las correcciones. Para verlas hace falta la cámara.',
   'summary.notes': 'Notas',
   'summary.notesPlaceholder': 'Cómo ha ido, qué has notado…',
   'summary.pain': '¿Cómo está tu dolor ahora? (0 a 10)',
@@ -256,7 +306,8 @@ export const es = {
   'welcome.routine.title': '¿Qué vas a hacer?',
   'welcome.routine.body': 'Puedes cambiarlo todo después: ejercicios, series y rangos.',
   'welcome.routine.starter': 'Empezar con la rutina de ejemplo',
-  'welcome.routine.starterHelp': 'Cinco ejercicios de espalda, unos diez minutos.',
+  'welcome.routine.starterHelp':
+    'Cinco ejercicios de espalda, unos diez minutos. Y una rutina de estiramientos, que es la que te aparecerá primero.',
   'welcome.routine.import': 'Importar la hoja de mi fisio',
   'welcome.routine.importHelp':
     'Le haces una foto y Kinetrace propone la rutina. La revisas antes de guardar nada.',
@@ -384,6 +435,14 @@ export const es = {
   'help.voiceOn': 'Los comandos de voz están encendidos. Puedes apagarlos en',
   'help.voiceOff': 'Los comandos de voz están apagados. Puedes encenderlos en',
 
+  'help.demo': 'Ver el ejercicio antes',
+  'help.demoHelp':
+    'Antes de un ejercicio que no has hecho, la app te dice cómo se hace paso a paso y una figura lo hace delante de ti. Desaparece sola cuando ya lo has hecho, tras tus primeras sesiones, o en cuanto dices que te lo sabes. Desde Ajustes puedes recuperarlo o pedir que aparezca siempre.',
+  'help.guided': 'Sesión sin cámara',
+  'help.guidedHelp':
+    'Cuando no puedes colocar el móvil, la app te canta la sesión: el ritmo, las repeticiones y el propio movimiento («sube», «baja», «redondea», «arquea»), con la figura moviéndose al mismo compás. El ritmo no se lo inventa: sale de lo que dura una repetición del movimiento de referencia de cada ejercicio, o del tempo que te hayan prescrito.',
+  'help.guidedMeasures':
+    'No mide nada, y lo dice: esas series quedan registradas como hechas pero sin medir, sin nada sobre la técnica en el resumen, fuera del rango en el informe y fuera de la gráfica de progreso.',
   'help.camera': 'Dónde poner la cámara',
   'help.cameraHelp':
     'Cada ejercicio lo dice antes de empezar, pero estas son todas las colocaciones que usa la biblioteca.',

@@ -3,28 +3,43 @@
 import type { JSX } from 'react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { EXERCISES, type ExerciseArea, type ExercisePosition } from '@kinetrace/exercises';
+import {
+  EXERCISES,
+  type ExerciseArea,
+  type ExercisePosition,
+  type SpinalLoad,
+} from '@kinetrace/exercises';
 import { metricLandmarkIndices } from '@kinetrace/engine';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { ScreenHeader } from '../components/ScreenHeader.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 
 const AREAS: ExerciseArea[] = ['lowerBack', 'core', 'hips', 'thoracic', 'neckShoulders'];
-const POSITIONS: ExercisePosition[] = ['standing', 'supine', 'prone', 'quadruped', 'sideLying'];
+const POSITIONS: ExercisePosition[] = [
+  'standing',
+  'kneeling',
+  'supine',
+  'prone',
+  'quadruped',
+  'sideLying',
+];
+const LOADS: SpinalLoad[] = ['neutral', 'flexion', 'extension', 'rotation', 'mixed'];
 
 export function LibraryScreen(): JSX.Element {
   const { t, language } = useTranslation();
   const [area, setArea] = useState<ExerciseArea | 'all'>('all');
   const [position, setPosition] = useState<ExercisePosition | 'all'>('all');
+  const [load, setLoad] = useState<SpinalLoad | 'all'>('all');
 
   const filtered = useMemo(
     () =>
       EXERCISES.filter(
         (exercise) =>
           (area === 'all' || exercise.area === area) &&
-          (position === 'all' || exercise.position === position),
+          (position === 'all' || exercise.position === position) &&
+          (load === 'all' || exercise.spinalLoad === load),
       ),
-    [area, position],
+    [area, position, load],
   );
 
   return (
@@ -44,6 +59,13 @@ export function LibraryScreen(): JSX.Element {
           options={POSITIONS.map((value) => ({ value, label: t(`position.${value}`) }))}
           value={position}
           onChange={(value) => setPosition(value as ExercisePosition | 'all')}
+          allLabel={t('library.all')}
+        />
+        <Filter
+          label={t('library.filterLoad')}
+          options={LOADS.map((value) => ({ value, label: t(`spinalLoad.${value}`) }))}
+          value={load}
+          onChange={(value) => setLoad(value as SpinalLoad | 'all')}
           allLabel={t('library.all')}
         />
       </div>

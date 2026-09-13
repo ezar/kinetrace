@@ -8,8 +8,25 @@ export const bodyweightSquat: ExerciseDefinition = {
     es: ['sentadilla', 'sentadillas', 'squat', 'sentadilla libre'],
     en: ['squat', 'bodyweight squat', 'air squat'],
   },
+  howTo: {
+    es: [
+      'De pie, con los pies a la anchura de las caderas y las puntas algo hacia fuera.',
+      'Baja doblando caderas y rodillas, como si fueras a sentarte en una silla que tienes detrás.',
+      'Sube estirando las piernas hasta quedar de pie otra vez.',
+      'El pecho mira al frente y los talones no se despegan del suelo.',
+    ],
+    en: [
+      'Stand with your feet hip width apart and your toes turned out a little.',
+      'Go down by bending your hips and knees, as if sitting onto a chair behind you.',
+      'Push back up until you are standing again.',
+      'Your chest stays up and your heels stay on the floor.',
+    ],
+  },
   area: 'hips',
   position: 'standing',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'none',
   view: { orientation: 'side', cameraHeight: 'chair', distanceMetres: 3 },
   cameraTipKey: 'tip.chairSide',

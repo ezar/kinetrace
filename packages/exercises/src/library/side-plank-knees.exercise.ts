@@ -11,8 +11,23 @@ export const sidePlankKnees: ExerciseDefinition = {
     es: ['plancha lateral rodillas', 'plancha lateral fácil', 'side plank rodillas'],
     en: ['side plank knees', 'modified side plank', 'short lever side plank'],
   },
+  howTo: {
+    es: [
+      'Túmbate de lado apoyado en el antebrazo, con las rodillas dobladas por detrás.',
+      'Sube las caderas apoyándote en el antebrazo y las rodillas, hasta alinear la cabeza, la espalda y los muslos.',
+      'Mantén la posición sin dejar caer la cadera de abajo.',
+    ],
+    en: [
+      'Lie on your side on your forearm, with your knees bent behind you.',
+      'Lift your hips, resting on your forearm and your knees, until head, back and thighs are in line.',
+      'Hold it without letting your lower hip drop.',
+    ],
+  },
   area: 'core',
   position: 'sideLying',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'front', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorFront',

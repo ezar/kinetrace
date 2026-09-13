@@ -11,6 +11,9 @@ const ReviewScreen = lazy(() =>
 import { LibraryScreen } from './screens/LibraryScreen.js';
 import { ExerciseDetailScreen } from './screens/ExerciseDetailScreen.js';
 import { RoutineBuilderScreen } from './screens/RoutineBuilderScreen.js';
+// Eager: it sits between tapping Start and the session, so a chunk to fetch
+// here is a wait nobody asked for.
+import { PrepareScreen } from './screens/PrepareScreen.js';
 const SessionScreen = lazy(() =>
   import('./screens/SessionScreen.js').then((module) => ({ default: module.SessionScreen })),
 );
@@ -60,6 +63,7 @@ export function App(): JSX.Element {
               without the navigation: each is one thing at a time. */}
           <Route path="/welcome" element={<WelcomeScreen />} />
           <Route path="/review/:routineId" element={<ReviewScreen />} />
+          <Route path="/prepare/:routineId" element={<PrepareScreen />} />
           <Route path="/session/:routineId" element={<SessionScreen />} />
           <Route path="/guided/:routineId" element={<GuidedSessionScreen />} />
           <Route path="/summary/:sessionId" element={<SummaryScreen />} />

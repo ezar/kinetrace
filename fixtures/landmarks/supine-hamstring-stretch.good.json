@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "supine-hamstring-stretch",
+  "variant": "good",
+  "description": "Supine hamstring stretch performed as the reference motion describes it.",
+  "view": "side",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1018,
+  "holdSeconds": 34,
+  "holdAtPhase": 0,
+  "expect": {
+    "heldMs": {
+      "atLeast": 30000
+    },
+    "silent": [
+      "bentKnee",
+      "settle"
+    ]
+  }
+}

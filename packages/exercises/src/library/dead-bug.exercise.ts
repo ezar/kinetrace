@@ -8,8 +8,25 @@ export const deadBug: ExerciseDefinition = {
     es: ['dead bug', 'insecto muerto', 'cucaracha'],
     en: ['dead bug', 'deadbug'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca arriba con las caderas y las rodillas dobladas en ángulo recto y los brazos hacia el techo.',
+      'Baja a la vez un brazo por detrás de la cabeza y la pierna contraria, estirándola.',
+      'Vuelve al punto de partida y cambia de lado.',
+      'La zona lumbar no se despega del suelo en ningún momento.',
+    ],
+    en: [
+      'Lie on your back with your hips and knees bent to a right angle and your arms towards the ceiling.',
+      'Lower one arm behind your head and straighten the opposite leg at the same time.',
+      'Come back to the start, then change sides.',
+      'Your lower back stays flat on the floor throughout.',
+    ],
+  },
   area: 'core',
   position: 'supine',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

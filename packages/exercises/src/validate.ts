@@ -7,7 +7,7 @@
 
 import { conditionMetrics, METRIC_IDS, type Condition } from '@kinetrace/engine';
 import { EXERCISE_TEXT } from './dictionary.js';
-import type { ExerciseDefinition } from './types.js';
+import type { ExerciseDefinition, NumberSource, SpinalLoad } from './types.js';
 
 export interface ValidationIssue {
   exerciseId: string;
@@ -18,6 +18,18 @@ export interface ValidationIssue {
 
 const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
+/** Every direction the library knows how to describe and the app can name. */
+/** Every origin a number in the library can honestly claim. */
+const NUMBER_SOURCES: readonly NumberSource[] = ['derived', 'authored'];
+
+const SPINAL_LOADS: readonly SpinalLoad[] = [
+  'flexion',
+  'extension',
+  'rotation',
+  'neutral',
+  'mixed',
+];
+
 export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const report = (path: string, message: string): void => {
@@ -27,6 +39,31 @@ export function validateExercise(exercise: ExerciseDefinition): ValidationIssue[
   if (!ID_PATTERN.test(exercise.id)) report('id', 'must be kebab-case');
   if (!exercise.names.es.trim() || !exercise.names.en.trim()) {
     report('names', 'both Spanish and English names are required');
+  }
+
+  if (!SPINAL_LOADS.includes(exercise.spinalLoad)) {
+    report('spinalLoad', `unknown spinal load "${exercise.spinalLoad}"`);
+  }
+
+  for (const family of ['targets', 'dose'] as const) {
+    if (!NUMBER_SOURCES.includes(exercise.provenance[family])) {
+      report(`provenance.${family}`, `unknown source "${exercise.provenance[family]}"`);
+    }
+  }
+
+  // An exercise nobody can explain has no business being prescribed. Two steps
+  // is the floor because one is a description, not instructions.
+  for (const language of ['es', 'en'] as const) {
+    const steps = exercise.howTo[language];
+    if (steps.length < 2) {
+      report(`howTo.${language}`, 'at least two steps are required');
+    }
+    if (steps.some((step) => !step.trim())) {
+      report(`howTo.${language}`, 'steps must not be blank');
+    }
+  }
+  if (exercise.howTo.es.length !== exercise.howTo.en.length) {
+    report('howTo', 'both languages must describe the same steps');
   }
 
   const metricNames = Object.keys(exercise.metrics);

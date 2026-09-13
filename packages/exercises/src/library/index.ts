@@ -12,8 +12,10 @@ import { bodyweightSquat } from './bodyweight-squat.exercise.js';
 import { catCamel } from './cat-camel.exercise.js';
 import { childsPose } from './childs-pose.exercise.js';
 import { deadBug } from './dead-bug.exercise.js';
+import { doubleKneeToChest } from './double-knee-to-chest.exercise.js';
 import { frontPlank } from './front-plank.exercise.js';
 import { gluteBridge } from './glute-bridge.exercise.js';
+import { halfKneelingHipFlexor } from './half-kneeling-hip-flexor.exercise.js';
 import { hipHinge } from './hip-hinge.exercise.js';
 import { kneeToChest } from './knee-to-chest.exercise.js';
 import { mcgillCurlUp } from './mcgill-curl-up.exercise.js';
@@ -22,6 +24,7 @@ import { pronePressUp } from './prone-press-up.exercise.js';
 import { sidePlankFull } from './side-plank-full.exercise.js';
 import { sidePlankKnees } from './side-plank-knees.exercise.js';
 import { splitSquat } from './split-squat.exercise.js';
+import { supineHamstringStretch } from './supine-hamstring-stretch.exercise.js';
 import { thoracicRotationQuadruped } from './thoracic-rotation-quadruped.exercise.js';
 import { wallAngels } from './wall-angels.exercise.js';
 
@@ -36,6 +39,7 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   sidePlankFull,
   frontPlank,
   kneeToChest,
+  doubleKneeToChest,
   childsPose,
   pronePressUp,
   hipHinge,
@@ -43,6 +47,8 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   thoracicRotationQuadruped,
   bodyweightSquat,
   splitSquat,
+  supineHamstringStretch,
+  halfKneelingHipFlexor,
 ];
 
 export {
@@ -51,8 +57,10 @@ export {
   catCamel,
   childsPose,
   deadBug,
+  doubleKneeToChest,
   frontPlank,
   gluteBridge,
+  halfKneelingHipFlexor,
   hipHinge,
   kneeToChest,
   mcgillCurlUp,
@@ -61,6 +69,7 @@ export {
   sidePlankFull,
   sidePlankKnees,
   splitSquat,
+  supineHamstringStretch,
   thoracicRotationQuadruped,
   wallAngels,
 };

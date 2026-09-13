@@ -11,8 +11,25 @@ export const gluteBridge: ExerciseDefinition = {
     es: ['puente', 'puente de cadera', 'elevación de cadera', 'puente glúteo'],
     en: ['bridge', 'hip bridge', 'hip raise', 'bridging'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca arriba con las rodillas dobladas y los pies apoyados a la anchura de las caderas.',
+      'Sube las caderas apretando los glúteos, hasta que el cuerpo quede en línea de los hombros a las rodillas.',
+      'Baja despacio hasta apoyar del todo.',
+      'Los pies y los hombros no se mueven de su sitio.',
+    ],
+    en: [
+      'Lie on your back with your knees bent and your feet flat, hip width apart.',
+      'Squeeze your glutes and lift your hips until your body is in line from shoulders to knees.',
+      'Lower slowly until you are resting again.',
+      'Your feet and shoulders stay where they are.',
+    ],
+  },
   area: 'lowerBack',
   position: 'supine',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

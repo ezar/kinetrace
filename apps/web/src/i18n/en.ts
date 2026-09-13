@@ -31,11 +31,24 @@ export const en: Record<TranslationKey, string> = {
   'common.seconds': 'seconds',
   'common.reps': 'reps',
   'common.sets': 'sets',
+  'prepare.title': 'This is the exercise',
+  'prepare.dosageReps': '{sets} sets of {reps} repetitions',
+  'prepare.dosageHold': '{sets} sets of {seconds} seconds',
+  'prepare.eachSide': 'on each side',
+  'prepare.start': 'Start',
+  'prepare.known': 'I know this one, stop showing it',
+  'settings.showDemo': 'Show the exercise first',
+  'settings.showDemo.new': 'When it is new',
+  'settings.showDemo.always': 'Always',
+  'settings.showDemo.never': 'Never',
+  'settings.restoreDemos': 'Show the {count} exercises I hid again',
+  'settings.showDemoHelp':
+    'Before you start you see how it is done, and the figure doing it. "When it is new" shows it only for an exercise you have not done before, and through your first sessions. "I know this one" removes it from the next session onwards.',
   'guided.title': 'Voice guided session',
   'guided.subtitle': 'No camera: it calls the pace, it does not measure it',
   'guided.start': 'Start without the camera',
   'guided.explain':
-    'Kinetrace calls out the exercise, the pace and the repetitions. It measures nothing: the set is recorded as done, with no range and no percentage.',
+    'Kinetrace calls out the exercise, the pace, and the repetitions or the seconds, whichever the set asks for. It measures nothing: the set is recorded as done, with no range and no percentage.',
   'guided.noMic': 'Voice commands are off. You can drive it from the screen.',
   'guided.working': 'Working',
   'guided.resting': 'Resting',
@@ -45,6 +58,8 @@ export const en: Record<TranslationKey, string> = {
   'guided.seconds': 'seconds',
   'common.repeat': 'Repeat',
 
+  'guided.switchSide': 'Change sides',
+  'guided.pausedRestarts': 'When you carry on, the set starts again from the top.',
   'guided.exercise': '{name}',
   'guided.exerciseSide': '{name}, {side} side',
   'guided.note': 'From your physio: {note}',
@@ -56,6 +71,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.hold': 'Hold',
   'guided.rep': '{n}',
   'guided.remaining': '{seconds} to go',
+  'guided.release': 'And release',
   'guided.setDone': 'Set done',
   'guided.rest': 'Rest {seconds} seconds',
   'guided.back': 'Here we go',
@@ -74,6 +90,7 @@ export const en: Record<TranslationKey, string> = {
 
   'home.greeting': 'Today',
   'home.today': "Today's routine",
+  'home.stretchRoutine': 'Stretches',
   'home.starterRoutine': 'My back routine',
   'home.noRoutine': 'You have no routine yet',
   'home.unfinished': 'You have a session half done',
@@ -105,6 +122,21 @@ export const en: Record<TranslationKey, string> = {
   'library.filterPosition': 'Position',
   'library.all': 'All',
   'library.defaultRangesNotice': 'Default ranges, adjust with your physiotherapist',
+  'review.source.derived.targets':
+    "These angles come from running the engine over this exercise's reference motion. They are consistent with how the app counts, not with this person.",
+  'review.source.authored.targets':
+    'These angles were written by whoever made the library, with no source behind them.',
+  'review.source.derived.dose': "This dosage comes from the exercise's reference motion.",
+  'review.source.authored.dose':
+    "This dosage was written by whoever made the library, with no source behind it: clinical guidelines for low back pain do not prescribe sets or repetitions. Until you set it, it is nobody's.",
+  'library.source': 'Where these numbers come from',
+  'library.source.targets.derived':
+    "Angles: read off the engine running over this exercise's reference motion.",
+  'library.source.targets.authored': 'Angles: written by hand, with no source.',
+  'library.source.dose.derived': 'Dosage: read off the reference motion.',
+  'library.source.dose.authored':
+    'Dosage: written by hand, with no source. Clinical guidelines do not prescribe sets or repetitions; this is a number your physiotherapist has to set.',
+  'library.howTo': 'How it is done',
   'library.camera': 'Where to put the camera',
   'library.tracked': 'What is measured',
   'library.targetRange': 'Target range',
@@ -114,12 +146,21 @@ export const en: Record<TranslationKey, string> = {
   'library.tracking.low': 'Small movement, the measure is approximate',
   'library.empty': 'No exercise matches those filters',
 
+  'spinalLoad.flexion': 'Lumbar flexion',
+  'spinalLoad.extension': 'Lumbar extension',
+  'spinalLoad.rotation': 'Rotation',
+  'spinalLoad.neutral': 'Lumbar neutral',
+  'spinalLoad.mixed': 'Flexion and extension',
+  'library.filterLoad': 'Direction',
+  'library.load': 'What the lower back does',
+  'review.loadMix': 'Direction of load across this routine',
   'area.lowerBack': 'Lower back',
   'area.core': 'Core',
   'area.hips': 'Hips',
   'area.thoracic': 'Thoracic',
   'area.neckShoulders': 'Neck and shoulders',
   'position.standing': 'Standing',
+  'position.kneeling': 'Kneeling',
   'position.supine': 'On your back',
   'position.prone': 'Face down',
   'position.quadruped': 'On all fours',
@@ -191,6 +232,10 @@ export const en: Record<TranslationKey, string> = {
   'summary.romMean': 'Mean range',
   'summary.issues': 'Most corrected',
   'summary.noIssues': 'No corrections. Well done.',
+  'summary.sets': 'Sets',
+  'summary.repsGuided': 'Repetitions done',
+  'summary.heldGuided': 'Set time',
+  'summary.guidedNoForm': 'Corrections would go here. Seeing them takes the camera.',
   'summary.notes': 'Notes',
   'summary.notesPlaceholder': 'How it went, what you felt…',
   'summary.pain': 'How is your pain right now? (0 to 10)',
@@ -257,7 +302,8 @@ export const en: Record<TranslationKey, string> = {
   'welcome.routine.title': 'What are you going to do?',
   'welcome.routine.body': 'You can change all of it later: exercises, sets and ranges.',
   'welcome.routine.starter': 'Start with the example routine',
-  'welcome.routine.starterHelp': 'Five back exercises, about ten minutes.',
+  'welcome.routine.starterHelp':
+    'Five back exercises, about ten minutes. And a stretching routine, which is the one you will see first.',
   'welcome.routine.import': "Import my physio's sheet",
   'welcome.routine.importHelp':
     'Photograph it and Kinetrace proposes the routine. You review it before anything is saved.',
@@ -385,6 +431,14 @@ export const en: Record<TranslationKey, string> = {
   'help.voiceOn': 'Voice commands are on. You can turn them off in',
   'help.voiceOff': 'Voice commands are off. You can turn them on in',
 
+  'help.demo': 'Seeing the exercise first',
+  'help.demoHelp':
+    'Before an exercise you have not done, the app says how it is done a step at a time and a figure does it in front of you. It goes away on its own once you have done it, after your first sessions, or the moment you say you know it. Settings takes it back, or asks for it every time.',
+  'help.guided': 'A session with no camera',
+  'help.guidedHelp':
+    'When the phone cannot be propped up, the app counts the session out loud instead: the pace, the repetitions and the movements themselves ("up", "down", "round your back", "arch your back"), with the figure moving to the same clock. The pace is not invented: it comes from how long one repetition of each exercise\'s reference motion takes, or from a tempo you were prescribed.',
+  'help.guidedMeasures':
+    'It measures nothing, and says so: those sets are recorded as done but unmeasured — nothing about your form in the summary, out of the range in the report, and out of the progress chart entirely.',
   'help.camera': 'Where to put the camera',
   'help.cameraHelp':
     'Each exercise tells you before it starts, but these are every placement the library uses.',

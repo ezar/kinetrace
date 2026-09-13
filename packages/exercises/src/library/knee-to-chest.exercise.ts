@@ -8,8 +8,25 @@ export const kneeToChest: ExerciseDefinition = {
     es: ['rodillas al pecho', 'flexión de cadera tumbado', 'rodilla al pecho unilateral'],
     en: ['knee to chest', 'single knee to chest', 'knee hug'],
   },
+  howTo: {
+    es: [
+      'Túmbate boca arriba, con las piernas estiradas o las rodillas dobladas.',
+      'Lleva una rodilla hacia el pecho, ayudándote con las manos.',
+      'Suéltala despacio hasta volver al punto de partida.',
+      'La otra pierna y la espalda se quedan apoyadas.',
+    ],
+    en: [
+      'Lie on your back, legs straight or knees bent.',
+      'Bring one knee towards your chest, helping with your hands.',
+      'Release it slowly back to the start.',
+      'Your other leg and your back stay resting on the floor.',
+    ],
+  },
   area: 'lowerBack',
   position: 'supine',
+  spinalLoad: 'flexion',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'side', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorSide',

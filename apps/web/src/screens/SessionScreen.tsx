@@ -197,6 +197,12 @@ export function SessionScreen(): JSX.Element {
                 current: session.item?.setNumber ?? 1,
                 total: session.item?.totalSets ?? 1,
               })}
+              {/* Which limb, when it matters. The engine measures one side and
+                  nothing else on this screen says which, so doing the wrong leg
+                  looked like doing the exercise badly. */}
+              {session.item?.side ? (
+                <span className="text-far-accent"> · {t(`side.${session.item.side}`)}</span>
+              ) : null}
             </p>
             <VoiceIndicator
               status={voice.status}

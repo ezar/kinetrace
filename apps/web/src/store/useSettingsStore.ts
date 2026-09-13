@@ -14,6 +14,8 @@ interface SettingsState extends AppSettings {
   loaded: boolean;
   load: () => Promise<void>;
   update: (patch: Partial<AppSettings>) => Promise<void>;
+  /** Pick up a settings row written outside the store. */
+  refresh: () => Promise<void>;
   setLanguage: (language: Language) => Promise<void>;
   setActiveProfile: (profileId: number | undefined) => Promise<void>;
 }
@@ -45,5 +47,17 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setActiveProfile: async (activeProfileId) => {
     await get().update({ activeProfileId });
+  },
+
+  /**
+   * Re-read the settings row without the first-run side effects.
+   *
+   * `createProfile` writes `activeProfileId` straight to the database, so the
+   * store's copy is stale until the next full load — and a screen that decides
+   * anything from it then decides it wrongly. Anything that writes settings
+   * behind the store's back calls this.
+   */
+  refresh: async () => {
+    set(await getSettings());
   },
 }));

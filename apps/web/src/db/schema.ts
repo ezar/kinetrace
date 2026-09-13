@@ -27,6 +27,12 @@ export interface Profile {
   heightCm?: number;
   /** Free text the user copied from their physiotherapist. Never interpreted. */
   physioNotes: string;
+  /**
+   * Exercises this person has said they already know, so the demonstration
+   * before a session stops offering them. Undoable from settings, all at once:
+   * it is a convenience, not a decision anybody should have to live with.
+   */
+  demoDismissed?: string[];
   createdAt: number;
 }
 
@@ -172,6 +178,12 @@ export interface AppSettings {
   /** Whisper size used for voice commands. */
   voiceModel: 'tiny' | 'base';
   poseModel: 'lite' | 'full' | 'heavy';
+  /**
+   * When to show what an exercise looks like before doing it. `new` shows the
+   * figure for an exercise this profile has never recorded, and for every
+   * exercise while the first few sessions are still settling in.
+   */
+  showDemo: 'new' | 'always' | 'never';
   keepTracks: boolean;
   /** Days a skeleton track is kept before it is pruned. */
   trackRetentionDays: number;
@@ -189,6 +201,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   voiceCommands: false,
   voiceModel: 'tiny',
   poseModel: 'full',
+  showDemo: 'new',
   keepTracks: true,
   trackRetentionDays: 90,
 };

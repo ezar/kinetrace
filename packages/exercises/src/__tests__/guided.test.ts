@@ -52,13 +52,16 @@ describe('holdMarks', () => {
   });
 
   it('warns ten seconds out on a hold long enough for it to help', () => {
-    expect(holdMarks(30)[0]).toBe(10);
+    expect(holdMarks(30)).toContain(10);
     expect(holdMarks(12)).not.toContain(10);
   });
 
-  it('marks the midpoint only on a long hold', () => {
+  it('marks the midpoint of a hold long enough to lose somebody', () => {
+    // Thirty seconds is the longest hold the library prescribes, so the
+    // midpoint threshold has to be below it or it never fires at all.
     expect(holdMarks(60)[0]).toBe(30);
-    expect(holdMarks(30)).not.toContain(15);
+    expect(holdMarks(30)[0]).toBe(15);
+    expect(holdMarks(20)).not.toContain(15);
   });
 
   it('never speaks a mark at or past the end of the hold', () => {
@@ -89,32 +92,113 @@ describe('guidedScript · repetitions', () => {
     reps: 12,
   });
 
-  it('announces, doses, then counts in and begins', () => {
+  it('announces and doses, then hands over to the clock', () => {
     expect(keys(script.preamble)).toEqual([
       'guided.exercise',
       'guided.doseReps',
       'guided.getReady',
-      'guided.count',
-      'guided.count',
-      'guided.count',
-      'guided.begin',
     ]);
     expect(script.preamble[1]?.params).toMatchObject({ set: 2, sets: 3, reps: 12 });
   });
 
+  it('counts in against a clock, a second a number', () => {
+    // It used to live at the end of the preamble, which is spoken as fast as
+    // the voice manages: "three, two, one" took about a second and a half.
+    //
+    // A bridge calls its first movement 379 ms in, so the count runs out and
+    // the movement is the next thing said. See the two tests below for why
+    // there is no "begin" between them.
+    expect(script.leadIn).toEqual([
+      { atMs: 0, key: 'guided.count', params: { n: 3 } },
+      { atMs: 1000, key: 'guided.count', params: { n: 2 } },
+      { atMs: 2000, key: 'guided.count', params: { n: 1 } },
+    ]);
+    expect(script.leadInMs).toBe(3000);
+  });
+
+  it('lets the movement be the word that means go, when it comes soon enough', () => {
+    // Speaking a line cancels the one before it. "Empieza" landed on the
+    // instant the work began and the first movement cue landed a fraction of a
+    // second later, so the start word was cut off on every repetition set in
+    // the library. Where a movement is called that soon it says both.
+    expect(script.leadIn.some((beat) => beat.key === 'guided.begin')).toBe(false);
+    expect(script.rhythm[0]?.atMs).toBeLessThan(700);
+  });
+
+  it('still says go when nothing else does', () => {
+    // A hold has nothing to say for another ten seconds, so the word is the
+    // only thing marking the start.
+    const plank = guidedScript({
+      exercise: getExercise('front-plank')!,
+      name: 'Plancha',
+      setNumber: 1,
+      totalSets: 3,
+      holdSeconds: 30,
+    });
+    expect(plank.leadIn.at(-1)).toEqual({ atMs: 3000, key: 'guided.hold' });
+  });
+
   it('counts every repetition, at the prescribed pace', () => {
-    expect(script.rhythm).toHaveLength(12);
-    expect(script.rhythm[0]).toEqual({ atMs: 3500, key: 'guided.rep', params: { n: 1 } });
-    expect(script.rhythm[11]).toEqual({ atMs: 42_000, key: 'guided.rep', params: { n: 12 } });
+    const counts = script.rhythm.filter((beat) => beat.key === 'guided.rep');
+    expect(counts).toHaveLength(12);
+    expect(counts[0]).toEqual({ atMs: 3500, key: 'guided.rep', params: { n: 1 } });
+    expect(counts[11]).toEqual({ atMs: 42_000, key: 'guided.rep', params: { n: 12 } });
   });
 
   it('counts a repetition when it is finished, not when it starts', () => {
     // Which is what somebody on a mat wants to know: how many are done.
-    expect(script.rhythm[0]?.atMs).toBeGreaterThan(0);
+    expect(script.rhythm.find((beat) => beat.key === 'guided.rep')?.atMs).toBeGreaterThan(0);
+  });
+
+  it('calls the movement inside each repetition, not only the number', () => {
+    // A count says how many are left. It does not say what to do, and somebody
+    // who has not done a bridge before needs the other half.
+    expect(keys(script.rhythm).slice(0, 6)).toEqual([
+      'phaseCue.top',
+      'phaseCue.glute-bridge.rest',
+      'guided.rep',
+      'phaseCue.top',
+      'phaseCue.glute-bridge.rest',
+      'guided.rep',
+    ]);
+  });
+
+  it('paces the movement by the prescribed tempo, not the reference cycle', () => {
+    // The bridge's own cycle is four seconds; its tempo makes it three and a
+    // half, and every cue inside the repetition moves with it.
+    const [up, down] = script.rhythm;
+    expect(up?.atMs).toBeGreaterThan(0);
+    expect(up?.atMs).toBeLessThan(3500 * 0.25);
+    expect(down?.atMs).toBeGreaterThan(3500 * 0.5);
+    expect(down?.atMs).toBeLessThan(3500 * 0.85);
+  });
+
+  it('never lets two beats land close enough to swallow each other', () => {
+    // The bug this exists for: a repetition that begins on the instant the
+    // last one is counted put both on the same millisecond, and speaking the
+    // second cancelled the first — losing the count, which is the one number
+    // the person was waiting for.
+    const times = script.rhythm.map((beat) => beat.atMs);
+    for (const [index, at] of times.slice(1).entries()) {
+      expect(at - (times[index] ?? 0)).toBeGreaterThanOrEqual(700);
+    }
+  });
+
+  it('keeps every count on the repetition it closes, and moves the cue instead', () => {
+    const counts = script.rhythm.filter((beat) => beat.key === 'guided.rep');
+    for (const [index, count] of counts.entries()) {
+      expect(count.atMs).toBe((index + 1) * 3500);
+    }
+  });
+
+  it('says nothing about phases it has no words for', () => {
+    // Better silent than reading an internal id out loud.
+    for (const beat of script.rhythm) expect(beat.key).not.toMatch(/^phaseCue\.undefined/);
   });
 
   it('ends when the last repetition is counted', () => {
     expect(script.workMs).toBe(script.rhythm.at(-1)?.atMs);
+    expect(script.rhythm.at(-1)?.key).toBe('guided.rep');
     expect(keys(script.epilogue)).toEqual(['guided.setDone']);
   });
 
@@ -130,6 +214,23 @@ describe('guidedScript · repetitions', () => {
     expect(squat.preamble[0]).toEqual({
       key: 'guided.exerciseSide',
       params: { name: 'Zancada', side: 'right' },
+    });
+  });
+
+  it('calls the change of leg before naming the exercise again', () => {
+    const first = guidedScript({
+      exercise: getExercise('split-squat')!,
+      name: 'Zancada',
+      setNumber: 1,
+      totalSets: 3,
+      reps: 10,
+      side: 'left',
+      switchSide: true,
+    });
+    expect(first.preamble[0]).toEqual({ key: 'guided.switchSide' });
+    expect(first.preamble[1]).toEqual({
+      key: 'guided.exerciseSide',
+      params: { name: 'Zancada', side: 'left' },
     });
   });
 
@@ -171,7 +272,7 @@ describe('guidedScript · holds', () => {
   });
 
   it('says hold rather than begin, and doses in seconds', () => {
-    expect(keys(script.preamble).at(-1)).toBe('guided.hold');
+    expect(keys(script.leadIn).at(-1)).toBe('guided.hold');
     expect(script.preamble[1]).toMatchObject({
       key: 'guided.doseHold',
       params: { set: 1, sets: 3, seconds: 30 },
@@ -183,17 +284,43 @@ describe('guidedScript · holds', () => {
   });
 
   it('speaks the time remaining, in order, inside the hold', () => {
+    // Halfway first, because thirty seconds of nothing is how somebody with
+    // the phone across the room concludes the app has stopped.
     expect(script.rhythm[0]).toEqual({
-      atMs: 20_000,
+      atMs: 15_000,
       key: 'guided.remaining',
-      params: { seconds: 10 },
+      params: { seconds: 15 },
     });
     const times = script.rhythm.map((beat) => beat.atMs);
     expect([...times].sort((a, b) => a - b)).toEqual(times);
-    expect(times.every((at) => at < script.workMs)).toBe(true);
+    expect(new Set(times).size).toBe(times.length);
   });
 
-  it('counts nothing during a hold too short to narrate', () => {
+  it('never leaves a long stretch of a library hold unspoken', () => {
+    // The library's holds run from 20 to 30 seconds. Beyond that a
+    // hand-edited dose gets one midpoint and the countdown, which is the
+    // shape, not a promise about the gap.
+    for (const seconds of [15, 20, 25, 30]) {
+      const held = guidedScript({
+        exercise: plank,
+        name: 'Plancha frontal',
+        setNumber: 1,
+        totalSets: 1,
+        holdSeconds: seconds,
+      });
+      const times = [0, ...held.rhythm.map((beat) => beat.atMs)];
+      const gaps = times.slice(1).map((at, index) => at - (times[index] ?? 0));
+      expect(Math.max(...gaps)).toBeLessThanOrEqual(15_000);
+    }
+  });
+
+  it('says when the hold is over, on the instant it is over', () => {
+    // Otherwise the last word is "one", a second early, and a thirty second
+    // stretch gets held for twenty-nine.
+    expect(script.rhythm.at(-1)).toEqual({ atMs: 30_000, key: 'guided.release' });
+  });
+
+  it('counts nothing during a hold too short to narrate, but still calls the end', () => {
     const brief = guidedScript({
       exercise: plank,
       name: 'Plancha frontal',
@@ -201,7 +328,7 @@ describe('guidedScript · holds', () => {
       totalSets: 1,
       holdSeconds: 1,
     });
-    expect(brief.rhythm).toEqual([]);
+    expect(brief.rhythm).toEqual([{ atMs: 1000, key: 'guided.release' }]);
     expect(brief.workMs).toBe(1000);
   });
 });
@@ -244,7 +371,10 @@ describe('guidedScript · the whole library', () => {
         ...(exercise.defaults.holdSeconds ? { holdSeconds: exercise.defaults.holdSeconds } : {}),
       });
       expect(script.workMs, id).toBeGreaterThan(0);
-      expect(script.preamble.length, id).toBeGreaterThan(3);
+      expect(script.preamble.length, id).toBeGreaterThanOrEqual(3);
+      // Three counted seconds, and the word that means go where the set does
+      // not open with a movement cue of its own.
+      expect(script.leadIn.length, id).toBeGreaterThanOrEqual(3);
       expect(
         script.rhythm.every((beat) => beat.atMs <= script.workMs),
         id,

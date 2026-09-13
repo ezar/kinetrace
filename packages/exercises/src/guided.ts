@@ -17,8 +17,16 @@
  * The pace is not invented. Every exercise in the library declares the duration
  * of one repetition of its reference motion — the pace its animated demo moves
  * at — and a physiotherapist's tempo replaces it where one is prescribed.
+ *
+ * Neither is the movement. Counting alone tells you how many are left but not
+ * what to do, so each repetition also calls its own phases — "up", "and down" —
+ * at the moment the reference motion starts them. That timing is derived from
+ * the same keyframes the figure on screen animates to, so the voice and the
+ * figure cannot drift apart.
  */
 
+import { phaseCueKey } from './dictionary.js';
+import { phaseMarks } from './phases.js';
 import type { ExerciseDefinition } from './types.js';
 
 /** A line to speak: a key into the dictionary, and what to fill it with. */
@@ -34,6 +42,17 @@ export interface GuidedBeat extends GuidedLine {
 
 export interface GuidedSet {
   preamble: GuidedLine[];
+  /**
+   * The count in, against a clock, from the moment the preamble finishes.
+   *
+   * It used to sit at the end of the preamble, which is spoken back to back as
+   * fast as the voice manages — so "three, two, one" took about a second and a
+   * half and the work started while somebody was still lowering themselves onto
+   * a mat. Three seconds means three seconds.
+   */
+  leadIn: GuidedBeat[];
+  /** How long the count in lasts, in milliseconds. */
+  leadInMs: number;
   /** Spoken against a clock. Empty for a set nobody can pace. */
   rhythm: GuidedBeat[];
   /** How long the work lasts, in milliseconds. */
@@ -52,6 +71,15 @@ export interface GuidedInput {
   holdSeconds?: number;
   /** Prescribed side, for a unilateral exercise. */
   side?: 'left' | 'right';
+  /**
+   * This set is the first on its side, after sets on the other one.
+   *
+   * A unilateral exercise names its side in every announcement, but between
+   * the last set of one leg and the first of the other the only thing that
+   * changes is one word at the end of a sentence — easy to miss with your eyes
+   * shut on a mat. This puts the change first, on its own.
+   */
+  switchSide?: true;
   /** Seconds per phase, when a professional set a pace. */
   tempo?: ReadonlyArray<{ phase: string; seconds: number }>;
   /** A line from the professional, read out before the set. */
@@ -62,10 +90,30 @@ export interface GuidedInput {
 const FINAL_COUNTDOWN_SECONDS = 5;
 /** A hold long enough to be worth a warning before the final count. */
 const TEN_TO_GO_FROM_SECONDS = 15;
-/** A hold long enough that the midpoint is a landmark rather than noise. */
-const HALFWAY_FROM_SECONDS = 40;
+/**
+ * A hold long enough that the midpoint is a landmark rather than noise.
+ *
+ * It was forty, and nothing in the library holds for forty seconds — so the
+ * mark could never fire and the longest hold anybody actually does, thirty
+ * seconds, ran twenty seconds without a word. Twenty-five is the shortest hold
+ * whose midpoint is not already the "ten to go" mark.
+ */
+const HALFWAY_FROM_SECONDS = 25;
 /** Seconds counted down before the work starts. */
 const LEAD_IN_SECONDS = 3;
+/**
+ * Room between two spoken beats.
+ *
+ * Speaking a line cancels whatever is still being said, so beats that land too
+ * close swallow each other. A cat and camel starts its next repetition on the
+ * same instant the last one is counted — both landed on the same millisecond
+ * and the count was lost.
+ *
+ * The count is the anchor: it lands on the repetition it closes, always. A
+ * movement cue gives way, nudged late enough to be heard, and dropped outright
+ * if that would push it into the next count.
+ */
+const BEAT_GAP_MS = 700;
 
 /**
  * Seconds one repetition should take.
@@ -98,6 +146,7 @@ export function holdMarks(seconds: number): number[] {
 export function guidedScript(input: GuidedInput): GuidedSet {
   const isHold = input.exercise.mode === 'hold';
   const preamble: GuidedLine[] = [
+    ...(input.switchSide ? [{ key: 'guided.switchSide' }] : []),
     {
       key: input.side ? 'guided.exerciseSide' : 'guided.exercise',
       params: { name: input.name, ...(input.side ? { side: input.side } : {}) },
@@ -123,10 +172,14 @@ export function guidedScript(input: GuidedInput): GuidedSet {
         },
   );
   preamble.push({ key: 'guided.getReady' });
+
+  // Counted against a clock, not at talking speed: the last second of the count
+  // in is the second somebody uses to settle into the position.
+  const leadIn: GuidedBeat[] = [];
   for (let n = LEAD_IN_SECONDS; n >= 1; n -= 1) {
-    preamble.push({ key: 'guided.count', params: { n } });
+    leadIn.push({ atMs: (LEAD_IN_SECONDS - n) * 1000, key: 'guided.count', params: { n } });
   }
-  preamble.push({ key: isHold ? 'guided.hold' : 'guided.begin' });
+  const leadInMs = LEAD_IN_SECONDS * 1000;
 
   const rhythm: GuidedBeat[] = [];
   let workMs: number;
@@ -134,23 +187,58 @@ export function guidedScript(input: GuidedInput): GuidedSet {
   if (isHold) {
     workMs = Math.max(0, holdSeconds) * 1000;
     for (const mark of holdMarks(holdSeconds)) {
+      // A mark out in the body of the hold says how much is left; the last few
+      // are a countdown, where the number alone is the whole message.
+      const isCountdown = mark <= FINAL_COUNTDOWN_SECONDS;
       rhythm.push({
         atMs: (holdSeconds - mark) * 1000,
-        key: mark === 10 ? 'guided.remaining' : 'guided.count',
-        params: mark === 10 ? { seconds: mark } : { n: mark },
+        key: isCountdown ? 'guided.count' : 'guided.remaining',
+        params: isCountdown ? { n: mark } : { seconds: mark },
       });
     }
+    // And a word on the instant it ends. Without it the last thing anybody
+    // hears is "one", a second before the hold is actually over, so a thirty
+    // second stretch gets held for twenty-nine.
+    if (workMs > 0) rhythm.push({ atMs: workMs, key: 'guided.release' });
   } else {
     // Each number lands on a repetition that is finished, which is what a coach
-    // counts and what somebody on a mat wants to hear: how many are done.
+    // counts and what somebody on a mat wants to hear: how many are done. In
+    // between go the movements themselves — "up", "and down" — placed where the
+    // exercise's own reference motion starts them.
     const stepMs = repSeconds(input) * 1000;
+    const marks = phaseMarks(input.exercise);
+    let lastAtMs = -Infinity;
     for (let rep = 1; rep <= reps; rep += 1) {
-      rhythm.push({ atMs: rep * stepMs, key: 'guided.rep', params: { n: rep } });
+      const countAtMs = rep * stepMs;
+      for (const mark of marks) {
+        const key = phaseCueKey(input.exercise.id, mark.phase);
+        if (!key) continue;
+        const atMs = Math.max((rep - 1) * stepMs + mark.at * stepMs, lastAtMs + BEAT_GAP_MS);
+        if (countAtMs - atMs < BEAT_GAP_MS) continue;
+        rhythm.push({ atMs, key });
+        lastAtMs = atMs;
+      }
+      rhythm.push({ atMs: countAtMs, key: 'guided.rep', params: { n: rep } });
+      lastAtMs = countAtMs;
     }
     workMs = reps * stepMs;
   }
 
-  return { preamble, rhythm, workMs, epilogue: [{ key: 'guided.setDone' }] };
+  // The word that means go, decided last, because whether it is needed depends
+  // on what the set opens with.
+  //
+  // A cat and camel's first movement cue lands on the very instant the work
+  // starts, and every other repetition exercise's inside half a second — and
+  // speaking a line cancels the one before it. So "empieza" was said and cut
+  // off a millisecond later, on every set of every repetition exercise. Where a
+  // movement is called that soon it is the better word anyway: "tres, dos, uno,
+  // redondea" says both that it has started and what to do.
+  const opener = rhythm[0];
+  if (isHold || opener === undefined || opener.atMs >= BEAT_GAP_MS) {
+    leadIn.push({ atMs: leadInMs, key: isHold ? 'guided.hold' : 'guided.begin' });
+  }
+
+  return { preamble, leadIn, leadInMs, rhythm, workMs, epilogue: [{ key: 'guided.setDone' }] };
 }
 
 /** What to say while resting, and when. `atMs` runs from the start of the rest. */

@@ -8,8 +8,23 @@ export const sidePlankFull: ExerciseDefinition = {
     es: ['plancha lateral', 'plancha de lado', 'side plank'],
     en: ['side plank', 'full side plank', 'side bridge'],
   },
+  howTo: {
+    es: [
+      'Túmbate de lado apoyado en el antebrazo, con el codo bajo el hombro.',
+      'Sube las caderas hasta que el cuerpo quede en línea de la cabeza a los pies.',
+      'Mantén la posición sin dejar caer la cadera de abajo.',
+    ],
+    en: [
+      'Lie on your side resting on your forearm, elbow under your shoulder.',
+      'Lift your hips until your body is in one line from head to feet.',
+      'Hold it without letting your lower hip drop.',
+    ],
+  },
   area: 'core',
   position: 'sideLying',
+  spinalLoad: 'neutral',
+  // Thresholds and bands read off the replay tool; the dose written by hand.
+  provenance: { targets: 'derived', dose: 'authored' },
   equipment: 'mat',
   view: { orientation: 'front', cameraHeight: 'floor', distanceMetres: 2.5 },
   cameraTipKey: 'tip.floorFront',
