@@ -210,6 +210,8 @@ export const es = {
     'Kinetrace necesita permiso para usar la cámara. El vídeo no sale de tu dispositivo.',
   'setup.modelLoading': 'Cargando el modelo de postura…',
   'setup.modelError': 'No se ha podido cargar el modelo de postura',
+  'setup.modelErrorHelp':
+    'Hace falta una vez y luego se queda en el dispositivo. Comprueba la conexión y vuelve a intentarlo, o haz la sesión sin cámara.',
 
   'session.set': 'Serie {current} de {total}',
   'session.rest': 'Descanso',

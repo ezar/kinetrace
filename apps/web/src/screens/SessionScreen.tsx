@@ -29,7 +29,7 @@ import { AngleGauge } from '../components/AngleGauge.js';
 import { CueBanner, type CueTone } from '../components/CueBanner.js';
 import { SilhouetteGuide } from '../components/SilhouetteGuide.js';
 import { VoiceIndicator } from '../components/VoiceIndicator.js';
-import { CameraIcon, CameraOffIcon, CheckIcon } from '../components/icons.js';
+import { CameraIcon, CameraOffIcon, CheckIcon, EyeOffIcon, MicIcon } from '../components/icons.js';
 import type { Routine } from '../db/schema.js';
 import type { SetupCheck } from '@kinetrace/engine';
 
@@ -87,7 +87,13 @@ export function SessionScreen(): JSX.Element {
     setSetupState(null);
   }, [exercise, requiredLandmarks]);
 
-  const inSetup = session.stage === 'setup' || session.stage === 'loading';
+  // 'error' belongs here: the only thing that raises it is the pose model
+  // failing to load, which happens before a single set can run. Left out, the
+  // stage fell through to the coaching panel and the app cheerfully showed a
+  // repetition counter, a target band and a gesture hint for a session that had
+  // nothing behind it and would never count anything.
+  const inSetup =
+    session.stage === 'setup' || session.stage === 'loading' || session.stage === 'error';
   useEffect(() => {
     if (!inSetup || !session.frame || !assistantRef.current) return;
     const state = assistantRef.current.update(session.frame);
@@ -235,6 +241,9 @@ export function SessionScreen(): JSX.Element {
             cameraStatus={session.cameraStatus}
             cameraError={session.cameraError}
             modelLoading={session.modelLoading}
+            {...(session.stage === 'error' ? { modelError: session.error ?? '' } : {})}
+            onRetryModel={session.retryModel}
+            onGuided={() => navigate(`/guided/${routineId}`, { replace: true })}
             checks={setupState?.checks ?? NO_BODY_CHECKS}
             reference={exercise?.reference}
             view={exercise?.view.orientation ?? 'side'}
@@ -453,6 +462,11 @@ interface SetupPanelProps {
   cameraStatus: string;
   cameraError?: string;
   modelLoading: boolean;
+  /** Set only when the pose model could not be loaded at all. */
+  modelError?: string;
+  onRetryModel: () => void;
+  /** The way out that does not need a model: the voice guided session. */
+  onGuided: () => void;
   reference?: Parameters<typeof SilhouetteGuide>[0]['reference'];
   view: 'side' | 'front';
   /** False where the browser cannot hold the screen awake; the user should know. */
@@ -466,6 +480,9 @@ function SetupPanel({
   cameraStatus,
   cameraError,
   modelLoading,
+  modelError,
+  onRetryModel,
+  onGuided,
   reference,
   view,
   tip,
@@ -473,6 +490,40 @@ function SetupPanel({
   onStart,
 }: SetupPanelProps): JSX.Element {
   const { t } = useTranslation();
+
+  if (modelError !== undefined) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+        <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-far-safety-bg text-far-safety">
+          <EyeOffIcon size={34} />
+        </div>
+        <p className="text-[22px] font-semibold text-far-safety">{t('setup.modelError')}</p>
+        <p className="max-w-[32ch] text-[15px] leading-relaxed text-far-muted">
+          {t('setup.modelErrorHelp')}
+        </p>
+        {/* The message the adapter gave, kept because it is the only thing that
+            separates "you are offline" from something a bug report needs. */}
+        {modelError ? (
+          <p className="max-w-[32ch] text-[13px] leading-relaxed text-far-dim">{modelError}</p>
+        ) : null}
+        <div className="flex flex-col items-center gap-3">
+          <button
+            className="btn-secondary border-far-line bg-far-surface text-far-ink"
+            onClick={onRetryModel}
+          >
+            {t('common.retry')}
+          </button>
+          <button
+            className="flex items-center gap-2 py-2 text-[15px] text-far-muted underline underline-offset-4"
+            onClick={onGuided}
+          >
+            <MicIcon size={18} />
+            {t('guided.start')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (cameraStatus === 'idle') {
     return (
