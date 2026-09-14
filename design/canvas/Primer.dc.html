@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+  body{margin:0;font-family:Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:#d9702f}a:hover{color:#b45a22}
+  .paso{display:flex;gap:12px;line-height:1.45;font-size:16px}
+  .n{width:18px;flex:none;text-align:right;color:#6a6761}
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#f7f5f2;color:#1b1a18;display:flex;flex-direction:column;box-sizing:border-box;padding:26px 20px 22px;gap:16px;overflow:hidden">
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between">
+    <span style="font-size:14px;color:#6a6761">Así es el ejercicio</span>
+    <span style="font-size:14px;color:#6a6761">1 / 4</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:3px">
+    <span style="font-size:26px;font-weight:700;letter-spacing:-0.01em;line-height:1.15;text-wrap:balance">Rodillas al pecho sostenido</span>
+    <span style="font-size:15px;color:#6a6761">Zona lumbar · Boca arriba · Lumbar en flexión</span>
+  </div>
+
+  <!-- The same figure the session draws, from the same reference motion: the
+       demonstration and the voice cannot describe different movements because
+       they are the same keyframes. A hold shows its position and stays put. -->
+  <div style="background:#fff;border:1px solid #e3ded6;border-radius:20px;height:186px;display:flex;align-items:center;justify-content:center;flex:none">
+    <svg viewBox="0 0 220 150" style="width:80%">
+      <line x1="18" y1="138" x2="202" y2="138" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/>
+      <g fill="none" stroke="#1b1a18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M162 131 L100 134"/>
+        <path d="M100 134 L72 88"/>
+        <path d="M72 88 L104 68"/>
+      </g>
+      <g fill="none" stroke="#1b1a18" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M158 130 L128 112 L90 96"/>
+      </g>
+      <circle cx="182" cy="126" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/>
+      <g fill="#1b1a18"><circle cx="100" cy="134" r="4.5"/><circle cx="72" cy="88" r="4.5"/></g>
+    </svg>
+  </div>
+
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px">
+    <li class="paso"><span class="n">1</span><span>Túmbate boca arriba con las rodillas dobladas.</span></li>
+    <li class="paso"><span class="n">2</span><span>Lleva las dos rodillas hacia el pecho y abrázalas.</span></li>
+    <li class="paso"><span class="n">3</span><span>Quédate ahí, con la espalda y la cabeza apoyadas.</span></li>
+    <li class="paso"><span class="n">4</span><span>Tira solo hasta notar tensión, sin forzar.</span></li>
+  </ol>
+
+  <span style="font-size:15px;color:#6a6761">2 series de 30 segundos</span>
+
+  <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+    <button style="border:0;cursor:pointer;height:56px;border-radius:999px;background:#1b1a18;color:#f7f5f2;font-family:inherit;font-size:18px;font-weight:600">Continuar</button>
+    <!-- The way out is a plain sentence, not a switch buried in settings: it is
+         read once, on the card it turns off. It takes effect from the NEXT
+         session, so nobody loses the explanation they are still standing in. -->
+    <button style="border:0;background:none;cursor:pointer;height:44px;color:#6a6761;font-family:inherit;font-size:15px;text-decoration:underline;text-underline-offset:4px">Ya me lo sé, no me lo enseñes más</button>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

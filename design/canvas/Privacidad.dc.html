@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+  body{margin:0;font-family:Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:#d9702f}a:hover{color:#b45a22}
+  p{margin:0;font-size:15px;line-height:1.55;text-wrap:pretty}
+  .chip{display:flex;align-items:center;gap:7px;padding:10px 13px;border-radius:999px;background:#e0f0e8;color:#1f5a40;font-size:14px;font-weight:600}
+  .nav{flex:1;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#6a6761}
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#f7f5f2;color:#1b1a18;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden">
+  <div style="flex:1;padding:24px 20px 14px;display:flex;flex-direction:column;gap:14px">
+
+    <div style="display:flex;align-items:center;gap:8px;color:#6a6761">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+      <span style="font-size:15px">Atrás</span>
+    </div>
+    <span style="font-size:28px;font-weight:700;letter-spacing:-0.01em">Privacidad</span>
+
+    <p>La cámara se procesa en tu dispositivo, fotograma a fotograma, y se descarta. Kinetrace no guarda vídeo ni lo envía a ningún sitio. Lo que se guarda son ángulos, repeticiones y esqueletos, en este dispositivo. No hay cuentas, no hay analítica y la única conexión a internet es para descargar la propia aplicación y los modelos.</p>
+    <p style="color:#6a6761">Los comandos de voz, si los enciendes, funcionan igual: el micrófono se procesa aquí, no se guarda audio y no sale nada del dispositivo. Lo único que se descarga es el modelo, una vez.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sin vídeo</span>
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sin cuenta</span>
+      <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sin analítica</span>
+      <span class="chip" style="grid-column:1/-1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Funciona sin conexión</span>
+    </div>
+
+    <!-- The one line the promise cannot keep on its own: the pose model and its
+         runtime are fetched on demand, so the camera is offline only after a
+         session that used it. Said here rather than left to the README. -->
+    <div style="background:#fff;border:1px solid #e3ded6;border-radius:18px;padding:14px;display:flex;gap:11px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34618f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.4M12 7.6v.9"/></svg>
+      <p style="font-size:14px;color:#6a6761">La aplicación funciona sin conexión desde la primera visita. La cámara, desde la primera sesión que la haya usado: el modelo de postura se descarga cuando hace falta y se queda.</p>
+    </div>
+
+    <p style="margin-top:auto;font-size:12px;line-height:1.45;color:#6a6761">Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta. Sigue siempre lo que te haya indicado.</p>
+  </div>
+
+  <div style="border-top:1px solid #e3ded6;background:rgba(255,255,255,.94);display:flex;padding-bottom:12px">
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg><span style="font-size:11px">Inicio</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6"/><path d="m12 8.5-4 2.5M12 8.5l4 2.5"/><path d="m12 13-3 6M12 13l3 6"/></svg><span style="font-size:11px">Ejercicios</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg><span style="font-size:11px">Progreso</span></div>
+    <div class="nav" style="color:#1b1a18"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg><span style="font-size:11px;font-weight:600">Ajustes</span></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

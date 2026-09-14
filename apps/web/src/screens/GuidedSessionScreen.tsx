@@ -97,7 +97,11 @@ export function GuidedSessionScreen(): JSX.Element {
           {session.index + 1} / {session.total}
         </span>
         <span className="text-sm text-muted">
-          {resting ? t('guided.resting') : t('guided.working')}
+          {session.stage === 'paused'
+            ? t('session.paused')
+            : resting
+              ? t('guided.resting')
+              : t('guided.working')}
         </span>
       </header>
 
@@ -105,23 +109,30 @@ export function GuidedSessionScreen(): JSX.Element {
         <div className="flex flex-col gap-1">
           <h1 className="text-[26px] font-bold leading-tight tracking-tight text-balance">
             {exercise ? exercise.names[language] : (item?.customNote ?? '')}
-            {item?.side ? (
-              <span className="font-normal text-muted"> · {t(`side.${item.side}`)}</span>
-            ) : null}
           </h1>
+          {/* The side is the only thing that separates two otherwise identical
+              sets, and as a grey word at the end of a long title it was the
+              easiest thing on the screen to miss. */}
           {item ? (
-            <p className="text-muted">
-              {exercise?.mode === 'hold'
-                ? t('guided.doseHold', {
-                    set: item.setNumber,
-                    sets: item.totalSets,
-                    seconds: item.holdSeconds ?? 0,
-                  })
-                : t('guided.doseReps', {
-                    set: item.setNumber,
-                    sets: item.totalSets,
-                    reps: item.reps ?? 0,
-                  })}
+            <p className="flex flex-wrap items-center gap-2.5 text-muted">
+              {item.side ? (
+                <span className="rounded-full bg-accent-soft px-2.5 py-1 text-sm font-semibold text-accent-strong">
+                  {t(`sideLabel.${item.side}`)}
+                </span>
+              ) : null}
+              <span>
+                {exercise?.mode === 'hold'
+                  ? t('guided.doseHold', {
+                      set: item.setNumber,
+                      sets: item.totalSets,
+                      seconds: item.holdSeconds ?? 0,
+                    })
+                  : t('guided.doseReps', {
+                      set: item.setNumber,
+                      sets: item.totalSets,
+                      reps: item.reps ?? 0,
+                    })}
+              </span>
             </p>
           ) : null}
         </div>
@@ -191,10 +202,15 @@ export function GuidedSessionScreen(): JSX.Element {
           <button className="btn-secondary h-12 flex-1" onClick={session.skip}>
             {t('common.skip')}
           </button>
-          <button className="btn-ghost h-12 flex-1" onClick={session.finish}>
-            {t('session.end')}
-          </button>
         </div>
+        {/* Rarer than repeating and skipping, and the only one that cannot be
+            undone. As a third of the row it broke across two lines. */}
+        <button
+          className="h-10 text-[15px] text-muted underline underline-offset-4"
+          onClick={session.finish}
+        >
+          {t('session.end')}
+        </button>
         {/* The first run promises you can drive a session from the mat. That is
             the camera's gestures and the microphone, and this mode has neither,
             so it says so rather than leaving somebody waving at a phone. */}

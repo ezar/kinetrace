@@ -47,6 +47,8 @@
   --color-line: #e3ded6;
   --color-accent: #d9702f;
   --color-accent-soft: #fbeade;
+  /* The accent dark enough to read as text on its own soft tint. */
+  --color-accent-strong: #9c4a15;
   --color-band: #2c7a58;
   --color-band-soft: #e0f0e8;
   --color-correct: #34618f;

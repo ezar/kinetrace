@@ -4,7 +4,8 @@
     { "id": "page-2", "name": "Pantallas" },
     { "id": "page-3", "name": "Sesión" },
     { "id": "page-4", "name": "Primer arranque" },
-    { "id": "page-5", "name": "Profesional" }
+    { "id": "page-5", "name": "Profesional" },
+    { "id": "page-6", "name": "Sin cámara" }
   ],
   "artboards": [
     { "file": "Tokens.dc.html", "page": "page-1", "x": 0, "y": 0, "w": 880, "h": 1100, "title": "Fundamentos" },
@@ -21,6 +22,8 @@
     { "file": "Importar.dc.html", "page": "page-2", "x": 940, "y": 964, "w": 390, "h": 844, "title": "Importar la hoja" },
     { "file": "Ajustes.dc.html", "page": "page-2", "x": 1410, "y": 964, "w": 390, "h": 844, "title": "Ajustes" },
     { "file": "Ayuda.dc.html", "page": "page-2", "x": 1880, "y": 964, "w": 390, "h": 2800, "title": "Ayuda" },
+    { "file": "Privacidad.dc.html", "page": "page-2", "x": 2350, "y": 964, "w": 390, "h": 844, "title": "Privacidad" },
+    { "file": "Acerca.dc.html", "page": "page-2", "x": 2820, "y": 964, "w": 390, "h": 844, "title": "Acerca de" },
 
     { "file": "Camara.dc.html", "page": "page-3", "x": 0, "y": 0, "w": 390, "h": 844, "title": "Colocar la cámara" },
     { "file": "SesionVertical.dc.html", "page": "page-3", "x": 470, "y": 0, "w": 390, "h": 844, "title": "Sesión · vertical" },
@@ -36,7 +39,12 @@
     { "file": "ArranqueEsterilla.dc.html", "page": "page-4", "x": 1880, "y": 0, "w": 390, "h": 844, "title": "5 · Desde la esterilla" },
 
     { "file": "Revision.dc.html", "page": "page-5", "x": 0, "y": 0, "w": 390, "h": 1740, "title": "Revisión profesional" },
-    { "file": "Hoja.dc.html", "page": "page-5", "x": 470, "y": 0, "w": 794, "h": 1123, "title": "Hoja para la consulta" }
+    { "file": "Hoja.dc.html", "page": "page-5", "x": 470, "y": 0, "w": 794, "h": 1123, "title": "Hoja para la consulta" },
+
+    { "file": "Primer.dc.html", "page": "page-6", "x": 0, "y": 0, "w": 390, "h": 844, "title": "1 · Cómo se hace" },
+    { "file": "Guiada.dc.html", "page": "page-6", "x": 470, "y": 0, "w": 390, "h": 844, "title": "2 · Sesión guiada" },
+    { "file": "GuiadaPausa.dc.html", "page": "page-6", "x": 940, "y": 0, "w": 390, "h": 844, "title": "3 · En pausa" },
+    { "file": "ResumenGuiado.dc.html", "page": "page-6", "x": 1410, "y": 0, "w": 390, "h": 844, "title": "4 · Resumen sin medir" }
   ],
   "annotations": [
     {
@@ -126,7 +134,39 @@
       "y": -250,
       "w": 470,
       "text": "Una hoja de papel, no una pantalla: la consulta dura veinte minutos y un teléfono con gráficas que hay que ir tocando no sirve.\n\nCuatro columnas, porque caben en un móvil. La medida va en la misma celda que el objetivo contra el que se juzga — leer una contra otro es para lo que existe la columna — y el objetivo es el que está en vigor, con el nombre de quien lo puso.\n\n«18 series · 212 rep.» son dos hechos, no una multiplicación: «18 × 212» diría doscientas doce repeticiones en cada serie."
+    },
+    {
+      "id": "nota-privacidad",
+      "page": "page-2",
+      "x": 2350,
+      "y": 754,
+      "w": 430,
+      "text": "La promesa, enumerada donde se puede comprobar: sin vídeo, sin cuenta, sin analítica, sin conexión.\n\nY la parte que no se cumple sola: la aplicación funciona sin conexión desde la primera visita, pero la cámara solo desde la primera sesión que la haya usado — el modelo de postura y su motor se descargan cuando hacen falta. Decirlo aquí sale más barato que una promesa que se rompe en el metro.\n\nLos créditos están en «Acerca de» y nombran solo lo que la aplicación lleva encima, con para qué sirve cada uno: acreditar un modelo que no se envía es el defecto con el que nació esa pantalla."
+    },
+    {
+      "id": "nota-guiada",
+      "page": "page-6",
+      "x": 0,
+      "y": -300,
+      "w": 470,
+      "text": "A veces el móvil no se puede apoyar. Lo que queda es una voz que cuenta: el plan, el reloj y el sintetizador, sin modelo de postura, sin asistente de colocación y sin motor.\n\nNo es el modo lejano. El modo lejano existe porque hay una cámara a dos o tres metros y nadie va a tocar el teléfono; aquí no hay gestos ni micrófono, así que las cuatro acciones se tocan con el dedo. El móvil está al alcance de la mano y la paleta normal es la que corresponde.\n\nLa figura va en tinta, sin ámbar. El ámbar marca la articulación que se está midiendo y aquí no se mide ninguna: un ámbar prometería una medición que no está ocurriendo.\n\nTerminar la sesión sale de la fila. Es más raro que repetir y saltar, y es el único que no se puede deshacer; apretujado en un tercio de la fila se partía en dos líneas."
+    },
+    {
+      "id": "nota-pausa",
+      "page": "page-6",
+      "x": 940,
+      "y": -300,
+      "w": 430,
+      "text": "Pausar abandona la serie: un isométrico no se puede retomar a mitad de cuenta sin nada que lo vigile, así que al seguir empieza de nuevo. El número vuelve a la dosis completa para enseñarlo, y la pantalla lo dice — el código lo decía en un comentario desde que se escribió el modo, y la pantalla no lo decía en ninguna parte.\n\nEl descanso es la excepción: ese sí continúa por donde iba, y no se vuelve a anunciar.\n\nEl estado de la esquina tiene que cambiar cuando cambia la sesión. Decía «En marcha» estando en pausa."
+    },
+    {
+      "id": "nota-resumen-guiado",
+      "page": "page-6",
+      "x": 1410,
+      "y": -300,
+      "w": 460,
+      "text": "Aquí terminaba «Lo que más se ha corregido — ninguna corrección, muy bien». Nadie había mirado. Ese titular y esa respuesta son un juicio sobre cómo se ha hecho el trabajo, y darlo sin haberlo visto es justo lo que esta aplicación está hecha para no hacer.\n\nLas cifras se etiquetan por lo que son: «repeticiones hechas», no «buenas»; «tiempo de la serie», no «tiempo mantenido». Sin porcentaje, y sin «parciales: 0» — ese cero está ahí solo porque nadie miraba.\n\nEl hueco de las correcciones no se deja en blanco, porque el silencio se lee como el mismo elogio: se nombra la ausencia y lo que haría falta para llenarla."
     }
   ],
-  "launch": { "view": "canvas", "page": "page-4" }
+  "launch": { "view": "canvas", "page": "page-6" }
 }

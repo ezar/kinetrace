@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
+  <style>
+  body{margin:0;font-family:Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:#d9702f}a:hover{color:#b45a22}
+  p{margin:0;font-size:15px;line-height:1.55;text-wrap:pretty}
+  .lic{display:flex;flex-direction:column;gap:2px;padding:13px 16px;border-bottom:1px solid #e3ded6}
+  .lic:last-child{border-bottom:0}
+  .nav{flex:1;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#6a6761}
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#f7f5f2;color:#1b1a18;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden">
+  <div style="flex:1;padding:26px 20px 14px;display:flex;flex-direction:column;gap:18px">
+
+    <div style="display:flex;align-items:center;gap:8px;color:#6a6761">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+      <span style="font-size:15px">Atrás</span>
+    </div>
+    <span style="font-size:28px;font-weight:700;letter-spacing:-0.01em;text-wrap:balance">Acerca de Kinetrace</span>
+
+    <p>Kinetrace es un proyecto de código abierto (MIT). Nació de la rehabilitación de espalda de su autor y de querer hacerla bien en casa. No es un producto sanitario, no diagnostica y no sustituye a un profesional: ejecuta el plan que te haya dado tu fisioterapeuta.</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6a6761">Modelos y licencias</span>
+      <!-- Only what is actually shipped, and what each is for. A credits list
+           that names a model the app does not carry is the defect this screen
+           was born with. -->
+      <div style="background:#fff;border:1px solid #e3ded6;border-radius:20px;overflow:hidden">
+        <div class="lic"><span style="font-size:15px">MediaPipe Pose Landmarker</span><span style="font-size:13px;color:#6a6761">Apache 2.0 · Google — la postura</span></div>
+        <div class="lic"><span style="font-size:15px">Tesseract</span><span style="font-size:13px;color:#6a6761">Apache 2.0 — leer la hoja, opcional</span></div>
+        <div class="lic"><span style="font-size:15px">Qwen2.5 Instruct</span><span style="font-size:13px;color:#6a6761">Apache 2.0 · Alibaba — leer la hoja, opcional</span></div>
+        <div class="lic"><span style="font-size:15px">Whisper</span><span style="font-size:13px;color:#6a6761">MIT · OpenAI — comandos de voz, opcional</span></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid #e3ded6;border-radius:20px;overflow:hidden">
+      <div class="lic" style="flex-direction:row;align-items:center;gap:12px">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 17-5-5 5-5M15 7l5 5-5 5"/></svg>
+        <span style="flex:1;font-size:16px">Código fuente</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4 11 13M18 14v5.5H4.5V6H10"/></svg>
+      </div>
+      <div class="lic" style="flex-direction:row;align-items:center;gap:12px">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>
+        <span style="flex:1;font-size:16px">Licencia MIT</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4 11 13M18 14v5.5H4.5V6H10"/></svg>
+      </div>
+    </div>
+
+    <p style="margin-top:auto;font-size:12px;line-height:1.45;color:#6a6761">Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta. Sigue siempre lo que te haya indicado.</p>
+  </div>
+
+  <div style="border-top:1px solid #e3ded6;background:rgba(255,255,255,.94);display:flex;padding-bottom:12px">
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg><span style="font-size:11px">Inicio</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6"/><path d="m12 8.5-4 2.5M12 8.5l4 2.5"/><path d="m12 13-3 6M12 13l3 6"/></svg><span style="font-size:11px">Ejercicios</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg><span style="font-size:11px">Progreso</span></div>
+    <div class="nav" style="color:#1b1a18"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg><span style="font-size:11px;font-weight:600">Ajustes</span></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
