@@ -1,0 +1,22 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "doorway-pec-stretch",
+  "variant": "good",
+  "description": "Doorway pec stretch performed as the reference motion describes it.",
+  "view": "front",
+  "fps": 30,
+  "noiseMetres": 0.004,
+  "seed": 1021,
+  "holdSeconds": 34,
+  "holdAtPhase": 0,
+  "expect": {
+    "heldMs": {
+      "atLeast": 30000
+    },
+    "silent": [
+      "elbowHigh",
+      "elbowLow",
+      "settle"
+    ]
+  }
+}

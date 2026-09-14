@@ -15,13 +15,15 @@ import {
   type Landmark,
   type ReferenceMotion,
 } from '@kinetrace/engine';
+import { demoPlane } from './demoPlane.js';
 import { StickFigure } from './StickFigure.js';
 
 export interface ExerciseDemoProps {
   reference: ReferenceMotion;
   /** Landmark indices of the tracked joint. */
   highlight?: readonly number[];
-  /** The view the exercise is performed in, which decides the plane drawn. */
+  /** The view the exercise is performed in. The plane drawn also depends on
+   *  the posture — see `demoPlane`. */
   view?: 'side' | 'front';
   className?: string;
   /** Freeze on the most expressive frame instead of animating. */
@@ -116,7 +118,7 @@ export function ExerciseDemo({
     <StickFigure
       landmarks={landmarks}
       space="world"
-      plane={view === 'side' ? 'sagittal' : 'frontal'}
+      plane={demoPlane(reference.posture, view)}
       cameraSide={reference.cameraSide ?? 'left'}
       highlight={highlight}
       className={className}

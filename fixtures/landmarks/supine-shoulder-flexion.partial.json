@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "supine-shoulder-flexion",
+  "variant": "partial",
+  "description": "Arms that stop short of overhead: counted, but not as good repetitions.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 31,
+  "perturbations": [
+    {
+      "kind": "amplitude",
+      "factor": 0.8
+    }
+  ],
+  "expect": {
+    "reps": 0,
+    "partials": 6
+  }
+}

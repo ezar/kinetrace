@@ -92,14 +92,31 @@ cameraTipKey: 'tip.floorSide',
 The setup assistant blocks the session until the camera actually shows what the
 metrics need, so declare the view the exercise is really measured from.
 
-**A lying exercise can only be drawn from the side.** The animated figure
-projects onto the sagittal plane for `side` and the frontal plane for `front`,
-and for a supine or prone posture the frontal plane looks _down the length of
-the body_: the trunk collapses to a point and the figure is unreadable. Every
-lying exercise in the library is therefore `side`. If yours needs a metric that
-only works from the front — `thoracicRotation` and `hipLevelDifference` both do —
-the figure has to learn a top-down projection first. A supine lumbar rotation is
-the exercise this is currently blocking.
+**The camera's view and the figure's plane are two different choices.** Declare
+the view the metric needs; the demonstration picks its own plane from the
+posture (`apps/web/src/components/demoPlane.ts`), because a body's legibility as
+a drawing is a separate question from what the camera has to see. Standing poses
+are legible either way and follow the camera. Supine, prone and quadruped ones
+are legible only from the side: their head-to-toe axis lies along the depth the
+frontal plane discards, and projected that way the figure collapses into a
+scaffold. Side lying is the mirror case and is drawn from the front. A test
+asserts no library exercise ends up in the plane that collapses it.
+
+**What that still does not buy you is a pose the projection loses.** The plane
+can only choose between two flat pictures of a three-dimensional body, and a
+movement that happens along the discarded axis is invisible in both. Two
+exercises are written and not shipped for this reason:
+
+- a **supine lumbar rotation**, which needs `thoracicRotation` and so the front,
+  where a supine body has no length;
+- an **open book**, side lying, where the plane is right but the knees and the
+  travelling arm both point into the depth, so the figure draws as a box.
+
+A **puppy pose** failed differently and is worth knowing about: the plane was
+right and the movement visible in principle, but with the arms reaching in line
+with the trunk the two drew on top of each other and the result read as a hook
+rather than a person. Before adding an exercise, render its figure and look at
+it — `pnpm verify` cannot see this.
 
 ### 4. Metrics
 

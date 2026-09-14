@@ -1,0 +1,30 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "doorway-pec-stretch",
+  "variant": "elbow-high",
+  "description": "Pec stretch taken with the elbow well above shoulder height.",
+  "view": "front",
+  "fps": 30,
+  "holdSeconds": 20,
+  "holdAtPhase": 0,
+  "noiseMetres": 0.004,
+  "seed": 33,
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "left": {
+          "shoulderAbduction": 128
+        }
+      }
+    }
+  ],
+  "expect": {
+    "cues": [
+      "elbowHigh"
+    ],
+    "silent": [
+      "elbowLow"
+    ]
+  }
+}
