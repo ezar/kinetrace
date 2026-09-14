@@ -177,7 +177,7 @@ export function HomeScreen(): JSX.Element {
           <div className="flex flex-col">
             <span className="text-[26px] font-bold leading-tight">{streak}</span>
             <span className="text-[13px] text-muted">
-              {t('home.streakDays', { count: streak })}
+              {t(streak === 1 ? 'home.streakDay' : 'home.streakDays', { count: streak })}
             </span>
           </div>
           {completed.length > 0 ? (

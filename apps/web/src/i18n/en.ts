@@ -100,6 +100,7 @@ export const en: Record<TranslationKey, string> = {
   'home.unfinishedContinue': 'Carry on',
   'home.createRoutine': 'Create a routine',
   'home.streak': 'Streak',
+  'home.streakDay': '{count} day in a row',
   'home.streakDays': '{count} days in a row',
   'home.lastSession': 'Last session',
   'home.never': 'No sessions yet',
@@ -259,7 +260,7 @@ export const en: Record<TranslationKey, string> = {
   'progress.targetReviewed': 'Target {band}, reviewed by {name}.',
   'progress.targetRoutine': 'Target {band}, from your routine.',
   'progress.targetDefault':
-    'Target {min}–{max}°, the library default. Your physiotherapist can change it.',
+    'Target {band}, the library default. Your physiotherapist can change it.',
   'progress.noData': 'No data for this exercise yet',
   'progress.howYouFelt': 'How you have felt',
   'progress.replay': 'Skeleton replay',
