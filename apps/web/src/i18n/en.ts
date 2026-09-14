@@ -204,6 +204,8 @@ export const en: Record<TranslationKey, string> = {
   'setup.cameraHelp': 'Kinetrace needs camera permission. The video never leaves your device.',
   'setup.modelLoading': 'Loading the pose model…',
   'setup.modelError': 'The pose model could not be loaded',
+  'setup.modelErrorHelp':
+    'It is needed once and then stays on the device. Check your connection and try again, or do the session without the camera.',
 
   'session.set': 'Set {current} of {total}',
   'session.rest': 'Rest',

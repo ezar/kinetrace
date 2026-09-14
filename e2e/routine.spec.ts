@@ -172,6 +172,65 @@ test('the setup assistant blocks the session when it cannot see a body', async (
 });
 
 /**
+ * A session the pose model never arrived for.
+ *
+ * The camera can be perfect and the model still missing: the file is fetched on
+ * demand and kept, so the first session on a bad connection has nothing to see
+ * with. The screen used to fall through to the coaching panel and show a
+ * repetition counter, a target band and the gesture hints for a session that
+ * would never count a single thing.
+ */
+test('says so when the pose model cannot be loaded, instead of coaching anyway', async ({
+  browser,
+}) => {
+  // The service worker keeps the model, so a cached one would never fail.
+  const context = await browser.newContext({ permissions: ['camera'], serviceWorkers: 'block' });
+  const page = await context.newPage();
+  await page.route('**/models/*.task', (route) =>
+    route.fulfill({ status: 404, body: 'not found' }),
+  );
+  await page.addInitScript(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    const stream = canvas.captureStream(30);
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        getUserMedia: async () => stream,
+        enumerateDevices: async () => [{ kind: 'videoinput', deviceId: 'stub', label: 'stub' }],
+      },
+    });
+  });
+
+  await page.goto('profiles');
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await page.getByRole('button', { name: /guardar|save/i }).click();
+  await page.getByRole('link', { name: /inicio|home/i }).click();
+  // Creating the routine opens it in the builder, which is also how we learn
+  // its id rather than assuming one.
+  await page.getByRole('button', { name: /crear una rutina|create a routine/i }).click();
+  await page.waitForURL(/routines\/\d+/);
+  const routineId = /routines\/(\d+)/.exec(page.url())?.[1];
+  await page.goto(`session/${routineId}`);
+
+  await expect(
+    page.getByText(/no se ha podido cargar el modelo|pose model could not be loaded/i),
+  ).toBeVisible({ timeout: 30_000 });
+
+  // Not the coaching panel: no counter, no target band, no gesture hints.
+  await expect(page.getByText(/de 10 repeticiones|of 10 repetitions/i)).toHaveCount(0);
+  await expect(page.getByText(/levanta las dos manos|both hands up/i)).toHaveCount(0);
+
+  // And the two ways forward: try again, or do it without the camera.
+  await expect(page.getByRole('button', { name: /reintentar|try again/i })).toBeVisible();
+  await page.getByRole('button', { name: /sin cámara|without the camera/i }).click();
+  await expect(page).toHaveURL(new RegExp(`guided/${routineId}`));
+
+  await context.close();
+});
+
+/**
  * Voice commands need WebGPU and a microphone. On a machine without them the
  * setting must say so and stay off rather than offering something that cannot
  * work — this test runs on exactly such a machine in CI.

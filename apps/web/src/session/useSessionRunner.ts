@@ -65,6 +65,8 @@ export interface SessionControls {
   repeatCue: () => void;
   /** Throw the current set away and do it again. Nothing is written. */
   redoSet: () => void;
+  /** Load the pose model again after it failed. */
+  retryModel: () => void;
   skipSet: () => void;
   finish: () => Promise<number | undefined>;
   cameraStatus: ReturnType<typeof useCamera>['status'];
@@ -147,7 +149,21 @@ export function useSessionRunner(
     };
   }, [resumeSessionId, plan.length]);
 
-  // Load the pose model once per session.
+  /**
+   * The pose model, loaded once per session — or again, when somebody asks.
+   *
+   * `modelAttempt` is in the dependencies because the failure this recovers
+   * from is usually transient: the file was not in the cache and the network
+   * was not there either. Without it the retry button could only restart the
+   * camera, which was never the thing that broke.
+   */
+  const [modelAttempt, setModelAttempt] = useState(0);
+  const retryModel = useCallback(() => {
+    setError(undefined);
+    setStage('loading');
+    setModelAttempt((attempt) => attempt + 1);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     setModelLoading(true);
@@ -172,7 +188,7 @@ export function useSessionRunner(
       adapterRef.current?.close();
       adapterRef.current = null;
     };
-  }, [settings.poseModel]);
+  }, [settings.poseModel, modelAttempt]);
 
   /**
    * The phone is on the floor and nobody is touching it, so the screen would
@@ -449,6 +465,7 @@ export function useSessionRunner(
     error,
     sessionId,
     modelLoading,
+    retryModel,
     gravity,
     canKeepScreenAwake: wakeLockRef.current?.supported ?? false,
     videoRef: camera.videoRef,
