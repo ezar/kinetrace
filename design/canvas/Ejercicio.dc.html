@@ -5,64 +5,97 @@
 <x-dc>
 <helmet>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900&display=swap">
-  <style>body{margin:0;font-family:Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums}a{color:#d9702f}a:hover{color:#b45a22}</style>
+  <style>
+  body{margin:0;font-family:Figtree,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:#d9702f}a:hover{color:#b45a22}
+  .card{background:#fff;border:1px solid #e3ded6;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .h{font-size:15px;font-weight:600}
+  .paso{display:flex;gap:11px;font-size:15px;line-height:1.45}
+  .n{width:16px;flex:none;text-align:right;color:#6a6761}
+  </style>
 </helmet>
-<div style="width: 390px; height: 844px; background: #f7f5f2; color: #1b1a18; display: flex; flex-direction: column; box-sizing: border-box; padding: 22px 20px 20px; gap: 16px; overflow: hidden">
-  <div style="display: flex; align-items: center; gap: 10px; color: #6a6761">
+<div style="width:390px;height:1220px;background:#f7f5f2;color:#1b1a18;display:flex;flex-direction:column;box-sizing:border-box;padding:22px 20px 20px;gap:14px;overflow:hidden">
+
+  <div style="display:flex;align-items:center;gap:10px;color:#6a6761">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-    <span style="font-size: 14px">Ejercicios</span>
+    <span style="font-size:14px">Ejercicios</span>
   </div>
 
-  <div style="display: flex; flex-direction: column; gap: 3px">
-    <span style="font-size: 28px; font-weight: 700; letter-spacing: -0.01em">Puente de glúteos</span>
-    <span style="font-size: 14px; color: #6a6761">Zona lumbar · boca arriba · sin material</span>
+  <div style="display:flex;flex-direction:column;gap:3px">
+    <span style="font-size:28px;font-weight:700;letter-spacing:-0.01em">Gato y camello</span>
+    <!-- Three facts of the same kind: where it works, how you start, and which
+         way it loads the back. `spinalLoad` is a mechanical description, not a
+         recommendation — nothing selects or warns by it. -->
+    <span style="font-size:14px;color:#6a6761">Zona lumbar · A cuatro patas · Flexión y extensión</span>
   </div>
 
-  <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-    <svg viewBox="0 0 220 150" style="width: 100%; height: 152px">
+  <div class="card" style="gap:8px">
+    <svg viewBox="0 0 220 150" style="width:100%;height:140px">
       <line x1="14" y1="138" x2="206" y2="138" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/>
-      <g fill="none" stroke="#c9c2b6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M44 122 L100 120 L152 118 L170 132"/></g>
-      <g fill="none" stroke="#1b1a18" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M44 116 L62 132 L84 134"/></g>
-      <g fill="none" stroke="#d9702f" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M44 116 L96 74 L150 86"/></g>
-      <g fill="none" stroke="#1b1a18" stroke-width="8" stroke-linecap="round"><path d="M150 86 L168 130"/></g>
-      <circle cx="26" cy="120" r="12" fill="none" stroke="#1b1a18" stroke-width="7"/>
-      <circle cx="96" cy="74" r="15" fill="none" stroke="#d9702f" stroke-width="3" opacity=".45"/>
-      <circle cx="96" cy="74" r="6" fill="#d9702f"/>
+      <g fill="none" stroke="#c9c2b6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M62 128 L62 84 L152 84 L152 128"/></g>
+      <g fill="none" stroke="#1b1a18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M62 130 L62 86"/>
+        <path d="M62 86 Q 107 54 152 86"/>
+        <path d="M152 86 L152 130"/>
+      </g>
+      <circle cx="46" cy="76" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/>
+      <circle cx="107" cy="68" r="16" fill="none" stroke="#d9702f" stroke-width="3" opacity=".45"/>
+      <circle cx="107" cy="68" r="6" fill="#d9702f"/>
     </svg>
-    <span style="font-size: 12px; color: #6a6761; text-align: center">la línea tenue es la posición de partida</span>
+    <span style="font-size:12px;color:#6a6761;text-align:center">la línea tenue es la posición de partida</span>
   </div>
 
-  <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px">
-    <svg viewBox="0 0 120 120" style="width: 96px; flex: none">
+  <!-- Required on every exercise, in both languages: one nobody can explain has
+       no business being prescribed, and an optional field is how a library ends
+       up with half of them blank. -->
+  <div class="card">
+    <span class="h">Cómo se hace</span>
+    <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+      <li class="paso"><span class="n">1</span><span>Ponte a cuatro patas, con las manos bajo los hombros y las rodillas bajo las caderas.</span></li>
+      <li class="paso"><span class="n">2</span><span>Redondea la espalda hacia arriba metiendo la barbilla, vértebra a vértebra.</span></li>
+      <li class="paso"><span class="n">3</span><span>Vuelve al centro y luego hunde la espalda llevando el pecho y la mirada hacia delante.</span></li>
+      <li class="paso"><span class="n">4</span><span>Los brazos no se doblan: el movimiento es de la columna.</span></li>
+    </ol>
+  </div>
+
+  <!-- The two families of number have different histories, and the screen says
+       which is which. The library is never signed, so this line never goes. -->
+  <div class="card" style="gap:7px">
+    <span class="h">De dónde salen estos números</span>
+    <p style="margin:0;font-size:13px;line-height:1.45;color:#6a6761"><span style="color:#1b1a18;font-weight:600">Ángulos:</span> leídos ejecutando el motor sobre el movimiento de referencia de este ejercicio.</p>
+    <p style="margin:0;font-size:13px;line-height:1.45;color:#6a6761"><span style="color:#1b1a18;font-weight:600">Dosis:</span> escrita a mano, sin fuente. Las guías clínicas no prescriben series ni repeticiones; esta cifra la tiene que poner tu fisioterapeuta.</p>
+  </div>
+
+  <div class="card" style="flex-direction:row;align-items:center;gap:16px">
+    <svg viewBox="0 0 120 120" style="width:92px;flex:none">
       <circle cx="60" cy="60" r="37" fill="#e0f0e8"/>
       <path d="M21.9 82 A 44 44 0 1 1 98.1 82" fill="none" stroke="#e3ded6" stroke-width="13" stroke-linecap="round"/>
-      <path d="M93.7 31.7 A 44 44 0 0 1 104 60" fill="none" stroke="#2c7a58" stroke-width="13"/>
+      <path d="M60 16 A 44 44 0 0 1 96 34" fill="none" stroke="#2c7a58" stroke-width="13"/>
     </svg>
-    <div style="display: flex; flex-direction: column; gap: 4px">
-      <span style="font-size: 13px; color: #6a6761">Extensión de cadera</span>
-      <span style="font-size: 26px; font-weight: 700; letter-spacing: -0.01em">165–185°</span>
-      <span style="font-size: 12px; color: #6a6761; line-height: 1.35; text-wrap: pretty">Rango por defecto. Cámbialo si tu fisio te dio otro.</span>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <span style="font-size:13px;color:#6a6761">Flexión de la columna</span>
+      <span style="font-size:26px;font-weight:700;letter-spacing:-0.01em">60–80°</span>
+      <span style="font-size:12px;color:#6a6761;line-height:1.35;text-wrap:pretty">Rango por defecto. Cámbialo si tu fisio te dio otro.</span>
     </div>
   </div>
 
-  <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; padding: 16px; display: flex; gap: 14px; align-items: flex-start">
-    <div style="width: 66px; height: 52px; border-radius: 10px; background: #f7f5f2; flex: none; position: relative; display: flex; align-items: flex-end; justify-content: flex-start; padding: 6px; box-sizing: border-box">
-      <div style="width: 12px; height: 20px; border-radius: 3px; background: #1b1a18"></div>
-      <svg viewBox="0 0 100 40" style="position: absolute; right: 6px; bottom: 8px; width: 40px"><line x1="2" y1="34" x2="98" y2="34" stroke="#ddd5c9" stroke-width="5" stroke-linecap="round"/><g fill="none" stroke="#6a6761" stroke-width="6" stroke-linecap="round"><path d="M18 28 L46 16 L74 22 L86 32"/></g></svg>
-      <svg viewBox="0 0 60 40" style="position: absolute; left: 20px; bottom: 12px; width: 26px; opacity:.5"><path d="M2 20 L54 20" stroke="#d9702f" stroke-width="3" stroke-dasharray="4 4"/></svg>
+  <div class="card" style="flex-direction:row;gap:14px;align-items:flex-start">
+    <div style="width:64px;height:50px;border-radius:10px;background:#f7f5f2;flex:none;position:relative;display:flex;align-items:flex-end;padding:6px;box-sizing:border-box">
+      <div style="width:12px;height:20px;border-radius:3px;background:#1b1a18"></div>
+      <svg viewBox="0 0 100 40" style="position:absolute;right:6px;bottom:8px;width:38px"><line x1="2" y1="34" x2="98" y2="34" stroke="#ddd5c9" stroke-width="5" stroke-linecap="round"/><g fill="none" stroke="#6a6761" stroke-width="6" stroke-linecap="round"><path d="M18 28 L46 16 L74 22 L86 32"/></g></svg>
     </div>
-    <div style="display: flex; flex-direction: column; gap: 3px">
-      <span style="font-size: 15px; font-weight: 600">Dónde poner la cámara</span>
-      <span style="font-size: 13px; color: #6a6761; line-height: 1.4; text-wrap: pretty">En el suelo apoyado en un libro, a 2,5 m, de lado a la esterilla.</span>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <span class="h">Dónde poner la cámara</span>
+      <span style="font-size:13px;color:#6a6761;line-height:1.4;text-wrap:pretty">En el suelo apoyado en un libro, a 2,5 m, de lado a la esterilla.</span>
     </div>
   </div>
 
-  <div style="display: flex; align-items: center; gap: 9px; padding: 0 4px">
-    <span style="width: 9px; height: 9px; border-radius: 999px; background: #2c7a58"></span>
-    <span style="font-size: 13px; color: #6a6761">Se sigue bien: cadera, rodilla y hombro quedan a la vista</span>
+  <div style="display:flex;align-items:center;gap:9px;padding:0 4px">
+    <span style="width:9px;height:9px;border-radius:999px;background:#2c7a58"></span>
+    <span style="font-size:13px;color:#6a6761">Se sigue de forma razonable</span>
   </div>
 
-  <div style="margin-top: auto; display: flex; gap: 10px">
+  <div style="margin-top:auto;display:flex;gap:10px">
     <button style="flex:1;border:0;cursor:pointer;height:54px;border-radius:999px;background:#1b1a18;color:#f7f5f2;font-family:inherit;font-size:16px;font-weight:600">Añadir a una rutina</button>
     <button style="cursor:pointer;width:54px;height:54px;border-radius:999px;background:#fff;border:1px solid #e3ded6;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></button>
   </div>

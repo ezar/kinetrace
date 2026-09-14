@@ -172,6 +172,50 @@ const ERROR_VARIANTS: SyntheticFixtureSpec[] = [
     perturbations: [{ kind: 'amplitude', factor: 0.72 }],
     expect: { reps: 0, partials: 6 },
   },
+  {
+    kind: 'synthetic',
+    exerciseId: 'supine-shoulder-flexion',
+    variant: 'bent-elbows',
+    description: 'Arms taken overhead with the elbows folding to buy the last of the range.',
+    view: 'side',
+    fps: 30,
+    cycles: 6,
+    noiseMetres: NOISE_METRES,
+    seed: 30,
+    perturbations: [{ kind: 'override', pose: { elbowAngle: 118 } }],
+    expect: { cues: ['elbowsBending'] },
+  },
+  {
+    kind: 'synthetic',
+    exerciseId: 'supine-shoulder-flexion',
+    variant: 'partial',
+    description: 'Arms that stop short of overhead: counted, but not as good repetitions.',
+    view: 'side',
+    fps: 30,
+    cycles: 6,
+    noiseMetres: NOISE_METRES,
+    seed: 31,
+    // Between the phase threshold and the target band. Below 0.71 the movement
+    // never enters the `up` phase and the engine sees nothing at all, which is
+    // a different fixture from this one: this is the person who does the
+    // repetition and comes up short.
+    perturbations: [{ kind: 'amplitude', factor: 0.8 }],
+    expect: { reps: 0, partials: 6 },
+  },
+  {
+    kind: 'synthetic',
+    exerciseId: 'doorway-pec-stretch',
+    variant: 'elbow-high',
+    description: 'Pec stretch taken with the elbow well above shoulder height.',
+    view: 'front',
+    fps: 30,
+    holdSeconds: 20,
+    holdAtPhase: 0,
+    noiseMetres: NOISE_METRES,
+    seed: 33,
+    perturbations: [{ kind: 'override', pose: { left: { shoulderAbduction: 128 } } }],
+    expect: { cues: ['elbowHigh'], silent: ['elbowLow'] },
+  },
 ];
 
 export const FIXTURE_SPECS: SyntheticFixtureSpec[] = [...goodVariants(), ...ERROR_VARIANTS];

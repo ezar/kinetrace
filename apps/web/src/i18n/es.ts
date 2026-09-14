@@ -47,7 +47,7 @@ export const es = {
   'guided.start': 'Empezar sin cámara',
   'guided.explain':
     'Kinetrace te va diciendo el ejercicio, el ritmo, y las repeticiones o los segundos que toque. No mide nada: la serie queda registrada como hecha, sin rango ni porcentaje.',
-  'guided.noMic': 'Los comandos de voz están apagados. Puedes manejarla desde la pantalla.',
+  'guided.noMic': 'Los gestos y la voz no están en este modo: se maneja desde la pantalla.',
   'guided.working': 'En marcha',
   'guided.resting': 'Descanso',
   'guided.noProfile': 'No hay ningún perfil activo. Vuelve a inicio y elige uno.',
@@ -82,6 +82,10 @@ export const es = {
 
   'side.left': 'izquierda',
   'side.right': 'derecha',
+  // Said with the noun, so it agrees: «lado derecha» is what a template
+  // with a bare adjective produces, and this one is read rather than heard.
+  'sideLabel.left': 'Lado izquierdo',
+  'sideLabel.right': 'Lado derecho',
   'common.rest': 'descanso',
   'common.of': 'de',
   'common.yes': 'Sí',

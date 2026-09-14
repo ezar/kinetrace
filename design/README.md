@@ -13,15 +13,16 @@ editor from these files and publishes it.
 
 ## What the canvas settles
 
-|                 |                                                                              |
-| --------------- | ---------------------------------------------------------------------------- |
-| Fundamentos     | colour, type scale, radii, minimum hit sizes                                 |
-| Componentes     | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons       |
-| Pantallas       | the ten mobile screens at 390 px, help among them                            |
-| Sesión          | camera setup, far mode in portrait, landscape and on a laptop, rest, summary |
-| Primer arranque | the five first-run steps, in order                                           |
-| Profesional     | the prescription review, and the printed sheet at A4                         |
-| Estados         | empty, loading, error, tracking lost, safety stop                            |
+|                 |                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------- |
+| Fundamentos     | colour, type scale, radii, minimum hit sizes                                       |
+| Componentes     | stick figure, angle gauge, counter, cue banner, badges, heatmap, icons             |
+| Pantallas       | the twelve mobile screens at 390 px, help, privacy and credits among them          |
+| Sesión          | camera setup, far mode in portrait, landscape and on a laptop, rest, summary       |
+| Primer arranque | the five first-run steps, in order                                                 |
+| Profesional     | the prescription review, and the printed sheet at A4                               |
+| Sin cámara      | the how-to card, the voice session, its pause, and a summary that measured nothing |
+| Estados         | empty, loading, error, tracking lost, safety stop                                  |
 
 ## Decisions the canvas makes
 
@@ -40,3 +41,18 @@ editor from these files and publishes it.
   each measurement in the same cell as the target it is judged against. The
   artboard is A4 at 96 dpi, not a phone, because that is what comes out of the
   printer.
+- **The voice session is not far mode.** Far mode exists because there is a
+  camera two or three metres away and nobody is going to touch the phone. In
+  the voice session there are no gestures and no microphone, so all four
+  actions are tapped: the phone is within reach and the normal palette is the
+  one that applies. The figure is drawn in ink with no amber, because nothing is
+  being tracked and an amber joint would promise a measurement that is not
+  happening.
+- **Pausing a set abandons it; pausing a rest does not.** A hold cannot be
+  picked up mid-count with nothing watching, so the number goes back to the full
+  dose and the screen says the set will start again. A rest carries on from
+  where it stopped and is not announced twice.
+- **An unmeasured summary names the absence.** Leaving the corrections block
+  empty reads as praise, and "no corrections, well done" is a verdict on work
+  nobody watched. It says where the corrections would have been and what it
+  takes to see them, and labels the counts as what was asked for.

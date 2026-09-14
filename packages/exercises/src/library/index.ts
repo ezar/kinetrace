@@ -12,6 +12,7 @@ import { bodyweightSquat } from './bodyweight-squat.exercise.js';
 import { catCamel } from './cat-camel.exercise.js';
 import { childsPose } from './childs-pose.exercise.js';
 import { deadBug } from './dead-bug.exercise.js';
+import { doorwayPecStretch } from './doorway-pec-stretch.exercise.js';
 import { doubleKneeToChest } from './double-knee-to-chest.exercise.js';
 import { frontPlank } from './front-plank.exercise.js';
 import { gluteBridge } from './glute-bridge.exercise.js';
@@ -25,6 +26,7 @@ import { sidePlankFull } from './side-plank-full.exercise.js';
 import { sidePlankKnees } from './side-plank-knees.exercise.js';
 import { splitSquat } from './split-squat.exercise.js';
 import { supineHamstringStretch } from './supine-hamstring-stretch.exercise.js';
+import { supineShoulderFlexion } from './supine-shoulder-flexion.exercise.js';
 import { thoracicRotationQuadruped } from './thoracic-rotation-quadruped.exercise.js';
 import { wallAngels } from './wall-angels.exercise.js';
 
@@ -49,6 +51,8 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   splitSquat,
   supineHamstringStretch,
   halfKneelingHipFlexor,
+  supineShoulderFlexion,
+  doorwayPecStretch,
 ];
 
 export {
@@ -57,6 +61,7 @@ export {
   catCamel,
   childsPose,
   deadBug,
+  doorwayPecStretch,
   doubleKneeToChest,
   frontPlank,
   gluteBridge,
@@ -70,6 +75,7 @@ export {
   sidePlankKnees,
   splitSquat,
   supineHamstringStretch,
+  supineShoulderFlexion,
   thoracicRotationQuadruped,
   wallAngels,
 };

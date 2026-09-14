@@ -49,7 +49,7 @@ export const en: Record<TranslationKey, string> = {
   'guided.start': 'Start without the camera',
   'guided.explain':
     'Kinetrace calls out the exercise, the pace, and the repetitions or the seconds, whichever the set asks for. It measures nothing: the set is recorded as done, with no range and no percentage.',
-  'guided.noMic': 'Voice commands are off. You can drive it from the screen.',
+  'guided.noMic': 'Gestures and the microphone are not in this mode: drive it from the screen.',
   'guided.working': 'Working',
   'guided.resting': 'Resting',
   'guided.noProfile': 'No active profile. Go back home and pick one.',
@@ -79,6 +79,8 @@ export const en: Record<TranslationKey, string> = {
 
   'side.left': 'left',
   'side.right': 'right',
+  'sideLabel.left': 'Left side',
+  'sideLabel.right': 'Right side',
   'common.rest': 'rest',
   'common.of': 'of',
   'common.yes': 'Yes',

@@ -123,6 +123,12 @@ export const RULE_CUES: Record<string, Localized> = {
   'cue.armsToWall': { es: 'brazos a la pared', en: 'arms to the wall' },
   'cue.turnMore': { es: 'gira un poco más', en: 'turn a bit more' },
   'cue.holdStill': { es: 'quédate quieto', en: 'hold still' },
+  'cue.straightenArms': { es: 'estira los codos', en: 'straighten your elbows' },
+  'cue.hipsOverKnees': { es: 'caderas sobre las rodillas', en: 'hips over your knees' },
+  'cue.elbowShoulderHeight': {
+    es: 'codo a la altura del hombro',
+    en: 'elbow at shoulder height',
+  },
   'cue.squeezeGlutes': { es: 'aprieta los glúteos', en: 'squeeze your glutes' },
   'cue.straightenLeg': { es: 'estira la pierna', en: 'straighten your leg' },
   'cue.liftLegHigher': { es: 'sube más la pierna', en: 'lift your leg higher' },

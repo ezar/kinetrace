@@ -20,16 +20,26 @@
     <div style="display: flex; flex-direction: column; gap: 8px">
       <div style="display: flex; gap: 7px; align-items: center">
         <span style="font-size: 12px; color: #6a6761; width: 52px">Zona</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#1b1a18;color:#f7f5f2;font-weight:600">Todas</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid #e3ded6">Lumbar</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid #e3ded6">Core</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid #e3ded6">Caderas</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#1b1a18;color:#f7f5f2;font-weight:600">Todas</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Lumbar</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Core</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Caderas</span>
       </div>
       <div style="display: flex; gap: 7px; align-items: center">
-        <span style="font-size: 12px; color: #6a6761; width: 52px">Postura</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#1b1a18;color:#f7f5f2;font-weight:600">Todas</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid #e3ded6">Boca arriba</span>
-        <span style="font-size:13px;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid #e3ded6">Cuatro patas</span>
+        <span style="font-size: 12px; color: #6a6761; width: 52px">Posición</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#1b1a18;color:#f7f5f2;font-weight:600">Todas</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Boca arriba</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Cuatro patas</span>
+      </div>
+      <!-- Which way the exercise loads the back. A mechanical description of
+           the same kind as the area, and nothing selects, warns or reorders by
+           it: which way a routine should lean is a clinical decision about a
+           body this app has never examined. -->
+      <div style="display: flex; gap: 7px; align-items: center">
+        <span style="font-size: 12px; color: #6a6761; width: 52px">Dirección</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#1b1a18;color:#f7f5f2;font-weight:600">Todas</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Lumbar neutra</span>
+        <span style="font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;background:#fff;border:1px solid #e3ded6">Flexión</span>
       </div>
     </div>
   </div>
@@ -37,27 +47,27 @@
   <div style="flex: 1; overflow: hidden; padding: 0 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: start">
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><line x1="18" y1="136" x2="202" y2="136" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M48 116 L66 132 L88 134"/><path d="M48 116 L100 74 L152 86 L170 130"/></g><circle cx="30" cy="120" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/><circle cx="100" cy="74" r="6" fill="#d9702f"/></svg></div>
-      <div class="nm">Puente de glúteos</div><div class="mt">Lumbar · de lado · suelo</div>
+      <div class="nm">Puente de glúteos</div><div class="mt">Zona lumbar · De lado</div>
     </div>
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><line x1="18" y1="136" x2="202" y2="136" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M56 96 L56 130 L82 132"/><path d="M56 96 L116 98 L154 112 L188 132"/></g><circle cx="34" cy="90" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/><circle cx="116" cy="98" r="6" fill="#d9702f"/></svg></div>
-      <div class="nm">Plancha frontal</div><div class="mt">Core · de lado · suelo</div>
+      <div class="nm">Plancha frontal</div><div class="mt">Core · De lado</div>
     </div>
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><line x1="18" y1="134" x2="202" y2="134" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M66 70 L66 130"/><path d="M66 70 L128 70 L128 100 L108 130"/><path d="M66 70 L46 54"/><path d="M128 70 L168 60 L200 52"/></g><circle cx="40" cy="62" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/><circle cx="128" cy="70" r="6" fill="#d9702f"/></svg></div>
-      <div class="nm">Perro de muestra</div><div class="mt">Lumbar · de lado · suelo</div>
+      <div class="nm">Perro de muestra</div><div class="mt">Zona lumbar · De lado</div>
     </div>
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><line x1="18" y1="134" x2="202" y2="134" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M70 74 L70 130"/><path d="M70 74 Q 110 56 146 76"/><path d="M146 76 L146 104 L124 130"/><path d="M70 74 L50 58"/></g><circle cx="44" cy="66" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/></svg></div>
-      <div class="nm">Gato y camello</div><div class="mt">Lumbar · de lado · suelo</div>
+      <div class="nm">Gato y camello</div><div class="mt">Zona lumbar · De lado</div>
     </div>
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><line x1="18" y1="136" x2="202" y2="136" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M52 122 L112 118 L172 120"/><path d="M112 118 L138 76 L104 62"/><path d="M52 122 L58 96"/></g><circle cx="34" cy="124" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/><circle cx="112" cy="118" r="6" fill="#d9702f"/></svg></div>
-      <div class="nm">Bicho muerto</div><div class="mt">Core · de lado · suelo</div>
+      <div class="nm">Bicho muerto</div><div class="mt">Core · De lado</div>
     </div>
     <div class="card">
       <div class="fig"><svg viewBox="0 0 220 150" style="width:88%"><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M104 44 L118 78 L92 108 L116 138"/><path d="M104 44 L74 58 L62 80"/></g><circle cx="98" cy="26" r="13" fill="none" stroke="#1b1a18" stroke-width="8"/><circle cx="92" cy="108" r="6" fill="#d9702f"/></svg></div>
-      <div class="nm">Sentadilla</div><div class="mt">Caderas · de lado · silla</div>
+      <div class="nm">Sentadilla</div><div class="mt">Caderas · De lado</div>
     </div>
   </div>
 
