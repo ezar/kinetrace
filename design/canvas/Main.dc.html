@@ -11,57 +11,68 @@
   <style>
     body { margin: 0; font-family: Figtree, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
     a { color: #d9702f; } a:hover { color: #b45a22; }
+    .thumb { flex: 1; aspect-ratio: 1; border-radius: 14px; background: #f7f5f2; display: flex; align-items: center; justify-content: center; }
+    .nav { flex: 1; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6a6761; }
   </style>
 </helmet>
 <div style="width: 390px; height: 844px; background: #f7f5f2; color: #1b1a18; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden">
 
-  <div style="flex: 1; padding: 28px 20px 16px; display: flex; flex-direction: column; gap: 22px">
+  <div style="flex: 1; padding: 26px 20px 14px; display: flex; flex-direction: column; gap: 18px">
 
     <div style="display: flex; align-items: center; justify-content: space-between">
       <div style="display: flex; flex-direction: column; gap: 2px">
         <span style="font-size: 13px; color: #6a6761">Hoy</span>
         <span style="font-size: 26px; font-weight: 700; letter-spacing: -0.01em">César</span>
       </div>
-      <div style="display: flex; align-items: center; gap: 8px">
-        <div style="width: 44px; height: 44px; border-radius: 999px; background: #d9702f; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">C</div>
-      </div>
+      <div style="width: 44px; height: 44px; border-radius: 999px; background: #d9702f; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">C</div>
     </div>
 
-    <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; box-shadow: 0 1px 2px rgba(27,26,24,.04), 0 8px 24px rgba(27,26,24,.06); padding: 20px; display: flex; flex-direction: column; gap: 18px">
-      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <span style="font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #d9702f">Rutina de hoy</span>
-          <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Espalda · mañana</span>
-          <span style="font-size: 14px; color: #6a6761">5 ejercicios · unos 21 min</span>
-        </div>
+    <div style="background: #fff; border: 1px solid #e3ded6; border-radius: 20px; box-shadow: 0 1px 2px rgba(27,26,24,.04), 0 8px 24px rgba(27,26,24,.06); padding: 18px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 3px">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #d9702f">Rutina de hoy</span>
+        <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Estiramientos</span>
+        <span style="font-size: 14px; color: #6a6761">4 · unos 12 min</span>
       </div>
 
       <div style="display: flex; gap: 8px">
-        <div style="flex: 1; aspect-ratio: 1; border-radius: 14px; background: #f7f5f2; display: flex; align-items: center; justify-content: center">
-          <svg viewBox="0 0 220 150" style="width: 86%"><line x1="18" y1="134" x2="202" y2="134" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M66 70 L66 130"/><path d="M66 70 L128 70 L128 100 L108 130"/><path d="M66 70 L46 54"/></g><circle cx="38" cy="64" r="12" fill="none" stroke="#1b1a18" stroke-width="8"/></svg>
+        <div class="thumb">
+          <!-- rodillas al pecho -->
+          <svg viewBox="0 0 220 150" style="width: 84%"><line x1="20" y1="134" x2="200" y2="134" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M162 131 L100 134"/><path d="M100 134 L72 88 L104 68"/></g><g fill="none" stroke="#1b1a18" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M158 130 L128 112 L90 96"/></g><circle cx="182" cy="126" r="13" fill="none" stroke="#1b1a18" stroke-width="9"/></svg>
         </div>
-        <div style="flex: 1; aspect-ratio: 1; border-radius: 14px; background: #f7f5f2; display: flex; align-items: center; justify-content: center">
-          <svg viewBox="0 0 220 150" style="width: 86%"><line x1="18" y1="136" x2="202" y2="136" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M48 116 L66 132 L88 134"/><path d="M48 116 L100 74 L152 86 L170 130"/></g><circle cx="30" cy="120" r="12" fill="none" stroke="#1b1a18" stroke-width="8"/></svg>
+        <div class="thumb">
+          <!-- isquiotibial tumbado -->
+          <svg viewBox="0 0 220 150" style="width: 84%"><line x1="20" y1="138" x2="200" y2="138" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M164 130 L100 133"/><path d="M100 133 L60 135 L42 128"/><path d="M100 133 L95 78 L88 34"/></g><g fill="none" stroke="#1b1a18" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M160 129 L128 106 L100 86"/></g><circle cx="184" cy="124" r="13" fill="none" stroke="#1b1a18" stroke-width="9"/></svg>
         </div>
-        <div style="flex: 1; aspect-ratio: 1; border-radius: 14px; background: #f7f5f2; display: flex; align-items: center; justify-content: center">
-          <svg viewBox="0 0 220 150" style="width: 86%"><line x1="18" y1="136" x2="202" y2="136" stroke="#ddd5c9" stroke-width="6" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M56 96 L56 130 L82 132"/><path d="M56 96 L116 98 L154 112 L188 132"/></g><circle cx="34" cy="90" r="12" fill="none" stroke="#1b1a18" stroke-width="8"/></svg>
+        <div class="thumb">
+          <!-- psoas en rodilla -->
+          <svg viewBox="0 0 220 150" style="width: 84%"><line x1="20" y1="136" x2="200" y2="136" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M112 44 L112 96"/><path d="M112 96 L70 96 L68 132"/><path d="M112 96 L150 126 L182 132"/></g><circle cx="112" cy="28" r="14" fill="none" stroke="#1b1a18" stroke-width="9"/></svg>
         </div>
-        <div style="flex: 1; aspect-ratio: 1; border-radius: 14px; background: #f7f5f2; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #6a6761">+2</div>
+        <div class="thumb">
+          <!-- postura del niño -->
+          <svg viewBox="0 0 220 150" style="width: 84%"><line x1="20" y1="132" x2="200" y2="132" stroke="#ddd5c9" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#1b1a18" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><path d="M168 112 L120 96 L74 92"/><path d="M168 112 L176 128"/><path d="M120 96 L112 126 L146 128"/><path d="M74 92 L36 96"/></g><circle cx="60" cy="92" r="13" fill="none" stroke="#1b1a18" stroke-width="9"/></svg>
+        </div>
       </div>
 
       <button style="border: 0; cursor: pointer; height: 60px; border-radius: 999px; background: #1b1a18; color: #f7f5f2; font-family: inherit; font-size: 19px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
         Empezar
       </button>
+      <!-- The second way in, on purpose. Measured is the default; this is the
+           one for a morning when the phone cannot be propped up. -->
+      <button style="cursor: pointer; height: 48px; border-radius: 999px; background: #fff; border: 1px solid #e3ded6; color: #1b1a18; font-family: inherit; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: -6px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
+        Empezar sin cámara
+      </button>
+      <span style="text-align: center; font-size: 14px; color: #6a6761; text-decoration: underline; text-underline-offset: 4px">Editar</span>
     </div>
 
     <div style="display: flex; gap: 10px">
-      <div style="flex: 1; background: #fff; border: 1px solid #e3ded6; border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+      <div style="flex: 1; background: #fff; border: 1px solid #e3ded6; border-radius: 16px; padding: 13px 15px; display: flex; align-items: center; gap: 12px">
         <div style="display: flex; flex-direction: column">
           <span style="font-size: 26px; font-weight: 700; line-height: 1.1">6</span>
-          <span style="font-size: 13px; color: #6a6761">días seguidos</span>
+          <span style="font-size: 13px; color: #6a6761; white-space: nowrap">días seguidos</span>
         </div>
-        <div style="margin-left: auto; display: flex; gap: 3px; align-items: flex-end">
+        <div style="margin-left: auto; display: flex; gap: 3px; align-items: flex-end" aria-hidden="true">
           <span style="width: 7px; height: 14px; border-radius: 3px; background: #d9702f"></span>
           <span style="width: 7px; height: 20px; border-radius: 3px; background: #d9702f"></span>
           <span style="width: 7px; height: 11px; border-radius: 3px; background: #d9702f"></span>
@@ -69,44 +80,43 @@
           <span style="width: 7px; height: 17px; border-radius: 3px; background: #d9702f"></span>
         </div>
       </div>
-      <div style="flex: 1; background: #fff; border: 1px solid #e3ded6; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center">
+      <div style="flex: 1; background: #fff; border: 1px solid #e3ded6; border-radius: 16px; padding: 13px 15px; display: flex; flex-direction: column; justify-content: center">
         <span style="font-size: 17px; font-weight: 600; line-height: 1.2">Ayer</span>
-        <span style="font-size: 13px; color: #6a6761">36 rep · 92 % buenas</span>
+        <span style="font-size: 13px; color: #6a6761">Última sesión</span>
       </div>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 2px">
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid #e3ded6">
-        <span style="font-size: 16px">Piernas · tarde</span>
-        <span style="font-size: 14px; color: #6a6761">3 ejercicios</span>
+    <!-- Every routine can be started without the camera, not only today's: the
+         guided way in used to exist on this card alone, so any other routine
+         could only be started by voice by typing the address. -->
+    <div style="display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e3ded6; padding: 13px 2px">
+        <span style="flex: 1; font-size: 16px">Mi rutina de espalda</span>
+        <span style="font-size: 14px; color: #6a6761">unos 21 min</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6a6761" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
       </div>
-      <div style="display: flex; align-items: center; gap: 8px; padding: 14px 4px; color: #6a6761">
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; color: #6a6761">
+      <span style="display: flex; align-items: center; gap: 7px; font-size: 16px">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        <span style="font-size: 16px">Nueva rutina</span>
-        <span style="margin-left: auto; font-size: 14px">o importar la hoja del fisio</span>
-      </div>
+        Nueva rutina
+      </span>
+      <span style="display: flex; align-items: center; gap: 7px; font-size: 16px">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Estiramientos
+      </span>
+      <span style="font-size: 15px; text-decoration: underline; text-underline-offset: 4px">Importar la hoja del fisio</span>
     </div>
 
-    <p style="margin: auto 0 0; font-size: 12px; line-height: 1.45; color: #6a6761; text-wrap: pretty">Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta.</p>
+    <p style="margin: auto 0 0; font-size: 12px; line-height: 1.45; color: #6a6761; text-wrap: pretty">Kinetrace no es un producto sanitario y no sustituye a tu fisioterapeuta. Sigue siempre lo que te haya indicado. <span style="text-decoration: underline; text-underline-offset: 3px">Ayuda</span></p>
   </div>
 
   <div style="border-top: 1px solid #e3ded6; background: rgba(255,255,255,.94); display: flex; padding-bottom: 12px">
-    <div style="flex: 1; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #1b1a18">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
-      <span style="font-size: 11px; font-weight: 600">Inicio</span>
-    </div>
-    <div style="flex: 1; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6a6761">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6"/><path d="m12 8.5-4 2.5M12 8.5l4 2.5"/><path d="m12 13-3 6M12 13l3 6"/></svg>
-      <span style="font-size: 11px">Ejercicios</span>
-    </div>
-    <div style="flex: 1; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6a6761">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg>
-      <span style="font-size: 11px">Progreso</span>
-    </div>
-    <div style="flex: 1; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #6a6761">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg>
-      <span style="font-size: 11px">Ajustes</span>
-    </div>
+    <div class="nav" style="color: #1b1a18"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg><span style="font-size: 11px; font-weight: 600">Inicio</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6"/><path d="m12 8.5-4 2.5M12 8.5l4 2.5"/><path d="m12 13-3 6M12 13l3 6"/></svg><span style="font-size: 11px">Ejercicios</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19H2"/></svg><span style="font-size: 11px">Progreso</span></div>
+    <div class="nav"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></svg><span style="font-size: 11px">Ajustes</span></div>
   </div>
 </div>
 </x-dc>
