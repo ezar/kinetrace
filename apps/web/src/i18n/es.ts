@@ -105,6 +105,7 @@ export const es = {
   'home.unfinishedContinue': 'Seguir',
   'home.createRoutine': 'Crear una rutina',
   'home.streak': 'Racha',
+  'home.streakDay': '{count} día seguido',
   'home.streakDays': '{count} días seguidos',
   'home.lastSession': 'Última sesión',
   'home.never': 'Aún no has entrenado',
@@ -265,7 +266,7 @@ export const es = {
   'progress.targetReviewed': 'Objetivo {band}, revisado por {name}.',
   'progress.targetRoutine': 'Objetivo {band}, de tu rutina.',
   'progress.targetDefault':
-    'Objetivo {min}–{max}°, el de la biblioteca. Tu fisioterapeuta puede cambiarlo.',
+    'Objetivo {band}, el de la biblioteca. Tu fisioterapeuta puede cambiarlo.',
   'progress.noData': 'Todavía no hay datos de este ejercicio',
   'progress.howYouFelt': 'Cómo te has encontrado',
   'progress.replay': 'Repetición del esqueleto',
