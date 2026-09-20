@@ -66,6 +66,79 @@ describe('joint angle metrics', () => {
   });
 });
 
+describe('hip abduction', () => {
+  const metrics: Record<string, MetricSpec> = { hip: { id: 'hipAbduction', side: 'left' } };
+
+  it('reads near zero for a leg in line with the trunk', () => {
+    const values = measure(
+      { hipAbduction: 0, hipAngle: 180, kneeAngle: 180 },
+      'standing',
+      metrics,
+      'front',
+    );
+    expect(values.hip).toBeCloseTo(0, 0);
+  });
+
+  it('follows the femur out to the side, degree for degree', () => {
+    for (const abduction of [15, 30, 45]) {
+      const values = measure(
+        { hipAbduction: abduction, hipAngle: 180, kneeAngle: 180 },
+        'standing',
+        metrics,
+        'front',
+      );
+      expect(values.hip, `${abduction} deg`).toBeCloseTo(abduction, 0);
+    }
+  });
+
+  /**
+   * Measured against the trunk's own axis rather than the same-side
+   * shoulder-to-hip diagonal, which leans in by however much wider a person's
+   * shoulders are than their pelvis. On this metric's forty-five degree range
+   * that lean would be a person-dependent offset of several degrees, so both
+   * sides read the same number for the same movement whoever is doing it.
+   */
+  it('gives both legs the same reading for the same angle', () => {
+    const values = measure(
+      { hipAbduction: 30 },
+      'standing',
+      {
+        left: { id: 'hipAbduction', side: 'left' },
+        right: { id: 'hipAbduction', side: 'right' },
+      },
+      'front',
+    );
+    expect(values.left).toBeCloseTo(values.right ?? 0, 0);
+    expect(values.left).toBeCloseTo(30, 0);
+  });
+
+  /**
+   * The reason this metric exists. A side-lying leg raise is abduction, and
+   * the body it happens to is rotated ninety degrees: the measurement has to
+   * come out the same, because it is taken against the trunk rather than
+   * against gravity.
+   */
+  it('reads the same lying on one side as it does standing', () => {
+    const standing = measure({ hipAbduction: 35 }, 'standing', metrics, 'front');
+    const lying = measure({ hipAbduction: 35 }, 'sideLyingLeft', metrics, 'front');
+    expect(lying.hip).toBeCloseTo(standing.hip ?? 0, 0);
+    expect(lying.hip).toBeCloseTo(35, 0);
+  });
+
+  /** Unsigned, like the shoulder: crossing the midline reads as a lift. */
+  it('does not distinguish abduction from adduction', () => {
+    const out = measure({ hipAbduction: 25 }, 'standing', metrics, 'front');
+    const across = measure({ hipAbduction: -25 }, 'standing', metrics, 'front');
+    expect(out.hip).toBeCloseTo(across.hip ?? 0, 0);
+  });
+
+  it('is not confused by the hip flexing at the same time', () => {
+    const values = measure({ hipAbduction: 30, hipAngle: 130 }, 'standing', metrics, 'front');
+    expect(values.hip).toBeGreaterThan(24);
+    expect(values.hip).toBeLessThan(36);
+  });
+});
+
 describe('trunkLineDeviation', () => {
   const metrics: Record<string, MetricSpec> = { line: { id: 'trunkLineDeviation', side: 'auto' } };
 

@@ -32,6 +32,7 @@ export type MetricId =
   | 'hipFlexion'
   | 'shoulderFlexion'
   | 'shoulderAbduction'
+  | 'hipAbduction'
   | 'elbowFlexion'
   | 'trunkInclination'
   | 'pelvisTilt'
@@ -130,6 +131,30 @@ function armElevationInPlane(context: MetricContext, planeNormal: Vec3): number 
   return angleBetween(trunkInPlane, armInPlane);
 }
 
+/**
+ * Angle of elevation of the thigh measured inside a given plane.
+ *
+ * The leg's counterpart of `armElevationInPlane`, with one deliberate
+ * difference: the reference direction is the trunk's own long axis rather than
+ * the same-side shoulder-to-hip diagonal the arm version uses. That diagonal
+ * leans inwards by however much wider somebody's shoulders are than their
+ * pelvis, which on the arm is a few degrees of a 180 degree range and here
+ * would be a few degrees of forty-five, varying from person to person. Against
+ * the trunk axis a leg in line with the body reads zero whoever it belongs to,
+ * and it reads the same lying down as standing, because nothing here is
+ * measured against gravity.
+ */
+function legElevationInPlane(context: MetricContext, planeNormal: Vec3): number {
+  const hip = context.point(sided('HIP', context.side));
+  const knee = context.point(sided('KNEE', context.side));
+  const trunkDown = scale(context.frame.up, -1);
+  const leg = subtract(knee, hip);
+  const n = normalize(planeNormal);
+  const trunkInPlane = subtract(trunkDown, scale(n, dot(trunkDown, n)));
+  const legInPlane = subtract(leg, scale(n, dot(leg, n)));
+  return angleBetween(trunkInPlane, legInPlane);
+}
+
 const DEFINITIONS: Record<MetricId, MetricDefinition> = {
   kneeFlexion: {
     id: 'kneeFlexion',
@@ -199,6 +224,22 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
     range: { min: 0, max: 180 },
     description: 'Arm elevation in the frontal plane. 0 deg is arm alongside the trunk.',
     compute: (context) => armElevationInPlane(context, context.frame.anterior),
+  },
+
+  hipAbduction: {
+    id: 'hipAbduction',
+    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('KNEE', side)],
+    preferredView: 'front',
+    bilateral: true,
+    unit: 'deg',
+    // Unsigned, like `shoulderAbduction`: taking the leg across the midline
+    // reads the same as taking it away from it. The upper bound is what a hip
+    // can be asked for rather than what the arithmetic can return — a leg
+    // pointing back towards the head would compute past 90, and prescribing
+    // that is not a thing anybody means.
+    range: { min: 0, max: 90 },
+    description: 'Leg elevation in the frontal plane. 0 deg is the leg in line with the trunk.',
+    compute: (context) => legElevationInPlane(context, context.frame.anterior),
   },
 
   trunkInclination: {

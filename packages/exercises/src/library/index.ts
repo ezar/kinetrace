@@ -24,6 +24,7 @@ import { mcgillCurlUp } from './mcgill-curl-up.exercise.js';
 import { pelvicTilt } from './pelvic-tilt.exercise.js';
 import { pronePressUp } from './prone-press-up.exercise.js';
 import { proneTrunkExtension } from './prone-trunk-extension.exercise.js';
+import { sideLyingLegRaise } from './side-lying-leg-raise.exercise.js';
 import { sidePlankFull } from './side-plank-full.exercise.js';
 import { sidePlankKnees } from './side-plank-knees.exercise.js';
 import { splitSquat } from './split-squat.exercise.js';
@@ -57,6 +58,7 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   splitSquat,
   supineHamstringStretch,
   halfKneelingHipFlexor,
+  sideLyingLegRaise,
   supineShoulderFlexion,
   doorwayPecStretch,
 ];
@@ -79,6 +81,7 @@ export {
   pelvicTilt,
   pronePressUp,
   proneTrunkExtension,
+  sideLyingLegRaise,
   sidePlankFull,
   sidePlankKnees,
   splitSquat,

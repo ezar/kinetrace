@@ -1,0 +1,27 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "side-lying-leg-raise",
+  "variant": "bent-knee",
+  "description": "Leg raises that fold the knee to buy height the hip is not giving.",
+  "view": "front",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 41,
+  "side": "right",
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "right": {
+          "kneeAngle": 128
+        }
+      }
+    }
+  ],
+  "expect": {
+    "cues": [
+      "bentKnee"
+    ]
+  }
+}

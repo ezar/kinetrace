@@ -1,0 +1,22 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "side-lying-leg-raise",
+  "variant": "partial",
+  "description": "Leg raises that stop well short of the target abduction.",
+  "view": "front",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 43,
+  "side": "right",
+  "perturbations": [
+    {
+      "kind": "amplitude",
+      "factor": 0.65
+    }
+  ],
+  "expect": {
+    "reps": 0,
+    "partials": 6
+  }
+}

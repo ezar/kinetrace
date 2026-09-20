@@ -171,18 +171,19 @@ describe('SERMEF lumbar programme', () => {
     ]);
   });
 
-  it('runs six of the ten, in the order of the document', () => {
+  it('runs seven of the ten, in the order of the document', () => {
     expect(programmeDoses(SERMEF_LUMBAR).map((dose) => dose.exerciseId)).toEqual([
       'active-double-knee-raise',
       'supine-trunk-curl',
       'glute-bridge',
       'prone-trunk-extension',
+      'side-lying-leg-raise',
       'childs-pose',
       'cat-camel',
     ]);
   });
 
-  it('leaves the other four out, each naming what it refused', () => {
+  it('leaves the other three out, each naming what it refused', () => {
     expect(
       programmeOmissions(SERMEF_LUMBAR).map((step) => [
         step.step,
@@ -192,7 +193,6 @@ describe('SERMEF lumbar programme', () => {
     ).toEqual([
       [1, 'differentExercise', 'pelvic-tilt'],
       [4, 'notInLibrary', undefined],
-      [7, 'notInLibrary', undefined],
       [10, 'differentExercise', 'bird-dog'],
     ]);
   });
@@ -204,6 +204,7 @@ describe('SERMEF lumbar programme', () => {
     expect(byId.get('supine-trunk-curl')?.tempo).toEqual([{ phase: 'top', seconds: 3 }]);
     expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('prone-trunk-extension')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
+    expect(byId.get('side-lying-leg-raise')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('cat-camel')?.tempo).toEqual([
       { phase: 'cat', seconds: 5 },
       { phase: 'camel', seconds: 5 },
