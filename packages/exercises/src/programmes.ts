@@ -33,7 +33,7 @@
  *   call, and the routine this builds is unsigned like any other.
  */
 
-import type { TempoTarget } from '@kinetrace/engine';
+import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 
 /** Where a programme was published. Enough to find the document again. */
 export interface ProgrammeSource {
@@ -63,6 +63,28 @@ export interface ProgrammeDose {
   restSeconds: number;
   /** The printed hold, expressed as the pace of the phase it belongs to. */
   tempo?: TempoTarget[];
+  /**
+   * The range the document asks for, when it prints one.
+   *
+   * A library exercise carries its own default band, chosen for the exercise
+   * rather than for any one programme. Where a document states how far the
+   * movement should go, the routine built from it carries that instead —
+   * otherwise the app marks a repetition short while the person is doing
+   * exactly what the paper told them. The conversion from the document's units
+   * into degrees belongs with the step that needed it, and is written down
+   * there.
+   *
+   * Be precise about what the two ends do, because they are not symmetric. The
+   * engine decides a repetition on the near end alone: `isGoodPeak` asks
+   * whether an increasing movement reached `min`, or a decreasing one reached
+   * `max`, and says nothing about overshooting. That has been true of every
+   * band in this library since the engine was written, and it is not this
+   * field's business to change it. So the near end is the one that has to be
+   * right — it is what stopped the leg raise calling a correct repetition
+   * short — and the far end is the top of the range as printed, which the
+   * screens show and a professional reads.
+   */
+  band?: TargetBand;
 }
 
 /**
@@ -204,6 +226,14 @@ export const SERMEF_LUMBAR: Programme = {
         reps: 10,
         restSeconds: 0,
         tempo: [{ phase: 'top', seconds: 5 }],
+        // The one step in this document that prints a distance rather than a
+        // count. Twenty to thirty centimetres at the ankle is 13 to 20 degrees
+        // of abduction on the body model's 0.86 m leg, rounded outwards by a
+        // degree at each end so that somebody at either end of the printed
+        // range is inside the band rather than on its edge. The library's own
+        // default is wider, because a side-lying leg raise is not only ever
+        // this document's.
+        band: { min: 12, max: 21 },
       },
     },
     {

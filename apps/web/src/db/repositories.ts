@@ -158,7 +158,7 @@ export async function createProgrammeRoutine(
 ): Promise<number> {
   const exercises = programme.steps.flatMap((step): RoutineExercise[] => {
     if (!step.dose || !getExercise(step.dose.exerciseId)) return [];
-    const { exerciseId, sets, reps, holdSeconds, restSeconds, tempo } = step.dose;
+    const { exerciseId, sets, reps, holdSeconds, restSeconds, tempo, band } = step.dose;
     return [
       {
         exerciseId,
@@ -167,6 +167,10 @@ export async function createProgrammeRoutine(
         ...(holdSeconds === undefined ? {} : { holdSeconds }),
         restSeconds,
         ...(tempo ? { tempo: [...tempo] } : {}),
+        // Only where the document states a range. Everywhere else the entry
+        // carries no band and the library's default stands, which is what the
+        // routine screen means when it shows the library's numbers.
+        ...(band ? { band: { ...band } } : {}),
         sourceNote: `${step.title}. ${step.instruction}`,
       },
     ];

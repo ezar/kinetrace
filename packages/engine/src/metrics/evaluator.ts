@@ -132,7 +132,12 @@ export class MetricEvaluator {
   ): MetricSample {
     const definition = getMetricDefinition(slot.spec.id);
     const sides = this.resolveSides(slot, image);
-    const required = sides.flatMap((side) => definition.landmarks(side));
+    // Unique: a slot measured on both sides asks each side for its landmarks,
+    // and a frame-reading metric names the whole torso in both answers. Left
+    // as they come, those four points would be counted twice each and the two
+    // limbs once, so the confidence in a measurement of two arms would be
+    // mostly confidence in the trunk they hang from.
+    const required = [...new Set(sides.flatMap((side) => definition.landmarks(side)))];
     const visibility = meanVisibility(image, required);
 
     const useWorld = world.length > 0 && visibility >= this.worldVisibilityThreshold;
@@ -201,8 +206,13 @@ export class MetricEvaluator {
     if (!definition.bilateral) return ['left'];
     if (side === 'left' || side === 'right') return [side];
     if (side === 'mean') return ['left', 'right'];
-    const left = meanVisibility(image, definition.landmarks('left'));
-    const right = meanVisibility(image, definition.landmarks('right'));
+    // The landmarks that tell the sides apart, which for a metric reading the
+    // anatomical frame is not the same list as the one that must be visible:
+    // that one carries the whole torso, and the far side's shoulder and hip
+    // say nothing about which side the camera sees better.
+    const discriminating = definition.sideLandmarks ?? definition.landmarks;
+    const left = meanVisibility(image, discriminating('left'));
+    const right = meanVisibility(image, discriminating('right'));
     const HYSTERESIS = 0.08;
     const chosen: 'left' | 'right' =
       slot.lastSide === 'left'

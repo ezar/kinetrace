@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { SERMEF_LUMBAR, programmeDoses } from '@kinetrace/exercises';
+import { SERMEF_LUMBAR, getExercise, programmeDoses } from '@kinetrace/exercises';
 import type { RoutineExercise } from '../../db/schema.js';
 import {
   isUnchangedTranscription,
@@ -27,6 +27,7 @@ function transcribed(): RoutineExercise[] {
     ...(dose.holdSeconds === undefined ? {} : { holdSeconds: dose.holdSeconds }),
     restSeconds: dose.restSeconds,
     ...(dose.tempo ? { tempo: [...dose.tempo] } : {}),
+    ...(dose.band ? { band: { ...dose.band } } : {}),
   }));
 }
 
@@ -73,6 +74,53 @@ describe('isUnchangedTranscription', () => {
     const paced = edited.findIndex((entry) => entry.tempo);
     const entry = edited[paced];
     if (entry) edited[paced] = { ...entry, tempo: [{ phase: 'top', seconds: 2 }] };
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  it('says no once the range the document printed is changed', () => {
+    const edited = transcribed();
+    const banded = edited.findIndex((entry) => entry.band);
+    const entry = edited[banded];
+    expect(entry, 'a programme step prints a band').toBeDefined();
+    if (entry) edited[banded] = { ...entry, band: { min: 30, max: 45 } };
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  it('says no once a printed range is dropped for the library default', () => {
+    const edited = transcribed();
+    const banded = edited.findIndex((item) => item.band);
+    const entry = edited[banded];
+    if (entry) {
+      const withoutBand: RoutineExercise = { ...entry };
+      delete withoutBand.band;
+      edited[banded] = withoutBand;
+    }
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  /**
+   * The review screen fills every library default in before it shows the
+   * numbers, and a signature saves them. An entry carrying the default it
+   * would have inherited anyway has not been changed, and the card has to go
+   * on citing the document — the regression this replaces made six of the
+   * seven SERMEF cards claim their dose was written by the library.
+   */
+  it('says yes when a library default has been written down rather than left blank', () => {
+    const edited = transcribed();
+    const filled = edited.map((entry) => {
+      if (entry.band) return entry;
+      const exercise = getExercise(entry.exerciseId);
+      return exercise ? { ...entry, band: { ...exercise.targets.band } } : entry;
+    });
+    expect(filled.some((entry) => entry.band)).toBe(true);
+    expect(isUnchangedTranscription(filled, SERMEF_LUMBAR)).toBe(true);
+  });
+
+  it('still says no when an inherited default is changed to something else', () => {
+    const edited = transcribed();
+    const plain = edited.findIndex((entry) => !entry.band);
+    const entry = edited[plain];
+    if (entry) edited[plain] = { ...entry, band: { min: 1, max: 2 } };
     expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
   });
 

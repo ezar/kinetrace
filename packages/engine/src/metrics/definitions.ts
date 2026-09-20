@@ -71,6 +71,15 @@ export interface MetricDefinition {
   id: MetricId;
   /** Landmarks that must be visible for the metric to be trustworthy. */
   landmarks: (side: 'left' | 'right') => PoseLandmarkName[];
+  /**
+   * The landmarks that tell the two sides apart, for a slot declared `auto`.
+   *
+   * Only differs from `landmarks` where a metric reads the anatomical frame:
+   * that pulls the whole torso into what must be visible, including the far
+   * side's shoulder and hip, which say nothing about which side is better
+   * seen. Absent means the two questions have the same answer.
+   */
+  sideLandmarks?: (side: 'left' | 'right') => PoseLandmarkName[];
   /** View the metric is most accurate in. Other views still compute, with lower confidence. */
   preferredView: ViewOrientation | 'any';
   /** True when the metric is a single-limb measurement and therefore has a meaningful side. */
@@ -94,6 +103,35 @@ function sided(name: string, side: 'left' | 'right'): PoseLandmarkName {
 }
 
 const TORSO: PoseLandmarkName[] = ['LEFT_SHOULDER', 'RIGHT_SHOULDER', 'LEFT_HIP', 'RIGHT_HIP'];
+
+/**
+ * A metric that reads the anatomical frame, and so needs the whole torso as
+ * well as the limb it measures.
+ *
+ * `buildBodyFrame` needs both shoulders and both hips to know which way the
+ * body faces, and the setup assistant and the confidence gate work off
+ * `landmarks` — so a frame-reading metric that declares only its own side can
+ * pass setup and then return a confident number computed from a hip the camera
+ * cannot see. That is worst where one side of the body hides the other, which
+ * is exactly where a leg lifts from side lying.
+ *
+ * The two lists answer different questions and cannot be one list. `landmarks`
+ * is what must be visible; `sideLandmarks` is what tells the sides apart when
+ * a slot is declared `auto`. Deriving the second from the first by dropping
+ * whatever the sides share does not work either: the torso a left-side
+ * measurement needs includes the left shoulder and the left hip, which are
+ * side-specific inputs in their own right, and dropping them would leave the
+ * elbow to decide the question alone.
+ */
+function framed(sideLandmarks: (side: 'left' | 'right') => PoseLandmarkName[]): {
+  landmarks: (side: 'left' | 'right') => PoseLandmarkName[];
+  sideLandmarks: (side: 'left' | 'right') => PoseLandmarkName[];
+} {
+  return {
+    landmarks: (side) => [...new Set([...sideLandmarks(side), ...TORSO])],
+    sideLandmarks,
+  };
+}
 
 /**
  * Build the anatomical frame from the four torso landmarks.
@@ -206,7 +244,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   shoulderFlexion: {
     id: 'shoulderFlexion',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)],
+    ...framed((side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)]),
     preferredView: 'side',
     bilateral: true,
     unit: 'deg',
@@ -217,7 +255,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   shoulderAbduction: {
     id: 'shoulderAbduction',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)],
+    ...framed((side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)]),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
@@ -228,7 +266,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   hipAbduction: {
     id: 'hipAbduction',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('KNEE', side)],
+    ...framed((side) => [sided('HIP', side), sided('KNEE', side)]),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
@@ -308,7 +346,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   kneeValgus: {
     id: 'kneeValgus',
-    landmarks: (side) => [sided('HIP', side), sided('KNEE', side), sided('ANKLE', side)],
+    ...framed((side) => [sided('HIP', side), sided('KNEE', side), sided('ANKLE', side)]),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',

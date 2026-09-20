@@ -14,6 +14,7 @@
 
 import {
   PROGRAMMES,
+  getExercise,
   programmeDoses,
   type Programme,
   type ProgrammeDose,
@@ -36,6 +37,24 @@ function sameTempo(entry: RoutineExercise, dose: ProgrammeDose): boolean {
   });
 }
 
+/**
+ * Whether the range on this entry is still the one the transcription implies.
+ *
+ * Where the document prints a range, that is the number to match. Where it
+ * prints none the entry inherits the library's, and it may be carrying that
+ * inherited value explicitly rather than as a blank: the review screen fills
+ * every default in so the professional is looking at the numbers that will
+ * actually be used, and a signature saves them. A default written down is
+ * still the default, so it counts as unchanged — otherwise opening the review
+ * screen would be enough to make the app stop citing the document.
+ */
+function sameBand(entry: RoutineExercise, dose: ProgrammeDose): boolean {
+  const expected = dose.band ?? getExercise(dose.exerciseId)?.targets.band;
+  if (!expected) return entry.band === undefined;
+  if (!entry.band) return dose.band === undefined;
+  return entry.band.min === expected.min && entry.band.max === expected.max;
+}
+
 /** Whether this entry still carries exactly the dose the programme prints. */
 export function matchesProgrammeDose(entry: RoutineExercise, dose: ProgrammeDose): boolean {
   return (
@@ -43,7 +62,8 @@ export function matchesProgrammeDose(entry: RoutineExercise, dose: ProgrammeDose
     entry.reps === dose.reps &&
     entry.holdSeconds === dose.holdSeconds &&
     entry.restSeconds === dose.restSeconds &&
-    sameTempo(entry, dose)
+    sameTempo(entry, dose) &&
+    sameBand(entry, dose)
   );
 }
 

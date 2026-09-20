@@ -142,7 +142,17 @@ but a few degrees of the hip's forty-five, varying from person to person.
 Against the trunk axis a leg in line with the body reads zero whoever it
 belongs to, and reads the same lying down as standing.
 
-The second thing was in the harness rather than the maths. A unilateral
+The second thing was in the harness rather than the maths, and a third is in
+the landmark lists. Anything reading `context.frame` needs all four torso
+points, because `buildBodyFrame` needs both shoulders and both hips to know
+which way the body faces — but the setup assistant and the confidence gate work
+off each metric's declared `landmarks`, and four metrics declared only the side
+they measure. `shoulderFlexion`, `shoulderAbduction` and `kneeValgus` had that
+gap before `hipAbduction` copied it. Harmless enough where the camera sees the
+whole body; not harmless where one side of the body hides the other, which is
+exactly where a leg lifts from side lying. All four declare the torso now.
+
+A unilateral
 exercise is measured on the limb the prescription names, and `toRunnerConfig`
 has taken that side since side planks were added. Nothing that replays a
 _reference motion_ was passing it: the fixture builder and the phase timeline
@@ -152,6 +162,37 @@ doing the work. For a leg lifting off a stacked pair it is a coin toss, and it
 came up wrong: the fixture measured the leg resting on the mat and counted no
 repetitions at all. `referenceSide` now reads the worked limb off the motion's
 own keyframes, and both replayers use it.
+
+**And the step that printed a distance caught the exercise out.** The sheet
+asks for a lift of 20-30 cm, which on the body model's 0.86 m from hip to
+ankle is 13 to 20 degrees of abduction. The exercise had been written to a
+clinical range instead — its reference motion lifted 32 degrees, 46 cm, and its
+band started at 24. Somebody following the paper exactly would have entered no
+phase at the printed minimum and been told every repetition was short at the
+printed maximum: the app contradicting the document it cites, which is the
+failure this whole record exists to prevent, arriving by a new route.
+
+So `ProgrammeDose` gained a `band`. A library exercise keeps its own default,
+chosen for the exercise rather than for any one programme; where a document
+states how far the movement should go, the routine built from it carries that
+instead. Where the document is silent the library's default still stands — the
+same rule as the rest of this file, applied to range rather than dose. A test
+refuses a printed range the engine could not act on: it has to sit inside the
+safety stop and clear of the threshold that starts a repetition.
+
+The two ends of a band are not symmetric and it is worth saying so rather than
+implying otherwise. `isGoodPeak` decides a repetition on the near end alone —
+did an increasing movement reach `min`, did a decreasing one reach `max` — and
+says nothing about overshooting. That has been true of every band in this
+library since the engine was written, and a field for carrying a document's
+range is not the place to change it. The near end is the one that had to be
+right, because it was what called a correct repetition short; the far end is
+the top of the range as printed, which the screens show and a professional
+reads.
+
+The exercise's own numbers moved too, and downwards: the reference now lifts 17
+degrees and the phase starts at 10, so a small lift is counted and judged
+rather than not counted at all.
 
 The three steps still missing are the ones with real obstacles rather than
 absent files: a cross-body curl and a supine lumbar rotation both need

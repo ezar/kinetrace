@@ -62,17 +62,24 @@ export const sideLyingLegRaise: ExerciseDefinition = {
   mode: 'reps',
   unilateral: true,
   phases: [
-    { id: 'rest', when: { below: 8 }, minDwellMs: 300 },
-    { id: 'top', when: { above: 18 }, minDwellMs: 500 },
+    { id: 'rest', when: { below: 5 }, minDwellMs: 300 },
+    { id: 'top', when: { above: 10 }, minDwellMs: 500 },
   ],
-  targets: { direction: 'increase', band: { min: 24, max: 40 }, safety: { min: 0, max: 60 } },
+  // Degrees are the engine's unit and centimetres are the body's, so it is
+  // worth writing the conversion down: on the body model's 0.86 m from hip to
+  // ankle, ten degrees lifts the foot 15 cm, fifteen degrees 22 cm and twenty
+  // degrees 29 cm. The band is a hand's width above the floor to a foot above
+  // it, which is what this exercise is; the first threshold is low enough that
+  // a small lift is still counted as a repetition and judged, rather than not
+  // counted at all.
+  targets: { direction: 'increase', band: { min: 14, max: 26 }, safety: { min: 0, max: 60 } },
   rules: [
     {
-      // Half again the 21 deg/s the reference motion peaks at, held a quarter
+      // Half again the 11 deg/s the reference motion peaks at, held a quarter
       // of a second.
       id: 'pace',
       priority: 'form',
-      when: { signal: 'absVelocity', above: 32 },
+      when: { signal: 'absVelocity', above: 17 },
       sustainMs: 250,
       cooldownMs: 8000,
       cueKey: 'cue.slowDown',
@@ -106,8 +113,8 @@ export const sideLyingLegRaise: ExerciseDefinition = {
     },
     keyframes: [
       { t: 0, pose: { right: { hipAbduction: 2 } } },
-      { t: 0.4, pose: { right: { hipAbduction: 32 } } },
-      { t: 0.6, pose: { right: { hipAbduction: 32 } } },
+      { t: 0.4, pose: { right: { hipAbduction: 17 } } },
+      { t: 0.6, pose: { right: { hipAbduction: 17 } } },
       { t: 1, pose: { right: { hipAbduction: 2 } } },
     ],
   },
