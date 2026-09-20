@@ -68,11 +68,21 @@ export interface ProgrammeDose {
    *
    * A library exercise carries its own default band, chosen for the exercise
    * rather than for any one programme. Where a document states how far the
-   * movement should go, that is the number the routine built from it should be
-   * judged against — otherwise the app marks a repetition short while the
-   * person is doing exactly what the paper told them. The conversion from the
-   * document's units into degrees belongs with the step that needed it, and is
-   * written down there.
+   * movement should go, the routine built from it carries that instead —
+   * otherwise the app marks a repetition short while the person is doing
+   * exactly what the paper told them. The conversion from the document's units
+   * into degrees belongs with the step that needed it, and is written down
+   * there.
+   *
+   * Be precise about what the two ends do, because they are not symmetric. The
+   * engine decides a repetition on the near end alone: `isGoodPeak` asks
+   * whether an increasing movement reached `min`, or a decreasing one reached
+   * `max`, and says nothing about overshooting. That has been true of every
+   * band in this library since the engine was written, and it is not this
+   * field's business to change it. So the near end is the one that has to be
+   * right — it is what stopped the leg raise calling a correct repetition
+   * short — and the far end is the top of the range as printed, which the
+   * screens show and a professional reads.
    */
   band?: TargetBand;
 }

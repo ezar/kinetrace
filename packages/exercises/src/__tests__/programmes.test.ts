@@ -138,6 +138,13 @@ describe('published programmes', () => {
         }
         expect(dose.band.min, dose.exerciseId).toBeLessThan(dose.band.max);
 
+        // The end the engine actually decides a repetition on. `isGoodPeak`
+        // reads `min` for an increasing movement and `max` for a decreasing
+        // one, and ignores the other, so that is the end a printed range has
+        // to get right.
+        const decisive = direction === 'increase' ? dose.band.min : dose.band.max;
+        expect(decisive, dose.exerciseId).toBeGreaterThan(0);
+
         const counting = exercise.phases
           .filter((phase) => phase.id !== 'rest')
           .flatMap((phase) =>
@@ -148,8 +155,8 @@ describe('published programmes', () => {
                 : [],
           );
         for (const threshold of counting) {
-          if (direction === 'increase') expect(dose.band.min).toBeGreaterThan(threshold);
-          else expect(dose.band.max).toBeLessThan(threshold);
+          if (direction === 'increase') expect(decisive).toBeGreaterThan(threshold);
+          else expect(decisive).toBeLessThan(threshold);
         }
       }
     }

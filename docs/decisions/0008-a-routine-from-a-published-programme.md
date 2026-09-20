@@ -174,11 +174,21 @@ failure this whole record exists to prevent, arriving by a new route.
 
 So `ProgrammeDose` gained a `band`. A library exercise keeps its own default,
 chosen for the exercise rather than for any one programme; where a document
-states how far the movement should go, the routine built from it is judged
-against that instead. Where the document is silent the library's default still
-stands — the same rule as the rest of this file, applied to range rather than
-dose. A test refuses a printed range the engine could not act on: it has to sit
-inside the safety stop and clear of the threshold that starts a repetition.
+states how far the movement should go, the routine built from it carries that
+instead. Where the document is silent the library's default still stands — the
+same rule as the rest of this file, applied to range rather than dose. A test
+refuses a printed range the engine could not act on: it has to sit inside the
+safety stop and clear of the threshold that starts a repetition.
+
+The two ends of a band are not symmetric and it is worth saying so rather than
+implying otherwise. `isGoodPeak` decides a repetition on the near end alone —
+did an increasing movement reach `min`, did a decreasing one reach `max` — and
+says nothing about overshooting. That has been true of every band in this
+library since the engine was written, and a field for carrying a document's
+range is not the place to change it. The near end is the one that had to be
+right, because it was what called a correct repetition short; the far end is
+the top of the range as printed, which the screens show and a professional
+reads.
 
 The exercise's own numbers moved too, and downwards: the reference now lifts 17
 degrees and the phase starts at 10, so a small lift is counted and judged

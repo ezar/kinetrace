@@ -3,6 +3,7 @@ import { MetricEvaluator } from '../metrics/evaluator.js';
 import { POSTURES, poseToWorldPoints, resolvePose, type BodyPoseInput } from '../synth/body.js';
 import { synthesizeFrames, type ReferenceMotion } from '../synth/motion.js';
 import type { MetricSpec } from '../metrics/evaluator.js';
+import { POSE_LANDMARK } from '../pose/landmarks.js';
 import type { PoseFrame } from '../types.js';
 
 /** One still frame of a pose, evaluated through the real pipeline. */
@@ -233,6 +234,56 @@ describe('thoracic rotation and hip level', () => {
     );
     expect(level.hips).toBeLessThan(2);
     expect(rolled.hips).toBeGreaterThan(12);
+  });
+});
+
+describe('side selection', () => {
+  /**
+   * `auto` picks the side the camera sees better, and several metrics need the
+   * whole torso as well because the anatomical frame is built from all four
+   * points. Those four are identical in both sides' lists, so comparing the
+   * lists whole is mostly a comparison of points that cannot discriminate: it
+   * left less than the hysteresis between the near arm and the far one, and the
+   * slot stayed on whichever side it happened to start.
+   */
+  it('measures the arm the camera can see, not the one behind the trunk', () => {
+    // One arm by the side, the other raised: the two read far apart, so the
+    // value says which one was measured.
+    const motion: ReferenceMotion = {
+      posture: 'standing',
+      cameraSide: 'left',
+      cycleSeconds: 1,
+      keyframes: [{ t: 0, pose: { left: { shoulderAngle: 10 }, right: { shoulderAngle: 150 } } }],
+    };
+    const frames = synthesizeFrames(motion, {
+      view: 'side',
+      fps: 30,
+      holdAtPhase: 0,
+      holdSeconds: 1.5,
+    });
+
+    // A body seen from its right: the left elbow is partly behind the trunk,
+    // the torso equally visible whichever side you ask about. The margin is
+    // the point. Averaged over the whole list — three of whose five points are
+    // shared torso — the two sides come out 0.07 apart, inside the 0.08 the
+    // evaluator needs before it will switch, so the slot stays where it
+    // started. Compared on the elbows alone they are 0.35 apart.
+    const occluded = frames.map((frame) => ({
+      ...frame,
+      image: frame.image.map((landmark, index) =>
+        index === POSE_LANDMARK.LEFT_ELBOW || index === POSE_LANDMARK.LEFT_WRIST
+          ? { ...landmark, visibility: 0.65 }
+          : { ...landmark, visibility: 1 },
+      ),
+    }));
+
+    const evaluator = new MetricEvaluator(
+      { arm: { id: 'shoulderFlexion', side: 'auto' } },
+      { view: 'side' },
+    );
+    let value = Number.NaN;
+    for (const frame of occluded) value = evaluator.update(frame).samples.arm?.value ?? Number.NaN;
+    expect(value).toBeGreaterThan(100);
   });
 });
 

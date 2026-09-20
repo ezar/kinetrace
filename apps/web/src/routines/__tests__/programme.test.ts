@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { SERMEF_LUMBAR, programmeDoses } from '@kinetrace/exercises';
+import { SERMEF_LUMBAR, getExercise, programmeDoses } from '@kinetrace/exercises';
 import type { RoutineExercise } from '../../db/schema.js';
 import {
   isUnchangedTranscription,
@@ -95,6 +95,32 @@ describe('isUnchangedTranscription', () => {
       delete withoutBand.band;
       edited[banded] = withoutBand;
     }
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  /**
+   * The review screen fills every library default in before it shows the
+   * numbers, and a signature saves them. An entry carrying the default it
+   * would have inherited anyway has not been changed, and the card has to go
+   * on citing the document — the regression this replaces made six of the
+   * seven SERMEF cards claim their dose was written by the library.
+   */
+  it('says yes when a library default has been written down rather than left blank', () => {
+    const edited = transcribed();
+    const filled = edited.map((entry) => {
+      if (entry.band) return entry;
+      const exercise = getExercise(entry.exerciseId);
+      return exercise ? { ...entry, band: { ...exercise.targets.band } } : entry;
+    });
+    expect(filled.some((entry) => entry.band)).toBe(true);
+    expect(isUnchangedTranscription(filled, SERMEF_LUMBAR)).toBe(true);
+  });
+
+  it('still says no when an inherited default is changed to something else', () => {
+    const edited = transcribed();
+    const plain = edited.findIndex((entry) => !entry.band);
+    const entry = edited[plain];
+    if (entry) edited[plain] = { ...entry, band: { min: 1, max: 2 } };
     expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
   });
 
