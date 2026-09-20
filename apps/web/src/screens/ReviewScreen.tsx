@@ -38,6 +38,8 @@ import {
 import { metricLandmarkIndices, type TargetBand } from '@kinetrace/engine';
 import { db, type Routine, type RoutineExercise, type Session } from '../db/schema.js';
 import { saveRoutineReview } from '../db/repositories.js';
+import type { RoutineSource } from '../db/schema.js';
+import { matchesProgrammeDose, programmeDoseFor, routineProgramme } from '../routines/programme.js';
 import { useTranslation } from '../i18n/useTranslation.js';
 import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { AngleGauge } from '../components/AngleGauge.js';
@@ -153,6 +155,20 @@ export function ReviewScreen(): JSX.Element {
   );
 
   const blocked = issues.some((list) => !canPrescribe(list));
+
+  const programme = routineProgramme(routine?.source);
+  /**
+   * The document a dose is still copied from, for the card that asks somebody
+   * to sign it. The routine's citation covers a number only while that number
+   * is the one the document prints; edit it and the card goes back to saying
+   * the dose is nobody's, which by then it is.
+   */
+  const citedDose = (entry: RoutineExercise): RoutineSource | undefined => {
+    if (!programme || !routine?.source) return undefined;
+    const printed = programmeDoseFor(programme, entry.exerciseId);
+    if (!printed || !matchesProgrammeDose(entry, printed)) return undefined;
+    return routine.source;
+  };
   const sign = async (): Promise<void> => {
     if (!routine || blocked || !by.trim() || saving) return;
     setSaving(true);
@@ -236,6 +252,7 @@ export function ReviewScreen(): JSX.Element {
             entry={entry}
             issues={issues[index] ?? []}
             signed={routine.review !== undefined}
+            citedDose={citedDose(entry)}
             onChange={(patch) => update(index, patch)}
           />
         ))}
@@ -279,14 +296,25 @@ interface ExerciseReviewProps {
   issues: readonly PrescriptionIssue[];
   /**
    * Whether somebody has already signed this routine. Until they have, every
-   * number on the card is still the library's, and the card says where each
-   * one came from.
+   * number on the card is still somebody else's, and the card says whose.
    */
   signed: boolean;
+  /**
+   * The document this dose was copied from, when it is still the dose that
+   * document prints. Absent for a library dose, and absent again as soon as
+   * the number is changed: from then on the citation no longer describes it.
+   */
+  citedDose: RoutineSource | undefined;
   onChange: (patch: Partial<RoutineExercise>) => void;
 }
 
-function ExerciseReview({ entry, issues, signed, onChange }: ExerciseReviewProps): JSX.Element {
+function ExerciseReview({
+  entry,
+  issues,
+  signed,
+  citedDose,
+  onChange,
+}: ExerciseReviewProps): JSX.Element {
   const { t, language } = useTranslation();
   const exercise = getExercise(entry.exerciseId);
   const [showCues, setShowCues] = useState(false);
@@ -444,7 +472,13 @@ function ExerciseReview({ entry, issues, signed, onChange }: ExerciseReviewProps
       <div className="border-t border-line p-4">
         {signed ? null : (
           <p className="mb-3 text-[13px] leading-relaxed text-muted">
-            {t(`review.source.${exercise.provenance.dose}.dose`)}
+            {citedDose
+              ? t('review.source.programme.dose', {
+                  publisher: citedDose.publisher,
+                  title: citedDose.title,
+                  year: citedDose.year,
+                })
+              : t(`review.source.${exercise.provenance.dose}.dose`)}
           </p>
         )}
         <div className="grid grid-cols-3 gap-2">

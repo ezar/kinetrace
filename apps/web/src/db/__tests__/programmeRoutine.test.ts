@@ -33,8 +33,6 @@ describe('a programme as a routine', () => {
     const id = await createProgrammeRoutine(await profile(), 'SERMEF', SERMEF_LUMBAR);
     const routine = await db.routines.get(id);
     expect(routine?.exercises.map((entry) => entry.exerciseId)).toEqual([
-      'pelvic-tilt',
-      'double-knee-to-chest',
       'glute-bridge',
       'childs-pose',
       'cat-camel',
@@ -46,9 +44,8 @@ describe('a programme as a routine', () => {
     const routine = await db.routines.get(id);
     const byId = new Map((routine?.exercises ?? []).map((entry) => [entry.exerciseId, entry]));
 
-    expect(byId.get('pelvic-tilt')).toMatchObject({ sets: 1, reps: 10, restSeconds: 0 });
-    expect(byId.get('pelvic-tilt')?.tempo).toEqual([{ phase: 'tilted', seconds: 5 }]);
-    expect(byId.get('double-knee-to-chest')).toMatchObject({ sets: 10, holdSeconds: 5 });
+    expect(byId.get('glute-bridge')).toMatchObject({ sets: 1, reps: 10, restSeconds: 0 });
+    expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('childs-pose')).toMatchObject({ sets: 4, holdSeconds: 10 });
     expect(byId.get('cat-camel')?.tempo).toHaveLength(2);
   });
@@ -62,7 +59,7 @@ describe('a programme as a routine', () => {
     for (const entry of routine?.exercises ?? []) {
       expect(entry.sourceNote, entry.exerciseId).toBeTruthy();
     }
-    expect(routine?.exercises[0]?.sourceNote).toContain('Báscula pélvica en supino');
+    expect(routine?.exercises[0]?.sourceNote).toContain('Puente');
   });
 
   it('is unsigned: a citation is not a professional', async () => {
@@ -91,6 +88,15 @@ describe('a programme as a routine', () => {
 
     expect(await openProgrammeRoutine(profileId, 'SERMEF', SERMEF_LUMBAR)).toBe(id);
     expect((await db.routines.get(id))?.source?.programmeId).toBe('sermef-lumbar');
+  });
+
+  it('never builds in an exercise the document\u2019s own steps refused', async () => {
+    const id = await createProgrammeRoutine(await profile(), 'SERMEF', SERMEF_LUMBAR);
+    const routine = await db.routines.get(id);
+    const ids = new Set((routine?.exercises ?? []).map((entry) => entry.exerciseId));
+    for (const name of ['pelvic-tilt', 'double-knee-to-chest', 'mcgill-curl-up', 'bird-dog']) {
+      expect(ids.has(name), name).toBe(false);
+    }
   });
 
   it('keeps one profile\u2019s copy out of another\u2019s', async () => {

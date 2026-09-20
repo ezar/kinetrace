@@ -28,16 +28,32 @@ Two things about the document matter as much as its contents.
 frequency, no progression and not one word about pain. It is a printed sheet a
 professional society publishes for professionals to hand out.
 
-**Half of it is not in this library.** Five of the ten steps have no exercise
-here, and three of those five have something with a similar name doing a
+**Most of it is not in this library.** Seven of the ten steps have no exercise
+here, and five of those seven have something with a similar name doing a
 different movement: the sheet's curl-up lifts the trunk 25 cm with the hands on
 the floor, while the library's is McGill's with the hands under the lumbar
 spine; the sheet's prone extension lifts the trunk itself, while the library's
 is an arm-driven press-up; the sheet's step 10 raises an arm, then the opposite
 leg, while the library's bird dog raises both at once.
 
-Matching those pairs would have produced a tidy ten of ten and a routine that
-was not the document.
+Two of those five were matched in the first version of this work and had to be
+taken back out, which is why they are worth naming.
+
+- The sheet's **pelvic tilt** asks for the glutes to lift 1-2 cm off the floor.
+  The library's pelvic tilt is the same joint doing less, and its fourth
+  instruction says so in as many words: the hips never leave the floor. Matched,
+  it put that instruction on screen directly underneath a quotation asking for
+  the opposite.
+- The sheet's **lower abdominals** lift the legs, ten times, under their own
+  muscle. The library's double knee to chest is a sustained stretch the arms
+  pull into and hold. The tell was the shape of the dose: ten repetitions only
+  became ten holds because the movement underneath had already been swapped.
+
+Both were matched on their titles. Neither reading survived opening the library
+file and reading its own instructions next to the quotation.
+
+Matching those pairs would have produced a tidy ten of ten, or a respectable
+five, and a routine that was not the document.
 
 ## Decision
 
@@ -47,10 +63,17 @@ Published programmes are transcribed as data, and a routine can name one.
   keeps its printed number, its own title and its own instruction, verbatim and
   untranslated: they are a quotation, not UI copy, so ADR 3 does not apply to
   them and the dictionaries do not carry them.
-- **A step is matched only when the library has that exercise.** The other five
+- **A step is matched only when the library has that exercise.** The other seven
   stay in the list with a reason — `notInLibrary`, or `differentExercise` with
   the id that was rejected — and the routine screen shows them. A programme the
-  app can only half run says so on the half it runs.
+  app can only partly run says so on the part it runs. The test that keeps this
+  honest is the narrow one: a programme may never prescribe an exercise that the
+  same programme refuses by name somewhere else.
+- **The citation covers a number only while it is that number.** A routine that
+  cites a document keeps saying so after somebody edits a dose or a professional
+  signs it, and in both cases the sentence changes: the citation becomes where
+  this came from rather than what it says. Nothing is stored to track that — the
+  transcription is right there, so the comparison is made against it.
 - **Printed holds become tempo, not prose.** "Mantener 5 segundos" is a pace on
   the phase that hold belongs to, which the engine already checks (ADR: the
   tempo monitor). Where the library counts an exercise in time rather than
@@ -78,8 +101,10 @@ Published programmes are transcribed as data, and a routine can name one.
   promotes them, and the exercise-level `clinical` provenance value still does
   not exist, because a programme is not a library.
 - The gap between the paper and the app is now a product feature rather than an
-  omission. Five missing exercises are five things worth asking a professional
-  about, and they are listed where somebody will read them.
+  omission. Seven missing exercises are seven things worth asking a professional
+  about, and they are listed where somebody will read them. Three of ten is a
+  worse-looking number than five of ten and a truer one, and the screen that
+  shows it is the screen where that matters.
 - Adding the missing exercises is a separate job with a higher bar: thresholds
   in this library are derived by running the engine over a reference motion
   (ADR 7), and authoring them by hand to close a gap would trade one honest

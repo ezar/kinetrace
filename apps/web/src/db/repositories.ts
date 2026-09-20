@@ -239,10 +239,15 @@ export async function duplicateRoutine(id: number): Promise<number | undefined> 
   const routine = await db.routines.get(id);
   if (!routine) return undefined;
   const now = Date.now();
+  // The copy keeps the citation and drops the signature. Those numbers came
+  // from wherever they came from, and dropping the citation while keeping them
+  // would turn sourced numbers back into nobody's. The signature is the
+  // opposite case: it was given for that routine, not for a copy of it.
   return db.routines.add({
     profileId: routine.profileId,
     name: `${routine.name} (2)`,
     exercises: routine.exercises.map((exercise) => ({ ...exercise })),
+    ...(routine.source ? { source: { ...routine.source } } : {}),
     createdAt: now,
     updatedAt: now,
   } as Routine);
