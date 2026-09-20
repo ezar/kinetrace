@@ -36,6 +36,11 @@ function sameTempo(entry: RoutineExercise, dose: ProgrammeDose): boolean {
   });
 }
 
+function sameBand(entry: RoutineExercise, dose: ProgrammeDose): boolean {
+  if (!dose.band) return entry.band === undefined;
+  return entry.band?.min === dose.band.min && entry.band?.max === dose.band.max;
+}
+
 /** Whether this entry still carries exactly the dose the programme prints. */
 export function matchesProgrammeDose(entry: RoutineExercise, dose: ProgrammeDose): boolean {
   return (
@@ -43,7 +48,8 @@ export function matchesProgrammeDose(entry: RoutineExercise, dose: ProgrammeDose
     entry.reps === dose.reps &&
     entry.holdSeconds === dose.holdSeconds &&
     entry.restSeconds === dose.restSeconds &&
-    sameTempo(entry, dose)
+    sameTempo(entry, dose) &&
+    sameBand(entry, dose)
   );
 }
 

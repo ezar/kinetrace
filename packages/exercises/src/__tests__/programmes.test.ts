@@ -79,7 +79,9 @@ describe('published programmes', () => {
         const exercise = getExercise(dose.exerciseId);
         if (!exercise) continue;
         const issues = reviewPrescription(exercise, {
-          band: exercise.targets.band,
+          // The band the routine would actually carry: the document's where it
+          // prints one, the library's default otherwise.
+          band: dose.band ?? exercise.targets.band,
           sets: dose.sets,
           reps: dose.reps,
           holdSeconds: dose.holdSeconds,
@@ -111,6 +113,44 @@ describe('published programmes', () => {
       );
       for (const dose of programmeDoses(programme)) {
         expect(refused.has(dose.exerciseId), dose.exerciseId).toBe(false);
+      }
+    }
+  });
+
+  /**
+   * A printed range is only worth carrying if the engine can act on it. It has
+   * to sit inside the exercise's safety stop and clear of the threshold that
+   * starts a repetition, or the person is told they came up short while doing
+   * what the document asked — which was the whole reason this field exists.
+   */
+  it('prints a range the exercise can actually be judged against', () => {
+    for (const programme of all) {
+      for (const dose of programmeDoses(programme)) {
+        if (!dose.band) continue;
+        const exercise = getExercise(dose.exerciseId);
+        expect(exercise, dose.exerciseId).toBeDefined();
+        if (!exercise) continue;
+        const { safety, direction } = exercise.targets;
+        expect(safety, dose.exerciseId).toBeDefined();
+        if (safety) {
+          expect(dose.band.min, dose.exerciseId).toBeGreaterThanOrEqual(safety.min);
+          expect(dose.band.max, dose.exerciseId).toBeLessThanOrEqual(safety.max);
+        }
+        expect(dose.band.min, dose.exerciseId).toBeLessThan(dose.band.max);
+
+        const counting = exercise.phases
+          .filter((phase) => phase.id !== 'rest')
+          .flatMap((phase) =>
+            'above' in phase.when && typeof phase.when.above === 'number'
+              ? [phase.when.above]
+              : 'below' in phase.when && typeof phase.when.below === 'number'
+                ? [phase.when.below]
+                : [],
+          );
+        for (const threshold of counting) {
+          if (direction === 'increase') expect(dose.band.min).toBeGreaterThan(threshold);
+          else expect(dose.band.max).toBeLessThan(threshold);
+        }
       }
     }
   });

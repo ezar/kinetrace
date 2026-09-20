@@ -33,7 +33,7 @@
  *   call, and the routine this builds is unsigned like any other.
  */
 
-import type { TempoTarget } from '@kinetrace/engine';
+import type { TargetBand, TempoTarget } from '@kinetrace/engine';
 
 /** Where a programme was published. Enough to find the document again. */
 export interface ProgrammeSource {
@@ -63,6 +63,18 @@ export interface ProgrammeDose {
   restSeconds: number;
   /** The printed hold, expressed as the pace of the phase it belongs to. */
   tempo?: TempoTarget[];
+  /**
+   * The range the document asks for, when it prints one.
+   *
+   * A library exercise carries its own default band, chosen for the exercise
+   * rather than for any one programme. Where a document states how far the
+   * movement should go, that is the number the routine built from it should be
+   * judged against — otherwise the app marks a repetition short while the
+   * person is doing exactly what the paper told them. The conversion from the
+   * document's units into degrees belongs with the step that needed it, and is
+   * written down there.
+   */
+  band?: TargetBand;
 }
 
 /**
@@ -204,6 +216,14 @@ export const SERMEF_LUMBAR: Programme = {
         reps: 10,
         restSeconds: 0,
         tempo: [{ phase: 'top', seconds: 5 }],
+        // The one step in this document that prints a distance rather than a
+        // count. Twenty to thirty centimetres at the ankle is 13 to 20 degrees
+        // of abduction on the body model's 0.86 m leg, rounded outwards by a
+        // degree at each end so that somebody at either end of the printed
+        // range is inside the band rather than on its edge. The library's own
+        // default is wider, because a side-lying leg raise is not only ever
+        // this document's.
+        band: { min: 12, max: 21 },
       },
     },
     {

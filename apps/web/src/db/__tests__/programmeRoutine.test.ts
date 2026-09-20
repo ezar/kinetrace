@@ -52,6 +52,13 @@ describe('a programme as a routine', () => {
     expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('supine-trunk-curl')?.tempo).toEqual([{ phase: 'top', seconds: 3 }]);
     expect(byId.get('prone-trunk-extension')).toMatchObject({ sets: 1, reps: 10 });
+    // The one step whose document prints a distance, carried as the range the
+    // engine judges against instead of the library's own wider default.
+    expect(byId.get('side-lying-leg-raise')?.band).toEqual({ min: 12, max: 21 });
+    expect(
+      byId.get('glute-bridge')?.band,
+      'no band where the document prints none',
+    ).toBeUndefined();
     expect(byId.get('childs-pose')).toMatchObject({ sets: 4, holdSeconds: 10 });
     expect(byId.get('cat-camel')?.tempo).toHaveLength(2);
   });

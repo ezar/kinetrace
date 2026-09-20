@@ -96,6 +96,22 @@ function sided(name: string, side: 'left' | 'right'): PoseLandmarkName {
 const TORSO: PoseLandmarkName[] = ['LEFT_SHOULDER', 'RIGHT_SHOULDER', 'LEFT_HIP', 'RIGHT_HIP'];
 
 /**
+ * The landmarks a metric needs, plus the four the anatomical frame is built
+ * from.
+ *
+ * Anything that reads `context.frame` depends on all four torso points, not
+ * just the ones on the side it is measuring: `buildBodyFrame` needs both
+ * shoulders and both hips to know which way the body faces. The setup
+ * assistant and the confidence gate both work off this list, so a metric that
+ * leaves them out can pass setup and then return a confident number computed
+ * from a hip the camera cannot see. That is worst where one side of the body
+ * hides the other, which is exactly where a leg lifts from side lying.
+ */
+function withTorso(...landmarks: PoseLandmarkName[]): PoseLandmarkName[] {
+  return [...new Set([...landmarks, ...TORSO])];
+}
+
+/**
  * Build the anatomical frame from the four torso landmarks.
  * Returns `null` when the torso is degenerate (landmarks collapsed on top of each other).
  */
@@ -206,7 +222,8 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   shoulderFlexion: {
     id: 'shoulderFlexion',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)],
+    landmarks: (side) =>
+      withTorso(sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)),
     preferredView: 'side',
     bilateral: true,
     unit: 'deg',
@@ -217,7 +234,8 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   shoulderAbduction: {
     id: 'shoulderAbduction',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)],
+    landmarks: (side) =>
+      withTorso(sided('SHOULDER', side), sided('HIP', side), sided('ELBOW', side)),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
@@ -228,7 +246,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   hipAbduction: {
     id: 'hipAbduction',
-    landmarks: (side) => [sided('SHOULDER', side), sided('HIP', side), sided('KNEE', side)],
+    landmarks: (side) => withTorso(sided('HIP', side), sided('KNEE', side)),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',
@@ -308,7 +326,7 @@ const DEFINITIONS: Record<MetricId, MetricDefinition> = {
 
   kneeValgus: {
     id: 'kneeValgus',
-    landmarks: (side) => [sided('HIP', side), sided('KNEE', side), sided('ANKLE', side)],
+    landmarks: (side) => withTorso(sided('HIP', side), sided('KNEE', side), sided('ANKLE', side)),
     preferredView: 'front',
     bilateral: true,
     unit: 'deg',

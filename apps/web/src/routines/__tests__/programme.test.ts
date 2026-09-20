@@ -27,6 +27,7 @@ function transcribed(): RoutineExercise[] {
     ...(dose.holdSeconds === undefined ? {} : { holdSeconds: dose.holdSeconds }),
     restSeconds: dose.restSeconds,
     ...(dose.tempo ? { tempo: [...dose.tempo] } : {}),
+    ...(dose.band ? { band: { ...dose.band } } : {}),
   }));
 }
 
@@ -73,6 +74,27 @@ describe('isUnchangedTranscription', () => {
     const paced = edited.findIndex((entry) => entry.tempo);
     const entry = edited[paced];
     if (entry) edited[paced] = { ...entry, tempo: [{ phase: 'top', seconds: 2 }] };
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  it('says no once the range the document printed is changed', () => {
+    const edited = transcribed();
+    const banded = edited.findIndex((entry) => entry.band);
+    const entry = edited[banded];
+    expect(entry, 'a programme step prints a band').toBeDefined();
+    if (entry) edited[banded] = { ...entry, band: { min: 30, max: 45 } };
+    expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
+  });
+
+  it('says no once a printed range is dropped for the library default', () => {
+    const edited = transcribed();
+    const banded = edited.findIndex((item) => item.band);
+    const entry = edited[banded];
+    if (entry) {
+      const withoutBand: RoutineExercise = { ...entry };
+      delete withoutBand.band;
+      edited[banded] = withoutBand;
+    }
     expect(isUnchangedTranscription(edited, SERMEF_LUMBAR)).toBe(false);
   });
 
