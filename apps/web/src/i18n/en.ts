@@ -94,6 +94,7 @@ export const en: Record<TranslationKey, string> = {
   'home.today': "Today's routine",
   'home.stretchRoutine': 'Stretches',
   'home.starterRoutine': 'My back routine',
+  'home.programmeRoutine': 'SERMEF programme',
   'home.noRoutine': 'You have no routine yet',
   'home.unfinished': 'You have a session half done',
   'home.unfinishedHelp': 'Sets done: {count}. You can carry on where you stopped.',
@@ -106,6 +107,12 @@ export const en: Record<TranslationKey, string> = {
   'home.never': 'No sessions yet',
   'home.switchProfile': 'Switch profile',
   'home.routines': 'Your routines',
+  'source.title': 'Where these numbers came from',
+  'source.unsigned':
+    'They are copied from the document, not prescribed for you. Which of these exercises you should do, at what dose and in what order, is still your physiotherapist’s call.',
+  'source.missing': 'The document has {count} more exercises the app cannot run:',
+  'source.notInLibrary': 'not in the library',
+  'source.differentExercise': 'the library has a similar exercise, not this one',
   'home.importSheet': "Import your physio's sheet",
 
   'profiles.title': 'Profiles',

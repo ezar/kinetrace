@@ -71,6 +71,30 @@ export interface RoutineExercise {
   physioNote?: string;
   /** Text kept from a sheet import when no exercise matched. */
   customNote?: string;
+  /**
+   * The instruction a published programme printed for this exercise, verbatim.
+   *
+   * Set only when the routine was built from a document, and never rewritten:
+   * it is the quotation the numbers on this card came from, which is what makes
+   * them checkable against the paper somebody was handed.
+   */
+  sourceNote?: string;
+}
+
+/**
+ * The publication a routine was transcribed from.
+ *
+ * Deliberately not a `review`: a document is not a professional who looked at
+ * this person and signed. A routine can have a source and still be unsigned,
+ * and that is exactly the state a transcribed programme starts in.
+ */
+export interface RoutineSource {
+  /** Programme id, so the app can find the steps it could not run. */
+  programmeId: string;
+  title: string;
+  publisher: string;
+  year: number;
+  url?: string;
 }
 
 /**
@@ -92,6 +116,8 @@ export interface Routine {
   exercises: RoutineExercise[];
   /** Set when a professional has been through the exercises and signed. */
   review?: RoutineReview;
+  /** Set when the routine was transcribed from a published programme. */
+  source?: RoutineSource;
   createdAt: number;
   updatedAt: number;
 }

@@ -1,0 +1,239 @@
+/**
+ * Exercise programmes published by somebody else, transcribed.
+ *
+ * ADR 7 left a hole on purpose. Every dose in the library is `authored` —
+ * written by hand, with no source — and the provenance value `clinical` was
+ * deliberately not created, because "a number taken from a clinical source has
+ * to name it, and adding the value before there is a citation to go with it is
+ * exactly how an authored number ends up looking sourced."
+ *
+ * This is the first citation. It is not a personalised prescription and must
+ * never be shown as one: it is a printed patient programme from a professional
+ * society, transcribed exactly, so that a routine built from it can say where
+ * every number came from.
+ *
+ * Three rules hold everything here together.
+ *
+ * - **The document speaks for itself.** Each step keeps the publication's own
+ *   title and its own instruction, verbatim and in the language it was printed
+ *   in. They are a quotation, not UI copy, so they are not translated and they
+ *   do not live in the dictionaries.
+ * - **A step is matched only when the library has that exercise**, not
+ *   something adjacent to it. Five of these ten have no match, each for a
+ *   stated reason, and they are kept in the list rather than dropped — a
+ *   programme the app can only half run should say so on the half it cannot.
+ * - **Nothing here is interpreted.** No ordering logic, no substitutions, no
+ *   progression. Which of these a given person should do is the professional's
+ *   call, and the routine this builds is unsigned like any other.
+ */
+
+import type { TempoTarget } from '@kinetrace/engine';
+
+/** Where a programme was published. Enough to find the document again. */
+export interface ProgrammeSource {
+  /** Title as printed on the document. */
+  title: string;
+  /** The body that published it. */
+  publisher: string;
+  /** Year printed on the document, or the year of the file it came from. */
+  year: number;
+  url?: string;
+}
+
+/** The dose for one exercise, as this programme prints it. */
+export interface ProgrammeDose {
+  exerciseId: string;
+  sets: number;
+  /** Repetitions per set, for an exercise the library counts in repetitions. */
+  reps?: number;
+  /** Hold per set in seconds, for an exercise the library counts in time. */
+  holdSeconds?: number;
+  /**
+   * Zero wherever the document is silent, which is everywhere: none of these
+   * programmes print a rest. It only has a visible effect where sets is above
+   * one, and there it is the honest reading — the document's repetitions run
+   * one after another, not as sets with a pause between them.
+   */
+  restSeconds: number;
+  /** The printed hold, expressed as the pace of the phase it belongs to. */
+  tempo?: TempoTarget[];
+}
+
+/**
+ * Why a printed step has no exercise behind it.
+ *
+ * A code rather than a sentence, because the app renders it and ADR 3 keeps
+ * text in the dictionaries. `notInLibrary` is an absence; `differentExercise`
+ * is the dangerous one — the library has something with a similar name doing a
+ * different movement, and matching them would be the exact mistake this file
+ * exists to avoid.
+ */
+export type ProgrammeOmission = 'notInLibrary' | 'differentExercise';
+
+/** One numbered step of a printed programme. */
+export interface ProgrammeStep {
+  /** Position in the document, from one. Kept so an omission stays visible. */
+  step: number;
+  /** The document's own name for the exercise, verbatim. */
+  title: string;
+  /** The document's own instruction, verbatim. */
+  instruction: string;
+  /** Series and repetitions exactly as printed, before any mapping. */
+  printed: { sets: number; reps: number };
+  /** The library exercise this step is, when the library has it. */
+  dose?: ProgrammeDose;
+  /** Set when there is no exercise, with the library id that was rejected. */
+  omission?: { reason: ProgrammeOmission; near?: string };
+}
+
+export interface Programme {
+  id: string;
+  source: ProgrammeSource;
+  steps: readonly ProgrammeStep[];
+}
+
+/**
+ * SERMEF, "Programas de ejercicios para Columna Lumbar".
+ *
+ * Ten exercises over four pages, each with a drawing, an instruction and a
+ * dose. The document prints no order of its own beyond the order of its pages,
+ * no frequency, no progression and nothing about pain: everything it says is
+ * below, and everything it does not say stays unsaid here.
+ */
+export const SERMEF_LUMBAR: Programme = {
+  id: 'sermef-lumbar',
+  source: {
+    title: 'Programas de ejercicios para Columna Lumbar',
+    publisher: 'Sociedad Española de Rehabilitación y Medicina Física (SERMEF)',
+    year: 2013,
+    url: 'http://www.sermef.es',
+  },
+  steps: [
+    {
+      step: 1,
+      title: 'Báscula pélvica en supino',
+      instruction:
+        'Apretar el abdomen, contraer los glúteos y hacer que éstos se despeguen del suelo 1-2 cm, y aplanar la columna lumbar. Mantener 5 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 10 },
+      dose: {
+        exerciseId: 'pelvic-tilt',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'tilted', seconds: 5 }],
+      },
+    },
+    {
+      step: 2,
+      title: 'Abdominales inferiores',
+      instruction:
+        'Flexionar los miembros inferiores, llevando las rodillas al pecho. Mantener 5 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 10 },
+      // The library counts this one in time, so the document's ten repetitions
+      // of five seconds are ten holds run together rather than ten reps.
+      dose: { exerciseId: 'double-knee-to-chest', sets: 10, holdSeconds: 5, restSeconds: 0 },
+    },
+    {
+      step: 3,
+      title: 'Abdominales superiores de frente (manos suelo)',
+      instruction:
+        'Elevar la parte superior del tronco unos 25 cm. Mantener 3 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 10 },
+      // The library's curl-up is McGill's: hands under the lumbar spine to keep
+      // its curve, and a lift of a few centimetres. This is a different
+      // movement with a different end position.
+      omission: { reason: 'differentExercise', near: 'mcgill-curl-up' },
+    },
+    {
+      step: 4,
+      title: 'Abdominales superiores cruzados (manos suelo)',
+      instruction:
+        'Dirigir el hombro de un lado hacia la rodilla contralateral. Mantener 3 segundos y volver a la posición inicial. Repetir con el lado contrario.',
+      printed: { sets: 1, reps: 10 },
+      omission: { reason: 'notInLibrary' },
+    },
+    {
+      step: 5,
+      title: 'Puente',
+      instruction:
+        'Elevar la pelvis extendiendo ambas caderas hasta alinear los muslos con el tronco. Mantener 5 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 10 },
+      dose: {
+        exerciseId: 'glute-bridge',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'top', seconds: 5 }],
+      },
+    },
+    {
+      step: 6,
+      title: 'Extensión de tronco en prono',
+      instruction:
+        'Extender el tronco en bloque desde la cintura hasta colocarlo en la misma línea que los miembros inferiores, con la cabeza alineada con el tronco. Mantener 5 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 10 },
+      // The library's prone extension is a press-up: the arms lift the chest
+      // and the back is passive. This is the trunk lifting itself.
+      omission: { reason: 'differentExercise', near: 'prone-press-up' },
+    },
+    {
+      step: 7,
+      title: 'Elevación de pierna extendida',
+      instruction:
+        'Elevar la pierna colocada arriba 20-30 cm. Mantener 5 segundos y volver a la posición inicial. Repetir con la otra pierna.',
+      printed: { sets: 1, reps: 10 },
+      omission: { reason: 'notInLibrary' },
+    },
+    {
+      step: 8,
+      title: 'Estiramiento lumbosacro en suelo',
+      instruction:
+        'Flexionar las rodillas y las caderas hasta sentarse sobre los talones, flexionando a la vez el cuello. Deslizar las manos hacia delante al finalizar el movimiento. Mantener 10-30 segundos y volver a la posición inicial.',
+      printed: { sets: 1, reps: 4 },
+      // A hold has to be one number and the document prints a range, so this
+      // takes the bottom of it. The printed instruction travels with the
+      // routine, so the other end of the range is never lost.
+      dose: { exerciseId: 'childs-pose', sets: 4, holdSeconds: 10, restSeconds: 0 },
+    },
+    {
+      step: 9,
+      title: 'Gato-camello',
+      instruction:
+        'Arquear la columna hacia arriba, flexionando el cuello. Mantener 5 segundos. Arquear la columna hacia abajo, extendiendo el cuello. Mantener 5 segundos.',
+      printed: { sets: 1, reps: 5 },
+      dose: {
+        exerciseId: 'cat-camel',
+        sets: 1,
+        reps: 5,
+        restSeconds: 0,
+        tempo: [
+          { phase: 'cat', seconds: 5 },
+          { phase: 'camel', seconds: 5 },
+        ],
+      },
+    },
+    {
+      step: 10,
+      title: 'Elevación brazo-pierna alternativa',
+      instruction:
+        'Elevar el miembro superior hasta la horizontal. Mantener 5 segundos y volver a la posición inicial. Elevar el miembro inferior del lado contrario. Mantener 5 segundos y volver a la posición inicial. Repetir con las otras dos extremidades.',
+      printed: { sets: 1, reps: 10 },
+      // Arm, down, then the opposite leg, down. The library's bird dog lifts
+      // both at once, which is the harder exercise this one leads up to.
+      omission: { reason: 'differentExercise', near: 'bird-dog' },
+    },
+  ],
+};
+
+/** Every published programme, by id. One so far. */
+export const PROGRAMMES: readonly Programme[] = [SERMEF_LUMBAR];
+
+/** The steps a programme brings an exercise for, in the document's order. */
+export function programmeDoses(programme: Programme): ProgrammeDose[] {
+  return programme.steps.flatMap((step) => (step.dose ? [step.dose] : []));
+}
+
+/** The steps the library cannot run, in the document's order. */
+export function programmeOmissions(programme: Programme): ProgrammeStep[] {
+  return programme.steps.filter((step) => step.omission !== undefined);
+}

@@ -99,6 +99,7 @@ export const es = {
   'home.today': 'Rutina de hoy',
   'home.stretchRoutine': 'Estiramientos',
   'home.starterRoutine': 'Mi rutina de espalda',
+  'home.programmeRoutine': 'Programa SERMEF',
   'home.noRoutine': 'Todavía no tienes ninguna rutina',
   'home.unfinished': 'Tienes una sesión a medias',
   'home.unfinishedHelp': 'Series hechas: {count}. Puedes seguir por donde ibas.',
@@ -111,6 +112,12 @@ export const es = {
   'home.never': 'Aún no has entrenado',
   'home.switchProfile': 'Cambiar de perfil',
   'home.routines': 'Tus rutinas',
+  'source.title': 'De dónde salen estos números',
+  'source.unsigned':
+    'Están copiados del documento, no prescritos para ti. Tu fisioterapeuta sigue siendo quien decide cuáles de estos ejercicios te tocan, con qué dosis y en qué orden.',
+  'source.missing': 'El documento trae {count} ejercicios más que la app no sabe hacer:',
+  'source.notInLibrary': 'no está en la biblioteca',
+  'source.differentExercise': 'la biblioteca tiene otro ejercicio parecido, no este',
   'home.importSheet': 'Importar la hoja del fisio',
 
   'profiles.title': 'Perfiles',
