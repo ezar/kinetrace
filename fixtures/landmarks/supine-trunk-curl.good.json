@@ -1,19 +1,19 @@
 {
   "kind": "synthetic",
-  "exerciseId": "supine-shoulder-flexion",
+  "exerciseId": "supine-trunk-curl",
   "variant": "good",
-  "description": "Supine shoulder flexion performed as the reference motion describes it.",
+  "description": "Trunk curl, hands on the floor performed as the reference motion describes it.",
   "view": "side",
   "fps": 30,
   "noiseMetres": 0.004,
-  "seed": 1023,
+  "seed": 1006,
   "cycles": 10,
   "expect": {
     "reps": 10,
     "partials": 0,
     "silent": [
-      "elbowsBending",
-      "pace"
+      "pace",
+      "neck"
     ]
   }
 }

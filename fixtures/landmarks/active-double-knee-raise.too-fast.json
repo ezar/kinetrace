@@ -1,0 +1,17 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "active-double-knee-raise",
+  "variant": "too-fast",
+  "description": "Knees swung up and down at roughly three times the intended tempo.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "cycleSeconds": 1.6,
+  "noiseMetres": 0.004,
+  "seed": 39,
+  "expect": {
+    "cues": [
+      "pace"
+    ]
+  }
+}

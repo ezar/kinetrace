@@ -1,0 +1,24 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "prone-trunk-extension",
+  "variant": "arms-pushing",
+  "description": "Trunk extension with the hands brought up beside the chest to push.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 34,
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "shoulderAngle": 92
+      }
+    }
+  ],
+  "expect": {
+    "cues": [
+      "armsPushing"
+    ]
+  }
+}

@@ -135,6 +135,8 @@ export const RULE_CUES: Record<string, Localized> = {
   'cue.dontTwist': { es: 'no gires el tronco', en: 'keep your trunk still' },
   'cue.elbowUnderShoulder': { es: 'codo bajo el hombro', en: 'elbow under your shoulder' },
   'cue.longNeck': { es: 'cuello largo, mirada abajo', en: 'long neck, look down' },
+  'cue.dontPushWithArms': { es: 'no empujes con los brazos', en: 'do not push with your arms' },
+  'cue.restYourHeadDown': { es: 'cabeza y espalda abajo', en: 'head and back down' },
 };
 
 /** Hints the camera setup assistant shows while the checks are failing. */

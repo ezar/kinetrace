@@ -28,8 +28,8 @@ Two things about the document matter as much as its contents.
 frequency, no progression and not one word about pain. It is a printed sheet a
 professional society publishes for professionals to hand out.
 
-**Most of it is not in this library.** Seven of the ten steps have no exercise
-here, and five of those seven have something with a similar name doing a
+**Most of it was not in this library.** Seven of the ten steps had no exercise
+here, and five of those seven had something with a similar name doing a
 different movement: the sheet's curl-up lifts the trunk 25 cm with the hands on
 the floor, while the library's is McGill's with the hands under the lumbar
 spine; the sheet's prone extension lifts the trunk itself, while the library's
@@ -100,11 +100,48 @@ Published programmes are transcribed as data, and a routine can name one.
 - The library's own doses are untouched and still `authored`. Nothing here
   promotes them, and the exercise-level `clinical` provenance value still does
   not exist, because a programme is not a library.
-- The gap between the paper and the app is now a product feature rather than an
-  omission. Seven missing exercises are seven things worth asking a professional
-  about, and they are listed where somebody will read them. Three of ten is a
+- The gap between the paper and the app is a product feature rather than an
+  omission. The missing steps are things worth asking a professional about, and
+  they are listed where somebody will read them. Three of ten was a
   worse-looking number than five of ten and a truer one, and the screen that
   shows it is the screen where that matters.
+
+## Addendum: writing the exercises the document describes
+
+Three of the seven gaps were closed the only way that does not bend the
+document — by writing the exercise it describes, rather than pointing it at
+something adjacent. `active-double-knee-raise`, `supine-trunk-curl` and
+`prone-trunk-extension` are the document's steps 2, 3 and 6, and each one is
+the honest counterpart of a library exercise that was rejected above: the
+active knee raise to the sustained stretch, the trunk curl to McGill's, the
+trunk extension to the press-up. The programme now runs six of its ten steps.
+
+Two things learned in the writing are worth keeping:
+
+- **A pace rule has a ceiling, and it is the filter's rather than the body's.**
+  The engine estimates velocity through a one-euro derivative, so a movement of
+  sixteen degrees cannot read much above 28 deg/s however fast it is thrown.
+  The prone extension's first pace threshold was set by analogy with a larger
+  exercise and could never have fired. A rule that cannot fire is worse than no
+  rule, because the library looks like it is watching something it is not. Each
+  threshold here is a multiple of what its own reference motion produces, with
+  a fixture that trips it and a good variant that stays silent.
+- **Measure the joint the mistake actually moves.** The rule that keeps the
+  prone extension from becoming a press-up first watched the elbow, which says
+  nothing when the arms already rest straight beside the body. What a press-up
+  needs first is the hands coming up beside the chest, which is the shoulder.
+
+The four steps still missing are the ones with real obstacles rather than
+absent files: a cross-body curl and a supine lumbar rotation both need
+`thoracicRotation` and so the front, where a supine body has no length; a
+side-lying leg raise needs a hip abduction metric the engine does not have; and
+the last step raises one limb at a time where the library's bird dog raises two.
+
+The pelvic tilt is a fifth, of a different kind: the document and the library
+agree on the joint and disagree on how far it travels. Closing that one means
+deciding whether it is one exercise or two, which is a question for a
+professional rather than for this file.
+
 - Adding the missing exercises is a separate job with a higher bar: thresholds
   in this library are derived by running the engine over a reference motion
   (ADR 7), and authoring them by hand to close a gap would trade one honest
