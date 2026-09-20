@@ -3,8 +3,8 @@
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { EXERCISES, getExercise } from '@kinetrace/exercises';
-import { db, type RoutineReview, type RoutineExercise } from '../db/schema.js';
+import { EXERCISES, getExercise, PROGRAMMES, programmeOmissions } from '@kinetrace/exercises';
+import { db, type RoutineReview, type RoutineExercise, type RoutineSource } from '../db/schema.js';
 import { deleteRoutine, duplicateRoutine, saveRoutine } from '../db/repositories.js';
 import { estimateMinutes } from '../session/plan.js';
 import { useSettingsStore } from '../store/useSettingsStore.js';
@@ -24,6 +24,7 @@ export function RoutineBuilderScreen(): JSX.Element {
   const [name, setName] = useState('');
   const [exercises, setExercises] = useState<RoutineExercise[]>([]);
   const [review, setReview] = useState<RoutineReview | undefined>();
+  const [source, setSource] = useState<RoutineSource | undefined>();
   const [picking, setPicking] = useState(false);
   const [editing, setEditing] = useState<number | null>(null);
   const id = routineId && routineId !== 'new' ? Number(routineId) : undefined;
@@ -38,6 +39,7 @@ export function RoutineBuilderScreen(): JSX.Element {
       setName(routine.name);
       setExercises(routine.exercises);
       setReview(routine.review);
+      setSource(routine.source);
     });
   }, [id, t]);
 
@@ -96,6 +98,17 @@ export function RoutineBuilderScreen(): JSX.Element {
 
   const endDrag = (): void => setDragging(null);
 
+  /** The programme's own steps that no exercise in the library can run. */
+  const missingSteps = source
+    ? programmeOmissions(
+        PROGRAMMES.find((programme) => programme.id === source.programmeId) ?? {
+          id: '',
+          source: { title: '', publisher: '', year: 0 },
+          steps: [],
+        },
+      )
+    : [];
+
   const update = (index: number, patch: Partial<RoutineExercise>): void => {
     setExercises((current) =>
       current.map((entry, position) => (position === index ? { ...entry, ...patch } : entry)),
@@ -129,6 +142,35 @@ export function RoutineBuilderScreen(): JSX.Element {
         </div>
       ) : null}
 
+      {/* Where these numbers were published, and — just as important — which
+          of the document's exercises the app has no exercise for. A routine
+          that can only run half a programme should say so next to the half it
+          runs, not in a commit message. */}
+      {source ? (
+        <section className="card mt-4 space-y-2 p-4">
+          <p className="text-sm font-medium">{t('source.title')}</p>
+          <p className="text-sm text-muted">
+            {source.publisher}. <span className="italic">{source.title}</span> ({source.year}).
+          </p>
+          <p className="text-xs leading-relaxed text-muted">{t('source.unsigned')}</p>
+          {missingSteps.length > 0 ? (
+            <div className="pt-1">
+              <p className="text-sm">{t('source.missing', { count: missingSteps.length })}</p>
+              <ul className="mt-1 space-y-1">
+                {missingSteps.map((step) => (
+                  <li key={step.step} className="text-sm text-muted">
+                    {step.step}. {step.title} —{' '}
+                    {step.omission?.reason === 'notInLibrary'
+                      ? t('source.notInLibrary')
+                      : t('source.differentExercise')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
       <ul className="mt-4 space-y-3" ref={listRef}>
         {exercises.map((entry, index) => {
           const exercise = getExercise(entry.exerciseId);
@@ -158,6 +200,11 @@ export function RoutineBuilderScreen(): JSX.Element {
                   </p>
                   {!exercise ? (
                     <p className="mt-1 text-sm text-muted">{t('import.unmatched')}</p>
+                  ) : null}
+                  {/* The document's own words, so the numbers above can be
+                      checked against the paper without leaving the screen. */}
+                  {entry.sourceNote ? (
+                    <p className="mt-1 text-xs leading-relaxed text-muted">“{entry.sourceNote}”</p>
                   ) : null}
                 </div>
                 <div className="flex flex-col items-center gap-1">

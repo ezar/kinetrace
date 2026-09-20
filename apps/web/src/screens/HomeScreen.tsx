@@ -4,11 +4,12 @@ import type { JSX } from 'react';
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { getExercise } from '@kinetrace/exercises';
+import { getExercise, SERMEF_LUMBAR } from '@kinetrace/exercises';
 import { db, type Routine } from '../db/schema.js';
 import {
   createStarterRoutine,
   openStretchRoutine,
+  openProgrammeRoutine,
   deleteSession,
   resumableSession,
   streakFromDates,
@@ -89,6 +90,18 @@ export function HomeScreen(): JSX.Element {
   const startStretchRoutine = async (): Promise<void> => {
     if (!profile) return;
     navigate(`/routines/${await openStretchRoutine(profile.id, t('home.stretchRoutine'))}`);
+  };
+
+  /**
+   * The published programme, transcribed, for somebody who was handed the
+   * paper. It opens the routine rather than starting a session: the point of
+   * it is the citation and the list of steps the app cannot run, and both are
+   * on that screen.
+   */
+  const startProgrammeRoutine = async (): Promise<void> => {
+    if (!profile) return;
+    const id = await openProgrammeRoutine(profile.id, t('home.programmeRoutine'), SERMEF_LUMBAR);
+    navigate(`/routines/${id}`);
   };
 
   if (loadedProfiles === undefined) return <div className="p-8 text-muted">…</div>;
@@ -177,7 +190,7 @@ export function HomeScreen(): JSX.Element {
           <div className="flex flex-col">
             <span className="text-[26px] font-bold leading-tight">{streak}</span>
             <span className="text-[13px] text-muted">
-              {t('home.streakDays', { count: streak })}
+              {t(streak === 1 ? 'home.streakDay' : 'home.streakDays', { count: streak })}
             </span>
           </div>
           {completed.length > 0 ? (
@@ -233,6 +246,13 @@ export function HomeScreen(): JSX.Element {
         >
           <PlusIcon size={19} />
           {t('home.stretchRoutine')}
+        </button>
+        <button
+          onClick={() => void startProgrammeRoutine()}
+          className="flex items-center gap-2 py-2 text-[16px]"
+        >
+          <PlusIcon size={19} />
+          {t('home.programmeRoutine')}
         </button>
         <Link to="/import" className="py-2 text-[15px] underline underline-offset-4">
           {t('home.importSheet')}

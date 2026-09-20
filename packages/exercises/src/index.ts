@@ -12,6 +12,7 @@ export * from './prescription.js';
 export { describeCondition } from './explain.js';
 export * from './runner.js';
 export * from './guided.js';
+export * from './programmes.js';
 export { phaseTimeline, phaseMarks } from './phases.js';
 export { spinalLoadMix, SPINAL_LOAD_ORDER } from './load.js';
 export type { PhaseMark } from './phases.js';

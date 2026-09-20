@@ -11,7 +11,12 @@ import {
   type RoutineReview,
   type SetRecord,
 } from './schema.js';
-import { DEFAULT_ROUTINE_IDS, STRETCH_ROUTINE_IDS, getExercise } from '@kinetrace/exercises';
+import {
+  DEFAULT_ROUTINE_IDS,
+  STRETCH_ROUTINE_IDS,
+  getExercise,
+  type Programme,
+} from '@kinetrace/exercises';
 import type { SkeletonTrack } from '@kinetrace/engine';
 import type { ImportedItem } from '@kinetrace/import';
 
@@ -130,6 +135,73 @@ export async function createStarterRoutine(profileId: number, name: string): Pro
  */
 export async function createStretchRoutine(profileId: number, name: string): Promise<number> {
   return createRoutineFrom(profileId, name, STRETCH_ROUTINE_IDS);
+}
+
+/**
+ * A published programme, as a routine: its order, its doses, its own words.
+ *
+ * Every number here comes off the document and nothing is filled in around it.
+ * Where the document prints a hold it becomes a pace on the phase that hold
+ * belongs to; where it prints nothing — rest, in every case — the routine says
+ * nothing either. The steps the library has no exercise for are not silently
+ * dropped: they stay in the programme data, and the routine screen lists them
+ * so the gap between the paper and the app is visible on the app.
+ *
+ * The routine is unsigned, like every other routine. A citation says where the
+ * numbers were published; it does not say anybody prescribed them to the person
+ * holding the phone, and the review screen keeps saying so until one does.
+ */
+export async function createProgrammeRoutine(
+  profileId: number,
+  name: string,
+  programme: Programme,
+): Promise<number> {
+  const exercises = programme.steps.flatMap((step): RoutineExercise[] => {
+    if (!step.dose || !getExercise(step.dose.exerciseId)) return [];
+    const { exerciseId, sets, reps, holdSeconds, restSeconds, tempo } = step.dose;
+    return [
+      {
+        exerciseId,
+        sets,
+        ...(reps === undefined ? {} : { reps }),
+        ...(holdSeconds === undefined ? {} : { holdSeconds }),
+        restSeconds,
+        ...(tempo ? { tempo: [...tempo] } : {}),
+        sourceNote: `${step.title}. ${step.instruction}`,
+      },
+    ];
+  });
+  return saveRoutine({
+    profileId,
+    name,
+    exercises,
+    source: {
+      programmeId: programme.id,
+      title: programme.source.title,
+      publisher: programme.source.publisher,
+      year: programme.source.year,
+      ...(programme.source.url ? { url: programme.source.url } : {}),
+    },
+  });
+}
+
+/**
+ * The SERMEF lumbar programme for this profile: the one already transcribed, or
+ * a new one.
+ *
+ * Matched on the programme id rather than on the exercises, unlike the
+ * stretches: a transcription is a routine somebody is expected to edit once a
+ * professional has been through it, and it should still be recognised as the
+ * same routine afterwards.
+ */
+export async function openProgrammeRoutine(
+  profileId: number,
+  name: string,
+  programme: Programme,
+): Promise<number> {
+  const existing = await db.routines.where('profileId').equals(profileId).toArray();
+  const match = existing.find((routine) => routine.source?.programmeId === programme.id);
+  return match?.id ?? createProgrammeRoutine(profileId, name, programme);
 }
 
 /**

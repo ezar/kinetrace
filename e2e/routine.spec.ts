@@ -333,6 +333,60 @@ test('lets a professional review the exercises and sign', async ({ page }) => {
  * checks the generated parts are there rather than the prose: the gestures
  * drawn, the real voice vocabulary, and the way back into the introduction.
  */
+/**
+ * A published programme, transcribed. The point of the screen is not the five
+ * exercises it can run but the two things printed around them: where the
+ * numbers came from, and which of the document's exercises the app has no
+ * exercise for. A transcription that quietly dropped the other five would look
+ * identical without them.
+ */
+test('builds a routine from a published programme, and says what it left out', async ({ page }) => {
+  await page.goto('./');
+  const next = page.getByRole('button', { name: /^continuar$|^continue$/i });
+  await next.click();
+  await next.click();
+  await page.getByLabel(/nombre|name/i).fill('Ana');
+  await next.click();
+  await next.click();
+  await page.getByRole('button', { name: /^empezar$|^start$/i }).click();
+  await expect(page.getByText('Ana')).toBeVisible();
+
+  await page.getByRole('button', { name: /programa sermef|sermef programme/i }).click();
+  await expect(page).toHaveURL(/routines\/\d+/);
+
+  // The citation, and the fact that a citation is not a prescription.
+  await expect(page.getByText(/SERMEF/).first()).toBeVisible();
+  await expect(page.getByText(/Programas de ejercicios para Columna Lumbar/)).toBeVisible();
+  await expect(page.getByText(/copiados del documento|copied from the document/i)).toBeVisible();
+
+  // The document's order, which is not the app's own back routine order.
+  const names = await page.locator('main li p.font-medium, li p.font-medium').allInnerTexts();
+  expect(names.slice(0, 5)).toEqual([
+    'Báscula pélvica',
+    'Rodillas al pecho sostenido',
+    'Puente de glúteos',
+    'Postura del niño',
+    'Gato y camello',
+  ]);
+
+  // The printed dose, and the document's own words under it.
+  await expect(page.getByText('10 × 5s · 0s', { exact: false })).toBeVisible();
+  await expect(page.getByText(/Abdominales inferiores\. Flexionar los miembros/)).toBeVisible();
+
+  // The five steps the library cannot run, each with a reason.
+  await expect(page.getByText(/Elevación brazo-pierna alternativa/)).toBeVisible();
+  await expect(
+    page.getByText(/no está en la biblioteca|not in the library/i).first(),
+  ).toBeVisible();
+
+  // Opening it again is the same routine, not a second copy.
+  await page.getByRole('link', { name: /inicio|home/i }).click();
+  await page.getByRole('button', { name: /programa sermef|sermef programme/i }).click();
+  await expect(page.getByText(/Programas de ejercicios para Columna Lumbar/)).toBeVisible();
+  await page.getByRole('link', { name: /inicio|home/i }).click();
+  await expect(page.getByText(/programa sermef|sermef programme/i).first()).toBeVisible();
+});
+
 test('the library can be browsed by which way an exercise loads the back', async ({ page }) => {
   await page.goto('library');
   await expect(page.getByRole('heading', { name: /ejercicios|exercises/i })).toBeVisible();
