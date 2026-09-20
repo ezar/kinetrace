@@ -132,7 +132,12 @@ export class MetricEvaluator {
   ): MetricSample {
     const definition = getMetricDefinition(slot.spec.id);
     const sides = this.resolveSides(slot, image);
-    const required = sides.flatMap((side) => definition.landmarks(side));
+    // Unique: a slot measured on both sides asks each side for its landmarks,
+    // and a frame-reading metric names the whole torso in both answers. Left
+    // as they come, those four points would be counted twice each and the two
+    // limbs once, so the confidence in a measurement of two arms would be
+    // mostly confidence in the trunk they hang from.
+    const required = [...new Set(sides.flatMap((side) => definition.landmarks(side)))];
     const visibility = meanVisibility(image, required);
 
     const useWorld = world.length > 0 && visibility >= this.worldVisibilityThreshold;

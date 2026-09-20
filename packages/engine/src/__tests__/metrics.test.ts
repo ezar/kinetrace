@@ -332,6 +332,51 @@ describe('side selection', () => {
   });
 });
 
+describe('confidence of a two-sided measurement', () => {
+  /**
+   * A `mean` slot asks both sides for their landmarks, and a frame-reading
+   * metric names the whole torso in both answers. Counted as they come, the
+   * four torso points outnumber the two limbs eight to two, and the confidence
+   * in a measurement of two arms becomes mostly confidence in the trunk — far
+   * enough to carry the metric over the threshold where it trusts world space
+   * while both arms are barely visible.
+   */
+  it('does not let the torso vote twice', () => {
+    const motion: ReferenceMotion = {
+      posture: 'standing',
+      cameraSide: 'left',
+      cycleSeconds: 1,
+      keyframes: [{ t: 0, pose: { shoulderAbduction: 90, elbowAngle: 90 } }],
+    };
+    const frames = synthesizeFrames(motion, {
+      view: 'front',
+      fps: 30,
+      holdAtPhase: 0,
+      holdSeconds: 1.5,
+    });
+
+    // A clear trunk and two elbows the camera has all but lost. Counted once
+    // each this averages below the 0.6 the evaluator wants before it trusts
+    // world space; with the torso counted twice it comes out above.
+    const elbows = new Set<number>([POSE_LANDMARK.LEFT_ELBOW, POSE_LANDMARK.RIGHT_ELBOW]);
+    const dim = frames.map((frame) => ({
+      ...frame,
+      image: frame.image.map((landmark, index) => ({
+        ...landmark,
+        visibility: elbows.has(index) ? 0.05 : 0.8,
+      })),
+    }));
+
+    const evaluator = new MetricEvaluator(
+      { shoulder: { id: 'shoulderAbduction', side: 'mean' } },
+      { view: 'front' },
+    );
+    let sample = evaluator.update(dim[0] as PoseFrame).samples.shoulder;
+    for (const frame of dim) sample = evaluator.update(frame).samples.shoulder;
+    expect(sample?.fromImageSpace).toBe(true);
+  });
+});
+
 describe('space selection', () => {
   it('falls back to image landmarks and lowers confidence when visibility drops', () => {
     const motion: ReferenceMotion = {
