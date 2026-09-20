@@ -1,0 +1,26 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "active-double-knee-raise",
+  "variant": "trunk-lifting",
+  "description": "Knees raised with the head and upper back coming off the mat with them.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 37,
+  "perturbations": [
+    {
+      "kind": "override",
+      "pose": {
+        "trunkAngle": 22
+      },
+      "fromPhase": 0.3,
+      "toPhase": 0.7
+    }
+  ],
+  "expect": {
+    "cues": [
+      "trunkLifting"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "prone-trunk-extension",
+  "variant": "partial",
+  "description": "Trunk extensions that stop well short of the line of the legs.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "noiseMetres": 0.004,
+  "seed": 35,
+  "perturbations": [
+    {
+      "kind": "amplitude",
+      "factor": 0.6
+    }
+  ],
+  "expect": {
+    "reps": 0,
+    "partials": 6
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "supine-trunk-curl",
+  "variant": "too-fast",
+  "description": "Curls thrown up and down at more than twice the intended tempo.",
+  "view": "side",
+  "fps": 30,
+  "cycles": 6,
+  "cycleSeconds": 2,
+  "noiseMetres": 0.004,
+  "seed": 36,
+  "expect": {
+    "cues": [
+      "pace"
+    ]
+  }
+}

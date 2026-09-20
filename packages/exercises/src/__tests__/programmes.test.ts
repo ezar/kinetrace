@@ -171,15 +171,18 @@ describe('SERMEF lumbar programme', () => {
     ]);
   });
 
-  it('runs three of the ten, in the order of the document', () => {
+  it('runs six of the ten, in the order of the document', () => {
     expect(programmeDoses(SERMEF_LUMBAR).map((dose) => dose.exerciseId)).toEqual([
+      'active-double-knee-raise',
+      'supine-trunk-curl',
       'glute-bridge',
+      'prone-trunk-extension',
       'childs-pose',
       'cat-camel',
     ]);
   });
 
-  it('leaves the other seven out, each naming what it refused', () => {
+  it('leaves the other four out, each naming what it refused', () => {
     expect(
       programmeOmissions(SERMEF_LUMBAR).map((step) => [
         step.step,
@@ -188,10 +191,7 @@ describe('SERMEF lumbar programme', () => {
       ]),
     ).toEqual([
       [1, 'differentExercise', 'pelvic-tilt'],
-      [2, 'differentExercise', 'double-knee-to-chest'],
-      [3, 'differentExercise', 'mcgill-curl-up'],
       [4, 'notInLibrary', undefined],
-      [6, 'differentExercise', 'prone-press-up'],
       [7, 'notInLibrary', undefined],
       [10, 'differentExercise', 'bird-dog'],
     ]);
@@ -199,7 +199,11 @@ describe('SERMEF lumbar programme', () => {
 
   it('carries the printed hold as a pace on the phase it belongs to', () => {
     const byId = new Map(programmeDoses(SERMEF_LUMBAR).map((dose) => [dose.exerciseId, dose]));
+    expect(byId.get('active-double-knee-raise')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
+    // The one step the document paces at three seconds rather than five.
+    expect(byId.get('supine-trunk-curl')?.tempo).toEqual([{ phase: 'top', seconds: 3 }]);
     expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
+    expect(byId.get('prone-trunk-extension')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('cat-camel')?.tempo).toEqual([
       { phase: 'cat', seconds: 5 },
       { phase: 'camel', seconds: 5 },

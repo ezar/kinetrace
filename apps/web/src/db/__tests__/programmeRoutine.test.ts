@@ -33,7 +33,10 @@ describe('a programme as a routine', () => {
     const id = await createProgrammeRoutine(await profile(), 'SERMEF', SERMEF_LUMBAR);
     const routine = await db.routines.get(id);
     expect(routine?.exercises.map((entry) => entry.exerciseId)).toEqual([
+      'active-double-knee-raise',
+      'supine-trunk-curl',
       'glute-bridge',
+      'prone-trunk-extension',
       'childs-pose',
       'cat-camel',
     ]);
@@ -46,6 +49,8 @@ describe('a programme as a routine', () => {
 
     expect(byId.get('glute-bridge')).toMatchObject({ sets: 1, reps: 10, restSeconds: 0 });
     expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
+    expect(byId.get('supine-trunk-curl')?.tempo).toEqual([{ phase: 'top', seconds: 3 }]);
+    expect(byId.get('prone-trunk-extension')).toMatchObject({ sets: 1, reps: 10 });
     expect(byId.get('childs-pose')).toMatchObject({ sets: 4, holdSeconds: 10 });
     expect(byId.get('cat-camel')?.tempo).toHaveLength(2);
   });
@@ -59,7 +64,7 @@ describe('a programme as a routine', () => {
     for (const entry of routine?.exercises ?? []) {
       expect(entry.sourceNote, entry.exerciseId).toBeTruthy();
     }
-    expect(routine?.exercises[0]?.sourceNote).toContain('Puente');
+    expect(routine?.exercises[0]?.sourceNote).toContain('Abdominales inferiores');
   });
 
   it('is unsigned: a citation is not a professional', async () => {

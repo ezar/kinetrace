@@ -19,12 +19,14 @@
  *   in. They are a quotation, not UI copy, so they are not translated and they
  *   do not live in the dictionaries.
  * - **A step is matched only when the library has that exercise**, not
- *   something adjacent to it. Seven of these ten have no match, each for a
+ *   something adjacent to it. Four of these ten have no match, each for a
  *   stated reason, and they are kept in the list rather than dropped — a
  *   programme the app can only partly run should say so on the part it
  *   cannot. The bar is the movement, not the name: two steps were matched
  *   here on their titles and had to be taken back out, because the library's
- *   exercise of that name asks the body to do something else.
+ *   exercise of that name asks the body to do something else. Three others
+ *   were matched the other way round, by writing the exercise the document
+ *   describes rather than bending the document to fit the library.
  * - **Nothing here is interpreted.** No ordering logic, no substitutions, no
  *   progression. Which of these a given person should do is the professional's
  *   call, and the routine this builds is unsigned like any other.
@@ -131,12 +133,13 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Flexionar los miembros inferiores, llevando las rodillas al pecho. Mantener 5 segundos y volver a la posición inicial.',
       printed: { sets: 1, reps: 10 },
-      // The document's abdominals lift the legs; the library's double knee to
-      // chest is a sustained stretch the arms pull into and hold. One trains,
-      // the other lengthens. The give-away was the shape of the dose: ten
-      // repetitions only became ten holds because the movement underneath had
-      // already been swapped.
-      omission: { reason: 'differentExercise', near: 'double-knee-to-chest' },
+      dose: {
+        exerciseId: 'active-double-knee-raise',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'top', seconds: 5 }],
+      },
     },
     {
       step: 3,
@@ -144,10 +147,13 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Elevar la parte superior del tronco unos 25 cm. Mantener 3 segundos y volver a la posición inicial.',
       printed: { sets: 1, reps: 10 },
-      // The library's curl-up is McGill's: hands under the lumbar spine to keep
-      // its curve, and a lift of a few centimetres. This is a different
-      // movement with a different end position.
-      omission: { reason: 'differentExercise', near: 'mcgill-curl-up' },
+      dose: {
+        exerciseId: 'supine-trunk-curl',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'top', seconds: 3 }],
+      },
     },
     {
       step: 4,
@@ -177,9 +183,13 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Extender el tronco en bloque desde la cintura hasta colocarlo en la misma línea que los miembros inferiores, con la cabeza alineada con el tronco. Mantener 5 segundos y volver a la posición inicial.',
       printed: { sets: 1, reps: 10 },
-      // The library's prone extension is a press-up: the arms lift the chest
-      // and the back is passive. This is the trunk lifting itself.
-      omission: { reason: 'differentExercise', near: 'prone-press-up' },
+      dose: {
+        exerciseId: 'prone-trunk-extension',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'top', seconds: 5 }],
+      },
     },
     {
       step: 7,

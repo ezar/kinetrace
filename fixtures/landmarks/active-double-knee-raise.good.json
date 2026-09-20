@@ -1,19 +1,19 @@
 {
   "kind": "synthetic",
-  "exerciseId": "supine-shoulder-flexion",
+  "exerciseId": "active-double-knee-raise",
   "variant": "good",
-  "description": "Supine shoulder flexion performed as the reference motion describes it.",
+  "description": "Active double knee raise performed as the reference motion describes it.",
   "view": "side",
   "fps": 30,
   "noiseMetres": 0.004,
-  "seed": 1023,
+  "seed": 1007,
   "cycles": 10,
   "expect": {
     "reps": 10,
     "partials": 0,
     "silent": [
-      "elbowsBending",
-      "pace"
+      "pace",
+      "trunkLifting"
     ]
   }
 }

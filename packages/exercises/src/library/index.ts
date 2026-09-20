@@ -7,6 +7,7 @@
  */
 
 import type { ExerciseDefinition } from '../types.js';
+import { activeDoubleKneeRaise } from './active-double-knee-raise.exercise.js';
 import { birdDog } from './bird-dog.exercise.js';
 import { bodyweightSquat } from './bodyweight-squat.exercise.js';
 import { catCamel } from './cat-camel.exercise.js';
@@ -22,11 +23,13 @@ import { kneeToChest } from './knee-to-chest.exercise.js';
 import { mcgillCurlUp } from './mcgill-curl-up.exercise.js';
 import { pelvicTilt } from './pelvic-tilt.exercise.js';
 import { pronePressUp } from './prone-press-up.exercise.js';
+import { proneTrunkExtension } from './prone-trunk-extension.exercise.js';
 import { sidePlankFull } from './side-plank-full.exercise.js';
 import { sidePlankKnees } from './side-plank-knees.exercise.js';
 import { splitSquat } from './split-squat.exercise.js';
 import { supineHamstringStretch } from './supine-hamstring-stretch.exercise.js';
 import { supineShoulderFlexion } from './supine-shoulder-flexion.exercise.js';
+import { supineTrunkCurl } from './supine-trunk-curl.exercise.js';
 import { thoracicRotationQuadruped } from './thoracic-rotation-quadruped.exercise.js';
 import { wallAngels } from './wall-angels.exercise.js';
 
@@ -37,6 +40,8 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   birdDog,
   gluteBridge,
   mcgillCurlUp,
+  supineTrunkCurl,
+  activeDoubleKneeRaise,
   sidePlankKnees,
   sidePlankFull,
   frontPlank,
@@ -44,6 +49,7 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
   doubleKneeToChest,
   childsPose,
   pronePressUp,
+  proneTrunkExtension,
   hipHinge,
   wallAngels,
   thoracicRotationQuadruped,
@@ -56,6 +62,7 @@ export const EXERCISES: readonly ExerciseDefinition[] = [
 ];
 
 export {
+  activeDoubleKneeRaise,
   birdDog,
   bodyweightSquat,
   catCamel,
@@ -71,11 +78,13 @@ export {
   mcgillCurlUp,
   pelvicTilt,
   pronePressUp,
+  proneTrunkExtension,
   sidePlankFull,
   sidePlankKnees,
   splitSquat,
   supineHamstringStretch,
   supineShoulderFlexion,
+  supineTrunkCurl,
   thoracicRotationQuadruped,
   wallAngels,
 };

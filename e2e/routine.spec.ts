@@ -361,7 +361,14 @@ test('builds a routine from a published programme, and says what it left out', a
 
   // The document's order, which is not the app's own back routine order.
   const names = await page.locator('main li p.font-medium, li p.font-medium').allInnerTexts();
-  expect(names.slice(0, 3)).toEqual(['Puente de glúteos', 'Postura del niño', 'Gato y camello']);
+  expect(names.slice(0, 6)).toEqual([
+    'Rodillas al pecho activo',
+    'Abdominal con manos en el suelo',
+    'Puente de glúteos',
+    'Extensión de tronco en prono',
+    'Postura del niño',
+    'Gato y camello',
+  ]);
 
   // The printed dose, and the document's own words under it.
   await expect(page.getByText('4 × 10s · 0s', { exact: false })).toBeVisible();
@@ -369,10 +376,10 @@ test('builds a routine from a published programme, and says what it left out', a
     page.getByText(/Estiramiento lumbosacro en suelo\. Flexionar las rodillas/),
   ).toBeVisible();
 
-  // The seven steps the library cannot run, each with a reason — including the
-  // two whose library exercise has the right name and the wrong movement.
+  // The four steps the library still cannot run, each with a reason — among
+  // them the one whose library exercise has the right name and the wrong
+  // movement.
   await expect(page.getByText(/Báscula pélvica en supino/)).toBeVisible();
-  await expect(page.getByText(/Abdominales inferiores/)).toBeVisible();
   await expect(page.getByText(/Elevación brazo-pierna alternativa/)).toBeVisible();
   await expect(
     page.getByText(/no está en la biblioteca|not in the library/i).first(),
