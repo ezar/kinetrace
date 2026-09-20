@@ -201,22 +201,13 @@ export class MetricEvaluator {
     if (!definition.bilateral) return ['left'];
     if (side === 'left' || side === 'right') return [side];
     if (side === 'mean') return ['left', 'right'];
-    // Only the landmarks that actually differ between the two sides can say
-    // which side the camera sees better. Several metrics need the whole torso
-    // as well — the anatomical frame is built from all four points — and those
-    // four are in both lists, so comparing the lists whole would dilute the
-    // question with points that answer it identically either way.
-    const leftLandmarks = definition.landmarks('left');
-    const rightLandmarks = definition.landmarks('right');
-    const shared = new Set(leftLandmarks.filter((name) => rightLandmarks.includes(name)));
-    const leftOnly = leftLandmarks.filter((name) => !shared.has(name));
-    const rightOnly = rightLandmarks.filter((name) => !shared.has(name));
-    const [leftNames, rightNames] =
-      leftOnly.length > 0 && rightOnly.length > 0
-        ? [leftOnly, rightOnly]
-        : [leftLandmarks, rightLandmarks];
-    const left = meanVisibility(image, leftNames);
-    const right = meanVisibility(image, rightNames);
+    // The landmarks that tell the sides apart, which for a metric reading the
+    // anatomical frame is not the same list as the one that must be visible:
+    // that one carries the whole torso, and the far side's shoulder and hip
+    // say nothing about which side the camera sees better.
+    const discriminating = definition.sideLandmarks ?? definition.landmarks;
+    const left = meanVisibility(image, discriminating('left'));
+    const right = meanVisibility(image, discriminating('right'));
     const HYSTERESIS = 0.08;
     const chosen: 'left' | 'right' =
       slot.lastSide === 'left'

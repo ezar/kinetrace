@@ -285,6 +285,51 @@ describe('side selection', () => {
     for (const frame of occluded) value = evaluator.update(frame).samples.arm?.value ?? Number.NaN;
     expect(value).toBeGreaterThan(100);
   });
+
+  /**
+   * And the shoulder and the hip are side-specific too, even though the torso
+   * they belong to is needed whole. Deciding on the elbow alone — which is
+   * what dropping every shared landmark leaves — picks the arm whose elbow
+   * happens to be clearest, however hidden the rest of it is.
+   */
+  it('weighs the whole limb, not just its far end', () => {
+    const motion: ReferenceMotion = {
+      posture: 'standing',
+      cameraSide: 'left',
+      cycleSeconds: 1,
+      keyframes: [{ t: 0, pose: { left: { shoulderAngle: 10 }, right: { shoulderAngle: 150 } } }],
+    };
+    const frames = synthesizeFrames(motion, {
+      view: 'side',
+      fps: 30,
+      holdAtPhase: 0,
+      holdSeconds: 1.5,
+    });
+
+    // The left shoulder and hip are well hidden and its elbow happens to be
+    // crisp; the right arm is visible throughout, with a slightly softer elbow.
+    const visibility = new Map<number, number>([
+      [POSE_LANDMARK.LEFT_SHOULDER, 0.3],
+      [POSE_LANDMARK.LEFT_HIP, 0.3],
+      [POSE_LANDMARK.LEFT_ELBOW, 1],
+      [POSE_LANDMARK.RIGHT_ELBOW, 0.9],
+    ]);
+    const occluded = frames.map((frame) => ({
+      ...frame,
+      image: frame.image.map((landmark, index) => ({
+        ...landmark,
+        visibility: visibility.get(index) ?? 1,
+      })),
+    }));
+
+    const evaluator = new MetricEvaluator(
+      { arm: { id: 'shoulderFlexion', side: 'auto' } },
+      { view: 'side' },
+    );
+    let value = Number.NaN;
+    for (const frame of occluded) value = evaluator.update(frame).samples.arm?.value ?? Number.NaN;
+    expect(value).toBeGreaterThan(100);
+  });
 });
 
 describe('space selection', () => {
