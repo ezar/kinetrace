@@ -1,0 +1,18 @@
+{
+  "kind": "synthetic",
+  "exerciseId": "side-lying-leg-raise",
+  "variant": "too-fast",
+  "description": "Leg raises swung up and down at three times the intended tempo.",
+  "view": "front",
+  "fps": 30,
+  "cycles": 6,
+  "cycleSeconds": 1.6,
+  "noiseMetres": 0.004,
+  "seed": 42,
+  "side": "right",
+  "expect": {
+    "cues": [
+      "pace"
+    ]
+  }
+}

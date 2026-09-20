@@ -19,14 +19,15 @@
  *   in. They are a quotation, not UI copy, so they are not translated and they
  *   do not live in the dictionaries.
  * - **A step is matched only when the library has that exercise**, not
- *   something adjacent to it. Four of these ten have no match, each for a
+ *   something adjacent to it. Three of these ten have no match, each for a
  *   stated reason, and they are kept in the list rather than dropped — a
  *   programme the app can only partly run should say so on the part it
  *   cannot. The bar is the movement, not the name: two steps were matched
  *   here on their titles and had to be taken back out, because the library's
  *   exercise of that name asks the body to do something else. Three others
  *   were matched the other way round, by writing the exercise the document
- *   describes rather than bending the document to fit the library.
+ *   describes rather than bending the document to fit the library, and a
+ *   fourth by adding the metric that exercise needed.
  * - **Nothing here is interpreted.** No ordering logic, no substitutions, no
  *   progression. Which of these a given person should do is the professional's
  *   call, and the routine this builds is unsigned like any other.
@@ -197,7 +198,13 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Elevar la pierna colocada arriba 20-30 cm. Mantener 5 segundos y volver a la posición inicial. Repetir con la otra pierna.',
       printed: { sets: 1, reps: 10 },
-      omission: { reason: 'notInLibrary' },
+      dose: {
+        exerciseId: 'side-lying-leg-raise',
+        sets: 1,
+        reps: 10,
+        restSeconds: 0,
+        tempo: [{ phase: 'top', seconds: 5 }],
+      },
     },
     {
       step: 8,

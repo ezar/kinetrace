@@ -108,13 +108,14 @@ Published programmes are transcribed as data, and a routine can name one.
 
 ## Addendum: writing the exercises the document describes
 
-Three of the seven gaps were closed the only way that does not bend the
+Four of the seven gaps were closed the only way that does not bend the
 document — by writing the exercise it describes, rather than pointing it at
 something adjacent. `active-double-knee-raise`, `supine-trunk-curl` and
 `prone-trunk-extension` are the document's steps 2, 3 and 6, and each one is
 the honest counterpart of a library exercise that was rejected above: the
 active knee raise to the sustained stretch, the trunk curl to McGill's, the
-trunk extension to the press-up. The programme now runs six of its ten steps.
+trunk extension to the press-up. `side-lying-leg-raise` is step 7, and it
+needed a metric first. The programme now runs seven of its ten steps.
 
 Two things learned in the writing are worth keeping:
 
@@ -131,13 +132,33 @@ Two things learned in the writing are worth keeping:
   nothing when the arms already rest straight beside the body. What a press-up
   needs first is the hands coming up beside the chest, which is the shoulder.
 
-The four steps still missing are the ones with real obstacles rather than
-absent files: a cross-body curl and a supine lumbar rotation both need
-`thoracicRotation` and so the front, where a supine body has no length; a
-side-lying leg raise needs a hip abduction metric the engine does not have; and
-the last step raises one limb at a time where the library's bird dog raises two.
+**Step 7 needed a metric, and the metric taught two things.** `hipAbduction` is
+the leg's counterpart of `shoulderAbduction`, measuring leg elevation in the
+frontal plane, and it is the first metric here that had to be measured against
+the trunk's own axis rather than the same-side shoulder-to-hip diagonal the arm
+metrics use. That diagonal leans inwards by however much wider somebody's
+shoulders are than their pelvis — a few degrees of the arm's 180 degree range,
+but a few degrees of the hip's forty-five, varying from person to person.
+Against the trunk axis a leg in line with the body reads zero whoever it
+belongs to, and reads the same lying down as standing.
 
-The pelvic tilt is a fifth, of a different kind: the document and the library
+The second thing was in the harness rather than the maths. A unilateral
+exercise is measured on the limb the prescription names, and `toRunnerConfig`
+has taken that side since side planks were added. Nothing that replays a
+_reference motion_ was passing it: the fixture builder and the phase timeline
+both fell through to `auto`, which picks the limb the camera sees better. For
+every unilateral exercise in the library until now that happened to be the limb
+doing the work. For a leg lifting off a stacked pair it is a coin toss, and it
+came up wrong: the fixture measured the leg resting on the mat and counted no
+repetitions at all. `referenceSide` now reads the worked limb off the motion's
+own keyframes, and both replayers use it.
+
+The three steps still missing are the ones with real obstacles rather than
+absent files: a cross-body curl and a supine lumbar rotation both need
+`thoracicRotation` and so the front, where a supine body has no length; and the
+last step raises one limb at a time where the library's bird dog raises two.
+
+The pelvic tilt is a fourth, of a different kind: the document and the library
 agree on the joint and disagree on how far it travels. Closing that one means
 deciding whether it is one exercise or two, which is a question for a
 professional rather than for this file.

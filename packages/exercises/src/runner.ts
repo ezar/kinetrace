@@ -31,8 +31,26 @@ export interface RunnerOptions {
   side?: 'left' | 'right';
 }
 
+/**
+ * The limb a unilateral exercise's reference motion works.
+ *
+ * A real set answers this from the prescription. Anything that replays the
+ * reference motion instead — the fixture builder, the phase timeline — has no
+ * prescription to ask, and `auto` would answer it by picking the limb the
+ * camera sees better. For a leg lifting from a body lying on its side that is
+ * a coin toss between the limb doing the work and the one holding still, so
+ * the motion is asked directly: whichever side its keyframes name.
+ */
+export function referenceSide(exercise: ExerciseDefinition): 'left' | 'right' | undefined {
+  if (!exercise.unilateral) return undefined;
+  const poses = exercise.reference.keyframes.map((frame) => frame.pose);
+  if (poses.some((pose) => pose.right !== undefined)) return 'right';
+  if (poses.some((pose) => pose.left !== undefined)) return 'left';
+  return undefined;
+}
+
 /** Pin every `auto` slot to the side the set is actually being done on. */
-function metricsForSide(
+export function metricsForSide(
   metrics: Record<string, ExerciseMetric>,
   side: 'left' | 'right' | undefined,
 ): Record<string, ExerciseMetric> {

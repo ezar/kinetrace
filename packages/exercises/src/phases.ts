@@ -31,6 +31,7 @@ import {
   synthesizeFrames,
   type MetricFrame,
 } from '@kinetrace/engine';
+import { metricsForSide, referenceSide } from './runner.js';
 import type { ExerciseDefinition } from './types.js';
 
 /** A moment inside a repetition at which the body starts moving into a phase. */
@@ -114,7 +115,11 @@ function movementStart(
 export function phaseTimeline(exercise: ExerciseDefinition): PhaseMark[] {
   if (exercise.phases.length < 2) return [];
 
-  const evaluator = new MetricEvaluator(exercise.metrics, { view: exercise.view.orientation });
+  // Measured on the limb the reference motion actually works, not on whichever
+  // one the camera sees better. See `referenceSide`.
+  const evaluator = new MetricEvaluator(metricsForSide(exercise.metrics, referenceSide(exercise)), {
+    view: exercise.view.orientation,
+  });
   const frames: DerivedFrame[] = synthesizeFrames(exercise.reference, {
     view: exercise.view.orientation,
     fps: DERIVE_FPS,

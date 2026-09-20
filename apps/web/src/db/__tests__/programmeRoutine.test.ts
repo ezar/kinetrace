@@ -37,6 +37,7 @@ describe('a programme as a routine', () => {
       'supine-trunk-curl',
       'glute-bridge',
       'prone-trunk-extension',
+      'side-lying-leg-raise',
       'childs-pose',
       'cat-camel',
     ]);

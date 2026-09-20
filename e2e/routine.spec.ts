@@ -361,11 +361,12 @@ test('builds a routine from a published programme, and says what it left out', a
 
   // The document's order, which is not the app's own back routine order.
   const names = await page.locator('main li p.font-medium, li p.font-medium').allInnerTexts();
-  expect(names.slice(0, 6)).toEqual([
+  expect(names.slice(0, 7)).toEqual([
     'Rodillas al pecho activo',
     'Abdominal con manos en el suelo',
     'Puente de glúteos',
     'Extensión de tronco en prono',
+    'Elevación de pierna de lado',
     'Postura del niño',
     'Gato y camello',
   ]);
@@ -376,7 +377,7 @@ test('builds a routine from a published programme, and says what it left out', a
     page.getByText(/Estiramiento lumbosacro en suelo\. Flexionar las rodillas/),
   ).toBeVisible();
 
-  // The four steps the library still cannot run, each with a reason — among
+  // The three steps the library still cannot run, each with a reason — among
   // them the one whose library exercise has the right name and the wrong
   // movement.
   await expect(page.getByText(/Báscula pélvica en supino/)).toBeVisible();

@@ -238,6 +238,13 @@ to `packages/engine/src/metrics/definitions.ts` with:
 
 Then add the exercise.
 
+**A unilateral exercise's reference motion has to say which limb it works.**
+`referenceSide` reads that off the motion's own keyframes, and the fixture
+builder and the phase timeline both use it. Without it they fall through to
+`auto`, which picks the limb the camera sees better — fine when the working
+limb is the near one, a coin toss when both are equally visible, as they are
+for a leg lifting off a stacked pair.
+
 ## Pull requests
 
 - `pnpm verify` green, and `pnpm test:e2e` if you touched the app.

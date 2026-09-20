@@ -46,6 +46,17 @@ export interface SyntheticFixtureSpec {
   noiseMetres?: number;
   seed?: number;
   perturbations?: Perturbation[];
+  /**
+   * The limb a unilateral exercise is being worked on.
+   *
+   * In a real session this comes from the prescription, which is why
+   * `toRunnerConfig` takes it: `auto` picks the side the camera sees better,
+   * and for a movement where both limbs are equally visible — a leg lifting
+   * from a body lying on its side — that is a coin toss between the limb doing
+   * the work and the one holding still. A fixture for such an exercise has to
+   * say which, or it is not replaying the exercise.
+   */
+  side?: 'left' | 'right';
   /** Window where landmark visibility collapses, to exercise the confidence gate. */
   dropout?: { fromSeconds: number; toSeconds: number; visibilityScale: number };
   expect?: FixtureExpectation;

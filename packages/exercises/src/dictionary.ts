@@ -181,6 +181,7 @@ export const METRIC_LABELS: Record<MetricId, Localized> = {
   hipFlexion: { es: 'Flexión de cadera', en: 'Hip flexion' },
   shoulderFlexion: { es: 'Flexión de hombro', en: 'Shoulder flexion' },
   shoulderAbduction: { es: 'Abducción de hombro', en: 'Shoulder abduction' },
+  hipAbduction: { es: 'Abducción de cadera', en: 'Hip abduction' },
   elbowFlexion: { es: 'Flexión de codo', en: 'Elbow flexion' },
   trunkInclination: { es: 'Inclinación del tronco', en: 'Trunk inclination' },
   pelvisTilt: { es: 'Báscula pélvica', en: 'Pelvic tilt' },
@@ -212,6 +213,10 @@ export const METRIC_DESCRIPTIONS: Record<MetricId, Localized> = {
   shoulderAbduction: {
     es: 'Cuánto sube el brazo por el lado. 0° es el brazo pegado al cuerpo.',
     en: 'How far the arm lifts out to the side. 0° is the arm by your side.',
+  },
+  hipAbduction: {
+    es: 'Cuánto se separa la pierna del cuerpo por el lado. 0° es la pierna en línea con el tronco.',
+    en: 'How far the leg lifts out to the side. 0° is the leg in line with the trunk.',
   },
   elbowFlexion: {
     es: 'El ángulo entre hombro, codo y muñeca. 180° es el brazo estirado.',

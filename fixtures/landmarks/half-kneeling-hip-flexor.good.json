@@ -7,6 +7,7 @@
   "fps": 30,
   "noiseMetres": 0.004,
   "seed": 1022,
+  "side": "left",
   "holdSeconds": 34,
   "holdAtPhase": 0,
   "expect": {

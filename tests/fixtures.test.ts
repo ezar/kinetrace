@@ -25,6 +25,7 @@ function run(fixture: LoadedFixture): RunOutcome {
   const runner = new ExerciseRunner(
     toRunnerConfig(exercise, {
       ...(spec.kind === 'synthetic' && spec.holdSeconds ? { holdSeconds: spec.holdSeconds } : {}),
+      ...(spec.kind === 'synthetic' && spec.side ? { side: spec.side } : {}),
     }),
   );
   const outcome: RunOutcome = {

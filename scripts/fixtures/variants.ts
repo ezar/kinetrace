@@ -7,7 +7,7 @@
  */
 
 import type { SyntheticFixtureSpec } from '@kinetrace/engine';
-import { EXERCISES } from '@kinetrace/exercises';
+import { EXERCISES, referenceSide } from '@kinetrace/exercises';
 
 const NOISE_METRES = 0.004;
 
@@ -23,6 +23,7 @@ function goodVariants(): SyntheticFixtureSpec[] {
       fps: 30,
       noiseMetres: NOISE_METRES,
       seed: 1000 + index,
+      ...(referenceSide(exercise) ? { side: referenceSide(exercise) } : {}),
     };
     // A good repetition must never be corrected: every rule that is not simple
     // encouragement has to stay quiet on the reference movement.
@@ -226,6 +227,48 @@ const ERROR_VARIANTS: SyntheticFixtureSpec[] = [
     noiseMetres: NOISE_METRES,
     seed: 35,
     perturbations: [{ kind: 'amplitude', factor: 0.6 }],
+    expect: { reps: 0, partials: 6 },
+  },
+  {
+    kind: 'synthetic',
+    exerciseId: 'side-lying-leg-raise',
+    variant: 'bent-knee',
+    description: 'Leg raises that fold the knee to buy height the hip is not giving.',
+    view: 'front',
+    fps: 30,
+    cycles: 6,
+    noiseMetres: NOISE_METRES,
+    seed: 41,
+    side: 'right',
+    perturbations: [{ kind: 'override', pose: { right: { kneeAngle: 128 } } }],
+    expect: { cues: ['bentKnee'] },
+  },
+  {
+    kind: 'synthetic',
+    exerciseId: 'side-lying-leg-raise',
+    variant: 'too-fast',
+    description: 'Leg raises swung up and down at three times the intended tempo.',
+    view: 'front',
+    fps: 30,
+    cycles: 6,
+    cycleSeconds: 1.6,
+    noiseMetres: NOISE_METRES,
+    seed: 42,
+    side: 'right',
+    expect: { cues: ['pace'] },
+  },
+  {
+    kind: 'synthetic',
+    exerciseId: 'side-lying-leg-raise',
+    variant: 'partial',
+    description: 'Leg raises that stop well short of the target abduction.',
+    view: 'front',
+    fps: 30,
+    cycles: 6,
+    noiseMetres: NOISE_METRES,
+    seed: 43,
+    side: 'right',
+    perturbations: [{ kind: 'amplitude', factor: 0.65 }],
     expect: { reps: 0, partials: 6 },
   },
   {
