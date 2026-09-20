@@ -94,6 +94,27 @@ describe('published programmes', () => {
     }
   });
 
+  /**
+   * The rule that was broken once already. Two steps were matched on their
+   * titles to exercises whose own instructions ask for a different movement —
+   * a pelvic tilt that stays on the floor where the document lifts off it, a
+   * sustained stretch where the document works. Refusing an exercise by name
+   * and then prescribing it elsewhere in the same document is that mistake
+   * happening again, so it fails here.
+   */
+  it('never prescribes an exercise the same programme refused by name', () => {
+    for (const programme of all) {
+      const refused = new Set(
+        programmeOmissions(programme).flatMap((step) =>
+          step.omission?.near ? [step.omission.near] : [],
+        ),
+      );
+      for (const dose of programmeDoses(programme)) {
+        expect(refused.has(dose.exerciseId), dose.exerciseId).toBe(false);
+      }
+    }
+  });
+
   it('points an omission at the library exercise it refused to match', () => {
     for (const programme of all) {
       for (const step of programmeOmissions(programme)) {
@@ -150,31 +171,34 @@ describe('SERMEF lumbar programme', () => {
     ]);
   });
 
-  it('runs five of the ten, in the order of the document', () => {
+  it('runs three of the ten, in the order of the document', () => {
     expect(programmeDoses(SERMEF_LUMBAR).map((dose) => dose.exerciseId)).toEqual([
-      'pelvic-tilt',
-      'double-knee-to-chest',
       'glute-bridge',
       'childs-pose',
       'cat-camel',
     ]);
   });
 
-  it('leaves the other five out with a reason', () => {
+  it('leaves the other seven out, each naming what it refused', () => {
     expect(
-      programmeOmissions(SERMEF_LUMBAR).map((step) => [step.step, step.omission?.reason]),
+      programmeOmissions(SERMEF_LUMBAR).map((step) => [
+        step.step,
+        step.omission?.reason,
+        step.omission?.near,
+      ]),
     ).toEqual([
-      [3, 'differentExercise'],
-      [4, 'notInLibrary'],
-      [6, 'differentExercise'],
-      [7, 'notInLibrary'],
-      [10, 'differentExercise'],
+      [1, 'differentExercise', 'pelvic-tilt'],
+      [2, 'differentExercise', 'double-knee-to-chest'],
+      [3, 'differentExercise', 'mcgill-curl-up'],
+      [4, 'notInLibrary', undefined],
+      [6, 'differentExercise', 'prone-press-up'],
+      [7, 'notInLibrary', undefined],
+      [10, 'differentExercise', 'bird-dog'],
     ]);
   });
 
   it('carries the printed hold as a pace on the phase it belongs to', () => {
     const byId = new Map(programmeDoses(SERMEF_LUMBAR).map((dose) => [dose.exerciseId, dose]));
-    expect(byId.get('pelvic-tilt')?.tempo).toEqual([{ phase: 'tilted', seconds: 5 }]);
     expect(byId.get('glute-bridge')?.tempo).toEqual([{ phase: 'top', seconds: 5 }]);
     expect(byId.get('cat-camel')?.tempo).toEqual([
       { phase: 'cat', seconds: 5 },

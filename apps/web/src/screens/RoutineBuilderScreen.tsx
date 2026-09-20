@@ -3,7 +3,7 @@
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { EXERCISES, getExercise, PROGRAMMES, programmeOmissions } from '@kinetrace/exercises';
+import { EXERCISES, getExercise, programmeOmissions } from '@kinetrace/exercises';
 import { db, type RoutineReview, type RoutineExercise, type RoutineSource } from '../db/schema.js';
 import { deleteRoutine, duplicateRoutine, saveRoutine } from '../db/repositories.js';
 import { estimateMinutes } from '../session/plan.js';
@@ -14,6 +14,7 @@ import { ExerciseDemo } from '../components/ExerciseDemo.js';
 import { ReviewStamp } from '../components/ReviewStamp.js';
 import { DragIcon } from '../components/icons.js';
 import { moveItem } from '../routines/reorder.js';
+import { isUnchangedTranscription, routineProgramme } from '../routines/programme.js';
 
 export function RoutineBuilderScreen(): JSX.Element {
   const { routineId } = useParams();
@@ -98,16 +99,20 @@ export function RoutineBuilderScreen(): JSX.Element {
 
   const endDrag = (): void => setDragging(null);
 
+  const programme = routineProgramme(source);
   /** The programme's own steps that no exercise in the library can run. */
-  const missingSteps = source
-    ? programmeOmissions(
-        PROGRAMMES.find((programme) => programme.id === source.programmeId) ?? {
-          id: '',
-          source: { title: '', publisher: '', year: 0 },
-          steps: [],
-        },
-      )
-    : [];
+  const missingSteps = programme ? programmeOmissions(programme) : [];
+  /**
+   * Which sentence the citation earns. A signature outranks everything: once a
+   * professional has put their name to these numbers, they are that person's,
+   * whatever they were copied from. Otherwise it depends on whether anybody has
+   * touched them since.
+   */
+  const sourceState: 'signed' | 'edited' | 'transcribed' = review
+    ? 'signed'
+    : programme && isUnchangedTranscription(exercises, programme)
+      ? 'transcribed'
+      : 'edited';
 
   const update = (index: number, patch: Partial<RoutineExercise>): void => {
     setExercises((current) =>
@@ -152,7 +157,7 @@ export function RoutineBuilderScreen(): JSX.Element {
           <p className="text-sm text-muted">
             {source.publisher}. <span className="italic">{source.title}</span> ({source.year}).
           </p>
-          <p className="text-xs leading-relaxed text-muted">{t('source.unsigned')}</p>
+          <p className="text-xs leading-relaxed text-muted">{t(`source.${sourceState}`)}</p>
           {missingSteps.length > 0 ? (
             <div className="pt-1">
               <p className="text-sm">{t('source.missing', { count: missingSteps.length })}</p>

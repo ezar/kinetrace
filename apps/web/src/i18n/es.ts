@@ -113,8 +113,12 @@ export const es = {
   'home.switchProfile': 'Cambiar de perfil',
   'home.routines': 'Tus rutinas',
   'source.title': 'De dónde salen estos números',
-  'source.unsigned':
+  'source.transcribed':
     'Están copiados del documento, no prescritos para ti. Tu fisioterapeuta sigue siendo quien decide cuáles de estos ejercicios te tocan, con qué dosis y en qué orden.',
+  'source.edited':
+    'Ya no son los del documento: alguien ha cambiado algo aquí. La cita dice de dónde salió esta rutina, no lo que dice ahora.',
+  'source.signed':
+    'Los números que ves son los de quien firmó la revisión, no los del documento. La cita se queda por si quieres comparar.',
   'source.missing': 'El documento trae {count} ejercicios más que la app no sabe hacer:',
   'source.notInLibrary': 'no está en la biblioteca',
   'source.differentExercise': 'la biblioteca tiene otro ejercicio parecido, no este',
@@ -144,6 +148,8 @@ export const es = {
   'review.source.derived.dose': 'Esta dosis sale del movimiento de referencia del ejercicio.',
   'review.source.authored.dose':
     'Esta dosis la escribió quien hizo la biblioteca, sin ninguna fuente detrás: las guías clínicas de dolor lumbar no prescriben series ni repeticiones. Hasta que la pongas tú, no es de nadie.',
+  'review.source.programme.dose':
+    'Esta dosis está copiada de {publisher}, {title} ({year}), tal y como la imprime. Es un documento genérico, no una prescripción para esta persona.',
   'library.source': 'De dónde salen estos números',
   'library.source.targets.derived':
     'Ángulos: leídos ejecutando el motor sobre el movimiento de referencia de este ejercicio.',

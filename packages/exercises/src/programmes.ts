@@ -19,9 +19,12 @@
  *   in. They are a quotation, not UI copy, so they are not translated and they
  *   do not live in the dictionaries.
  * - **A step is matched only when the library has that exercise**, not
- *   something adjacent to it. Five of these ten have no match, each for a
+ *   something adjacent to it. Seven of these ten have no match, each for a
  *   stated reason, and they are kept in the list rather than dropped — a
- *   programme the app can only half run should say so on the half it cannot.
+ *   programme the app can only partly run should say so on the part it
+ *   cannot. The bar is the movement, not the name: two steps were matched
+ *   here on their titles and had to be taken back out, because the library's
+ *   exercise of that name asks the body to do something else.
  * - **Nothing here is interpreted.** No ordering logic, no substitutions, no
  *   progression. Which of these a given person should do is the professional's
  *   call, and the routine this builds is unsigned like any other.
@@ -115,13 +118,12 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Apretar el abdomen, contraer los glúteos y hacer que éstos se despeguen del suelo 1-2 cm, y aplanar la columna lumbar. Mantener 5 segundos y volver a la posición inicial.',
       printed: { sets: 1, reps: 10 },
-      dose: {
-        exerciseId: 'pelvic-tilt',
-        sets: 1,
-        reps: 10,
-        restSeconds: 0,
-        tempo: [{ phase: 'tilted', seconds: 5 }],
-      },
+      // Same name, same joint, further travel. The library's pelvic tilt ends
+      // where this one begins: its fourth instruction is that the hips never
+      // leave the floor, and this asks for the glutes to lift off it. Matching
+      // them would put that instruction on screen underneath a quotation
+      // asking for the opposite.
+      omission: { reason: 'differentExercise', near: 'pelvic-tilt' },
     },
     {
       step: 2,
@@ -129,9 +131,12 @@ export const SERMEF_LUMBAR: Programme = {
       instruction:
         'Flexionar los miembros inferiores, llevando las rodillas al pecho. Mantener 5 segundos y volver a la posición inicial.',
       printed: { sets: 1, reps: 10 },
-      // The library counts this one in time, so the document's ten repetitions
-      // of five seconds are ten holds run together rather than ten reps.
-      dose: { exerciseId: 'double-knee-to-chest', sets: 10, holdSeconds: 5, restSeconds: 0 },
+      // The document's abdominals lift the legs; the library's double knee to
+      // chest is a sustained stretch the arms pull into and hold. One trains,
+      // the other lengthens. The give-away was the shape of the dose: ten
+      // repetitions only became ten holds because the movement underneath had
+      // already been swapped.
+      omission: { reason: 'differentExercise', near: 'double-knee-to-chest' },
     },
     {
       step: 3,

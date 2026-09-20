@@ -108,8 +108,12 @@ export const en: Record<TranslationKey, string> = {
   'home.switchProfile': 'Switch profile',
   'home.routines': 'Your routines',
   'source.title': 'Where these numbers came from',
-  'source.unsigned':
+  'source.transcribed':
     'They are copied from the document, not prescribed for you. Which of these exercises you should do, at what dose and in what order, is still your physiotherapist’s call.',
+  'source.edited':
+    'These are no longer the document’s numbers: somebody has changed something here. The citation says where this routine came from, not what it says now.',
+  'source.signed':
+    'The numbers you see are those of whoever signed the review, not the document’s. The citation stays so you can compare.',
   'source.missing': 'The document has {count} more exercises the app cannot run:',
   'source.notInLibrary': 'not in the library',
   'source.differentExercise': 'the library has a similar exercise, not this one',
@@ -139,6 +143,8 @@ export const en: Record<TranslationKey, string> = {
   'review.source.derived.dose': "This dosage comes from the exercise's reference motion.",
   'review.source.authored.dose':
     "This dosage was written by whoever made the library, with no source behind it: clinical guidelines for low back pain do not prescribe sets or repetitions. Until you set it, it is nobody's.",
+  'review.source.programme.dose':
+    'This dosage is copied from {publisher}, {title} ({year}), exactly as printed. It is a generic document, not a prescription for this person.',
   'library.source': 'Where these numbers come from',
   'library.source.targets.derived':
     "Angles: read off the engine running over this exercise's reference motion.",
